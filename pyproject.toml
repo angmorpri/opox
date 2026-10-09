@@ -1,0 +1,23 @@
+[project]
+authors = [
+  {name = "angmorpri", email = "angelmorenoprieto@gmail.com"},
+]
+dependencies = []
+description = "Core of Project OPO - Artificial Intelligence for Spain's Civil Servant Exams"
+name = "opox"
+readme = "README.md"
+requires-python = ">=3.14"
+version = "0.1.0"
+
+[project.scripts]
+opox = "opox:main"
+
+[build-system]
+build-backend = "uv_build"
+requires = ["uv_build>=0.12.23,<0.13.0"]
+
+[dependency-groups]
+dev = [
+  "pytest>=9.1.1",
+  "ruff>=0.16.10",
+]
