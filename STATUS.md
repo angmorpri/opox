@@ -2,13 +2,13 @@
 
 ## Dónde lo dejé
 
-### 09/10/2026
+### 11/10/2026
 
-Documentos para guiar a los agentes preparados. Proyecto Python iniciado como `opox` mediante `uv`. Conocimiento y resultados de la iteración previa almacenados en `old/`.
+Documentos para guiar a los agentes preparados. Proyecto Python iniciado como `opox` mediante `uv`. Exámenes, solucionarios y bases de convocatoria de la oposición objetivo del experimento (C2_AGE) descargados y almacenados. Conocimiento y resultados de la iteración previa almacenados en `old/`.
 
 ## Próximo paso
 
-Iniciar proyecto de la mano de Claude Code. Garantizar que se comprenden los objetivos del proyecto y el estado actual, que no existen contradicciones demasiado graves en la documentación Inventariar los archivos existentes. Planificar a bajo nivel el parseo de convocatorias, exámenes y solucionaros; resolver el caso abierto sobre los contextos; cerrar modelos de datos y pipeline ETL. Aprovechar al máximo el conocimiento ya registrado en la iteración previa.
+Iniciar proyecto de la mano de Claude Code. Garantizar que se comprenden los objetivos del proyecto, inventariar archivos existentes y corregir errores en la documentación. Planificar a bajo nivel el parseo de convocatorias, exámenes y solucionarios; resolver el caso abierto sobre los contextos; cerrar modelos de datos y pipeline ETL.
 
 ## Cuestiones abiertas
 
@@ -26,4 +26,4 @@ Actualmente, tengo ese contexto extraído en `/old/contexts/...`. Si se decide q
 
 ### Registro de los datos crudos en repositorio
 
-Los datos crudos en `/data/raw/` son pesados y poco cambiantes, no tiene sentido almacenarlos en el repositorio Git. Sin embargo, sí beneficiaria poder clonarlos. Sé que hay herramientas y estándares para ello, pero no estoy demasiado puesto. Por ahora, se quedan fuera del flujo de cambios. A futuro habrá que decidir qué se hace. Los datos en `/data/interim/` y `/data/processed/` se mantienen porque se asume que serán más ligeros y cambiantes.
+Los datos crudos descargados de cada oposición (exámenes, solucionarios, términos de convocatoria...) son pesados y poco cambiantes, creo que no tiene sentido almacenarlos en un repo. Simultáneamente, sí que sería práctico tenerlos disponibles, si se migra el proyecto. En consecuencia, hay que encontrar un mecanismo alternativo a Git para "tenerlos en cueneta". El resto de datos en `/data/raw/` y aquéllos en `/data/interim/` y `/data/processed/`, se registran.

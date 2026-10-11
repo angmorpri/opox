@@ -31,13 +31,21 @@
 * **Estado**: ACTIVO
 * **Contexto**: Este proyecto implica bastante carga de código y numerosas funcionalidades. Crear un proyecto Python sería bastante práctico.
 * **Decisión**: El código utilizado para dar vida al proyecto será un proyecto Python llamado `opox`. Un programa en línea de comandos `opox` actuará también como interfaz para centralizar funcionalidades.
-* **Consecuencias**: El código se centraliza en `src/opox/`. Se crea un `README.md` que debe estar centrado exclusivamente en decsribir el código a medida que este avance. Coexistimos con ecosistema `uv` y `pyproject.toml`.
+* **Consecuencias**: El código se centraliza en `src/opox/`. Se crea un `README.md` que debe estar centrado exclusivamente en describir el código a medida que este avance. Coexistimos con ecosistema `uv` y `pyproject.toml`.
 * **Alternativas descartadas**: Hacerlo todo por scripts, sin paquetizar.
 
-## [D004] `old/` queda fuera del flujo de cambios
+## [D004] Carpeta `old/`
 
 * **Estado**: ACTIVO
-* **Contexto**: La carpeta `old/` contiene restos de la iteración pasada. Eventualmente, dejará de ser útil.
-* **Decisión**: Se deja fuera del repositorio y flujo de cambios. Se añade al `.gitignore`.
-* **Consecuencias**: -
+* **Contexto**: La carpeta `old/` contiene restos de la iteración pasada.
+* **Decisión**: Debe tomarse como referencia para el nuevo código, pero nunca como norma ni ejemplo. Se deja fuera del repositorio y flujo de cambios. Se añade al `.gitignore`.
+* **Consecuencias**: Muchas de las decisiones o convenciones que se tomaron en la iteración pasada quedarán descartados o cambiarán radicalmente.
 * **Alternativas descartadas**: -
+
+# [D005] Exámenes de 2018
+
+* **Estado**: ACTIVO
+* **Contexto**: Los exámenes de 2018 son fotos de los originales. Requieren OCR.
+* **Decisión**: Se ignoran durante la fase de experimentación del proyecto.
+* **Consecuencias**: -
+* **Alternativas y descartes**: -

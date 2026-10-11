@@ -4,7 +4,7 @@ Inteligencia artificial aplicada a la preparación de oposiciones.
 
 ## Motivación
 
-Los mecanismos tradicionales para preparar oposiciones en España están obsoletos. Con temario público, exámenes de otros años, y acceso ilimitado a internet, mediante agentes se podría laborar un corpus de información pública trazable, mediante los que preparar individualmente una oposición. Se podrían fabricar temarios ad-hoc, preguntas y exámenes sintéticos, y hasta usar un agente con acceso a toda esta información como profesor particular.
+Los mecanismos tradicionales para preparar oposiciones en España están obsoletos. Con temario público, exámenes de otros años, y acceso ilimitado a internet, mediante agentes se podría elaborar un corpus de información pública trazable, mediante los que preparar individualmente una oposición. Se podrían fabricar temarios ad-hoc, preguntas y exámenes sintéticos, y hasta usar un agente con acceso a toda esta información como profesor particular.
 
 ## Objetivos
 

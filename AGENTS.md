@@ -9,29 +9,22 @@
 ## Documentación del proyecto
 
 - `GENESIS.md` describe la motivación, objetivos, alcance y dirección general del proyecto.
-- `STATUS.md` describe el estado actual y la siguiente acción inmediata.
-- `DECISIONS.md` contiene decisiones ya adoptadas. No las contradigas silenciosamente; si consideras que deben cambiar, señálalo.
-- `IDEAS.md` contiene ideas y diseños no comprometidos. No los interpretes como requisitos ni los implementes salvo indicación explícita. El orden de las ideas va de más recientes a más antiguas. Si en algún momento detectas que ideas recientes contradicen o están fuertemente relacionadas con ideas antiguas, señálalo para resolver el conflicto o combinarlas. Las ideas pueden ir adelantadas respecto al estado actual del proyecto, ya que actúan en ocasiones como brainstorming. Deben traerse a colación sólo cuando la fase actual del proyecto se alinée con ellas.
+- `STATUS.md` describe el estado actual, siguiente acción inmediata, y cuestiones abiertas.
+- `DECISIONS.md` contiene decisiones ya adoptadas.
+- `IDEAS.md` contiene ideas y diseños no comprometidos.
+
+Las cuestiones abiertas de `STATUS.md` pueden estar desarrolladas o incluso solucionadas en `IDEAS.md`, pero no se considerarán cerradas hasta que se hayan valorado y aplicado debidamente. Generalmente, en este momento pasarán también a `DECISIONS.md`.
+
+`IDEAS.md` puede tener propuestas contradictorias, en cuyo caso, tendrán preferencia las más recientes. Las ideas pueden ir adelantadas respecto al estado actual del proyecto, en cuyo caso deben traerse a colación **sólo** cuando la fase actual del proyecto lo requiera.
+
+`DECISIONS.md` pueden cambiar, pero sólo en casos muy concretos, y previa revisión.
 
 ## Forma de trabajar
 
-### Etapa de bienvenida
-
-- Al comienzo de cada sesión te saludaré y pediré que retomes el proyecto. Consulta **solamente** `GENESIS.md` y `STATUS.md`. Indica claramente en qué punto estamos.
-- Cuando dé el visto bueno a la tarea que se trabajará en la sesión, consulta `DECISIONS.md` e `IDEAS.md`. Expón todos los detalles que encuentres y sean relevantes para la sesión.
-
-### Etapa de trabajo
-
-- Prefiere la solución más simple que satisfaga correctamente la necesidad actual.
-- No amplíes el alcance por iniciativa propia.
-- Evita abstracciones, generalizaciones o infraestructura anticipada sin una necesidad concreta.
-- Si durante la implementación descubres que una premisa, diseño o decisión parece incorrecta, señálalo antes de construir complejidad para acomodarla.
-- Antes de terminar una unidad, verifica lo realizado mediante las pruebas o comprobaciones pertinentes.
-
-### Etapa de despedida
-
-- Cuando indique que voy a dar por finalizada una sesión, haz un resumen de en qué ha consistido la sesión de trabajo. Luego, consulta `STATUS.md`, mencióname qué casos siguen abiertos, y propón cuál debería ser el contenido de la próxima sesión inmediata.
-- Cuando dé el visto bueno a la estado, consulta `DECISIONS.md` e `IDEAS.md`. Si han quedado desactualizados, propón los cambios concretos antes de realizarlos.
+- Al comenzar una sesión de trabajo, recuérdame qué paso tenía anotado como siguiente. Cuando le dé el visto bueno, señálame todas las ideas relacionadas con ese paso.
+- Tienes libertado para consultar cualesquiera de los documentos de seguimiento del proyecto cuando veas oportuno. Si hayas incongruencias, señálalas; pero nunca modifiques estos documentos en silencio.
+- Prefiere soluciones simples sin abstracciones, generalizaciones o infraestructuras adelantadas.
+- Al cerrar una sesión de trabajo, resúmeme qué hemos hecho, propón cambios necesarios en los documentos de seguimiento, y recuérdame qué cuestiones siguen abiertas. Procederemos a cerrar el siguiente paso para dejarlo en `STATUS.md`, y finalizaremos la sesión.
 
 ### Caso excepcional - revisión general
 
