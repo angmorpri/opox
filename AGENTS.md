@@ -1,4 +1,6 @@
-# En general
+# Para agentes
+
+## En general
 
 - Usa español o inglés. Yo usaré principalmente español.
 - Actúa como colaborador técnico, no como director del proyecto. Las decisiones de producto, alcance y arquitectura relevantes me corresponden.
@@ -9,22 +11,15 @@
 ## Documentación del proyecto
 
 - `GENESIS.md` describe la motivación, objetivos, alcance y dirección general del proyecto.
-- `STATUS.md` describe el estado actual, siguiente acción inmediata, y cuestiones abiertas.
+- `STATUS.md` describe el estado actual y el siguiente paso.
 - `DECISIONS.md` contiene decisiones ya adoptadas.
-- `IDEAS.md` contiene ideas y diseños no comprometidos.
-
-Las cuestiones abiertas de `STATUS.md` pueden estar desarrolladas o incluso solucionadas en `IDEAS.md`, pero no se considerarán cerradas hasta que se hayan valorado y aplicado debidamente. Generalmente, en este momento pasarán también a `DECISIONS.md`.
-
-`IDEAS.md` puede tener propuestas contradictorias, en cuyo caso, tendrán preferencia las más recientes. Las ideas pueden ir adelantadas respecto al estado actual del proyecto, en cuyo caso deben traerse a colación **sólo** cuando la fase actual del proyecto lo requiera.
-
-`DECISIONS.md` pueden cambiar, pero sólo en casos muy concretos, y previa revisión.
+- `NOTES.md` contiene cuestiones abiertas, ideas y diseños no comprometidos.
 
 ## Forma de trabajar
 
-- Al comenzar una sesión de trabajo, recuérdame qué paso tenía anotado como siguiente. Cuando le dé el visto bueno, señálame todas las ideas relacionadas con ese paso.
-- Tienes libertado para consultar cualesquiera de los documentos de seguimiento del proyecto cuando veas oportuno. Si hayas incongruencias, señálalas; pero nunca modifiques estos documentos en silencio.
-- Prefiere soluciones simples sin abstracciones, generalizaciones o infraestructuras adelantadas.
-- Al cerrar una sesión de trabajo, resúmeme qué hemos hecho, propón cambios necesarios en los documentos de seguimiento, y recuérdame qué cuestiones siguen abiertas. Procederemos a cerrar el siguiente paso para dejarlo en `STATUS.md`, y finalizaremos la sesión.
+- Al comenzar una sesión de trabajo, lo primero será valorar el siguiente paso anotado, y decidir si nos dedicamos a él o si hay otra urgencia.
+- En todo el proceso, tienes libertad para consultar cualesquiera de los documentos de seguimiento del proyecto. Señala incongruencias, pero nunca modifiques sin permiso.
+- Al cerrar una sesión de trabajo, plantearemos a qué deberíamos dedicar la siguiente sesión.
 
 ### Caso excepcional - revisión general
 

@@ -1,12 +1,28 @@
-# Ideas
+# Notas
 
-Todo lo que no está cerrado ni implementado. Cada idea acaba de una de tres formas: pasa a STATUS.md, se convierte en decisión en DECISIONS.md, o se mueve a "Descartadas" con una línea de motivo. Cuando algo se implementa, el código pasa a ser la fuente de verdad y su sección se borra de aquí.
+Relación desestructurada de casos abiertos, ideas y otras notas.
 
-El orden de estas ideas va de más recientes a más antiguas.
+Se ordenan de más recientes a más antiguas.
 
-## Contextos de preguntas de exámenes
+## Nombre del proyecto
 
-Manualmente se genera una tabla, en formato hoja de cálculo Excel, con cuatro columnas:
+> ABIERTO
+
+"Proyecto OPO" es sólo el nombre interno y `opox`, también. En algún momento tendré que decidir un nombre más comercial.
+
+## Contextos
+
+> ABIERTO
+
+Algunas preguntas de examen requieren de un contexto en forma de imágenes, diagramas o tablas. Identificarlas, extraerlas y almacenarlas es relativamente fácil, porque todos los archivos que vamos a usar (al menos, por ahora) son PDFs parseables. Sin embargo, conocer qué pregunta referencia a qué contexto puede ser más difícil de detectar.
+
+La solución a la que llegué en la iteración previa fue la siguiente: un script detecta y almacena los contextos en `/contexts/<id_exam>/`, indicando como nombre de archivo la página del PDF en el que aparece. Manualmente, yo reviso ese contexto, y, en el mismo nombre de archivo, indico la pregunta o rango de preguntas a las que aplica. El programa de extracción de preguntas puede saber, así, a qué preguntas asignar qué contexto.
+
+Actualmente, tengo ese contexto extraído en `/old/contexts/...`. Si se decide que el mecanismo es adecuado y suficiente, habrá que moverlo a `/data/`, no sé si a `/interim/` o a `/processed/`. Si se decide que es más conveniente otro, habrá que crear un script previo que convierta de un formato al nuevo, y luego reubicar los archivos.
+
+### Propuesta 1
+
+Manualmente se genera una tabla, en formato hoja de cálculo, con cuatro columnas:
 
 * `test_id`: nombre del archivo del examen al que pertenece este contexto.
 * `page`: página en la que se haya la figura del contexto. Numeración según el PDF, no la que aparezca en las páginas del examen.
@@ -17,7 +33,15 @@ Esta hoja de cálculo se almacena en `raw/`. El programa que extraiga las pregun
 
 Este mecanismo simplifica bastante el proceso respecto al usado en la iteración anterior, que requería ejecutar un script previo, modificar a mano nombres de archivo, y luego ejecutar el extractor de preguntas. Además, resuelve el conflicto de dónde ubicar `contexts/`, que no deberían estar en `raw/` porque son datos procesados, pero tampoco en `interim/` ni `processed/` porque requieren atención manual y, por tanto, no son regenerables reejecutando el programa.
 
+## Registro de los datos crudos en repositorio
+
+> ABIERTO
+
+Los datos crudos descargados de cada oposición (exámenes, solucionarios, términos de convocatoria...) son pesados y poco cambiantes, creo que no tiene sentido almacenarlos en un repo. Simultáneamente, sí que sería práctico tenerlos disponibles, si se migra el proyecto. En consecuencia, hay que encontrar un mecanismo alternativo a Git para "tenerlos en cueneta". El resto de datos en `/data/raw/` y aquéllos en `/data/interim/` y `/data/processed/`, se registran.
+
 ## Pipeline de resolución agéntica
+
+> ABIERTO
 
 Formado por cuatro agentes independientes:
 
@@ -34,6 +58,8 @@ Matices al flujo:
 Este flujo solo aplica a las preguntas que deban responderse con información de internet. Las que se responden mediante lógica y conocimientos generales se excluyen.
 
 ## Modelo de datos básico
+
+> ABIERTO
 
 Propongo los siguientes cuatro modelos de datos, basándome en el análisis de los documentos oficiales de bases de convocatoria, exámenes y solucionarios.
 
@@ -130,6 +156,8 @@ categoría: int			# --> id de categoría.
 
 ## Etiquetado
 
+> ABIERTO
+
 ### Categorización
 
 Las categorías, al menos en C2 AGE, parecen bastante estables entre convocatorias. Se podrían asignar a cada pregunta de forma automática según lo que describan las bases, usando un agente clasificador sencillo para los casos ambiguos.
@@ -157,9 +185,3 @@ questions: [
 ### Otras etiquetas
 
 Quedan por definir etiquetas de más bajo nivel. Las categorías y temas son relativamente objetivos, porque salen directamente de las bases, pero conviene conocer otras formas de granularizar las preguntas. Extraer el "formato de pregunta" también podría ser muy práctico, sobre todo para generar preguntas sintéticas.
-
----
-
-# Descartadas
-
-*(Formato: idea · fecha · motivo en una línea)*
