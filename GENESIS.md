@@ -10,11 +10,10 @@ Los mecanismos tradicionales para preparar oposiciones en España están obsolet
 
 El objetivo inicial de este proyecto es resolver la siguiente hipótesis:
 
-> Un agente o conjunto de agentes pueden resolver todas las preguntas de cualquier
-> examen de oposición usando fuentes públicas de internet y referenciando adecuadamente
-> cada respuesta.
+> Un agente o conjunto de agentes pueden resolver preguntas de oposición usando fuentes
+> públicas de internet y referenciando adecuadamente cada respuesta.
 
-Como consecuencia de este proceso, se generaría un corpus curado de fuentes públicas que permitirían:
+Como consecuencia de este proceso, se generará un corpus curado de fuentes públicas que permitirían:
 
 - Generar un temario optimizado, que contenga todo lo que teóricamente puede entrar en un examen según sus bases, pero permita hacer foco en lo que realmente se suele preguntar.
 - Generar preguntas sintéticas, clasificadas según categoría, tema u otras etiquetas, basándose en los formatos reales de las preguntas de otros años.
@@ -45,5 +44,9 @@ Todavía por definir en detalle, consistiría en extender el proceso a otras opo
 ## Contexto previo
 
 Este proyecto ya se inicializó una vez, sin llegar a finalizar la fase experimental al completo.
-Esta nueva iteración es un reinicio puro, pero el contenido y resultados de la previa se almacena en `old/`, por si sirviera de referencia o guía, pero nunca de ejemplo o norma.
+Esta nueva iteración es un reinicio puro, pero el contenido y resultados de la previa se almacena temporalmente en `old/` hasta que dejen de hacer falta. Se deben utilizar como referencia o guía, pero nunca como ejemplo o norma.
+
+## Fuentes relevantes
+
+- [Web oficial de los Cuerpos Generales del Estado](https://www.inap.es/es/seleccion/procesos-selectivos-de-cuerposescalas-generales)
 

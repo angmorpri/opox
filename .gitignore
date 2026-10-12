@@ -1,6 +1,4 @@
 # Proyecto OPO
-data/raw/*/rules
-data/raw/*/tests
 old/
 
 # Python-generated files

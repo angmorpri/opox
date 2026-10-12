@@ -4,6 +4,12 @@ Relación desestructurada de casos abiertos, ideas y otras notas.
 
 Se ordenan de más recientes a más antiguas.
 
+## Escalabilidad de `data/raw/`
+
+> ABIERTO
+
+Ahora mismo mantengo el contenido de `/data/raw/` en el repositorio, pero si empezara a crecer mucho por nuevos exámenes u otras oposiciones, probablemente habría que buscar un mecanismo alternativo.
+
 ## Nombre del proyecto
 
 > ABIERTO
@@ -25,37 +31,25 @@ Actualmente, tengo ese contexto extraído en `/old/contexts/...`. Si se decide q
 Manualmente se genera una tabla, en formato hoja de cálculo, con cuatro columnas:
 
 * `test_id`: nombre del archivo del examen al que pertenece este contexto.
-* `page`: página en la que se haya la figura del contexto. Numeración según el PDF, no la que aparezca en las páginas del examen.
+* `page`: página en la que se halla la figura del contexto. Numeración según el PDF, no la que aparezca en las páginas del examen.
 * `q_first`: primera pregunta que referencia a la figura del contexto.
 * `q_last`: última pregunta que referencia a la figura del contexto.
 
-Esta hoja de cálculo se almacena en `raw/`. El programa que extraiga las preguntas simplemente consulta esta tabla, valida que haya una figura en la página en cuestión, extrae el contexto a `processed/contexts/`, y lo asigna en el parámetro adecuado según el modelo de datos. Podría también simplificar previamente la hoja de cálculo a un CSV. Si halla cualquier error en el camino, lo reporta en tiempo real, sin tener que cortar la ejecución. El programa puede ser idempotente, tal que, si se vuelve a ejecutar, sólo actualiza.
+Esta hoja de cálculo se almacena en `data/raw/`, ya que es fuente de información obligatoria que se debe crear antes de ejecutar por primera vez el programa.
 
-Este mecanismo simplifica bastante el proceso respecto al usado en la iteración anterior, que requería ejecutar un script previo, modificar a mano nombres de archivo, y luego ejecutar el extractor de preguntas. Además, resuelve el conflicto de dónde ubicar `contexts/`, que no deberían estar en `raw/` porque son datos procesados, pero tampoco en `interim/` ni `processed/` porque requieren atención manual y, por tanto, no son regenerables reejecutando el programa.
+Durante la extracción de preguntas, se consulta esta tabla, se valida que haya una figura en la página en cuestión, se extrae el contexto a `processed/contexts/`, y se le asigna en el parámetro adecuado según el modelo de datos. Si halla cualquier error en el camino, lo reporta en tiempo real, sin tener que cortar la ejecución. El programa puede ser idempotente, tal que, si se vuelve a ejecutar, sólo actualiza.
 
-## Registro de los datos crudos en repositorio
-
-> ABIERTO
-
-Los datos crudos descargados de cada oposición (exámenes, solucionarios, términos de convocatoria...) son pesados y poco cambiantes, creo que no tiene sentido almacenarlos en un repo. Simultáneamente, sí que sería práctico tenerlos disponibles, si se migra el proyecto. En consecuencia, hay que encontrar un mecanismo alternativo a Git para "tenerlos en cueneta". El resto de datos en `/data/raw/` y aquéllos en `/data/interim/` y `/data/processed/`, se registran.
+Este mecanismo simplifica bastante el proceso respecto al usado en la iteración anterior, que requería ejecutar un script previo, modificar a mano nombres de archivo, y luego ejecutar el extractor de preguntas. Sería necesario un script temporal para transformar de la versión antigua a la nueva.
 
 ## Pipeline de resolución agéntica
 
 > ABIERTO
 
-Formado por cuatro agentes independientes:
+La idea es que existan, al menos, tres agentes independientes:
 
-1. **Resolvedor.** Resuelve la pregunta buscando las respuestas en fuentes públicas de internet. Puede disponer de un catálogo de partida. Debe indicar con la mayor granularidad posible la referencia de la respuesta dada (fuente, sección, párrafo, frase...). No tiene acceso al solucionario.
-2. **Validador de referencias.** Responde a cada pregunta usando exclusivamente las referencias del agente anterior. Si no halla información suficiente, deja la respuesta en blanco. No tiene acceso al solucionario y tiene acceso limitado a internet.
-3. **Evaluador.** Evalúa las respuestas contra el solucionario disponible y obtiene una calificación. Desconoce las fuentes usadas para responder.
-4. **Curador.** Juzga si las respuestas dadas son adecuadas, matiza y agrupa referencias, y acumula el repositorio definitivo de fuentes.
-
-Matices al flujo:
-
-- A la salida del agente 2 hay un filtro: si no se responde un porcentaje X de preguntas, no se pasa al agente 3. Se vuelve al agente 1, pidiéndole que busque nuevas referencias o que las afine.
-- A la salida del agente 3 hay un filtro: si no se obtiene una calificación adecuada, se vuelve al agente 1 para que vuelva a responder.
-
-Este flujo solo aplica a las preguntas que deban responderse con información de internet. Las que se responden mediante lógica y conocimientos generales se excluyen.
+1. **Resolutor**: Recibe cada pregunta, busca la respuesta en fuentes públicas de internet, y responde refereciando la respuesta con la mayor granularidad posible (fuente, sección, párrafo, frase...). Podría disponer de un catálogo de fuentes de partida. No tiene acceso a las respuestas oficiales.
+2. **Validador de referencias**: Recibe cada pregunta y la fuente y referencia dada por el agente anterior. Con esa información limitada, debe responder. Si considera que la información es insuficiente, la deja en blanco. No tiene acceso a las respuestas oficiales y debería tener acceso limitado o ningún acceso a internet. Si no se responde un número suficiente de preguntas, se vuelve al agente 1, pidiéndole matizar o buscar nuevas referencias.
+3. **Evaluador**: Evalúa las respuestas dadas contra las oficiales, obteniendo una calificación. Desconoce las fuentes usadas.
 
 ## Modelo de datos básico
 
@@ -68,6 +62,7 @@ Propongo los siguientes cuatro modelos de datos, basándome en el análisis de l
 Extraídas directamente de los documentos, con poca o ninguna limpieza de datos.
 
 ```
+id: str						# nombre del archivo
 año: int
 tipo_convocatoria: str
 formato {
@@ -76,7 +71,7 @@ formato {
 	penalizaciones: float
 	partes [
 		{
-			id_parte
+			id_parte: int
 			n_preguntas_total: int
 			n_reservas: int
 			secciones [
@@ -108,7 +103,7 @@ bases: str		# apunta al ID de las bases asociadas
 año: int
 tipo_convocatoria: str
 llamamiento: int
-modelo: int
+modelo: str
 parte: int
 es_reserva: int
 numero_de_la_pregunta_en_su_parte: int
@@ -146,7 +141,7 @@ hay_contexto?: bool
 contexto: str?
 texto: str
 opciones: list[str] 	# ordenadas tal que la primera siempre es la opción correcta
-categoría: int			# --> id de categoría.
+categoría: int			# -> id de categoría.
 ```
 
 *Requisitos/Retos conocidos*
@@ -167,12 +162,12 @@ Las categorías, al menos en C2 AGE, parecen bastante estables entre convocatori
 Los temas dependen de cada convocatoria y están contenidos en las categorías. Tematizar implica escoger una convocatoria concreta y clasificar las preguntas contra ella, con un agente clasificador.
 
 ```
-rules: id
-questions: [
+bases: str 		# id de convocatoria
+preguntas: [
 	{
-		question_id: int
-		category: int
-		topic: str
+		id_pregunta: int
+		categoría: int
+		tema: str
 	}
 ]
 ```

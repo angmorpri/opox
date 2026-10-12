@@ -23,4 +23,4 @@
 
 ### Caso excepcional - revisión general
 
-- Si explícitamente menciono que quiero realizar una revisión o repaso general, consulta todos los documentos de seguimiento disponibles y la estructura de archivos. Expón el estado actual del proyecto y sus casos abiertos. Halla incongruencias y otros aspectos mejorables, e indícamelos claramente.
+Si explícitamente menciono que quiero realizar una **revisión** o **repaso general**, consulta todos los documentos de seguimiento disponibles y la estructura de archivos. Expón el estado actual del proyecto y sus casos abiertos. Halla incongruencias relevantes y otros aspectos que necesiten atención, pero no entres en trivialidades.

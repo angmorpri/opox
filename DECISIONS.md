@@ -25,10 +25,10 @@ Se adoptan las siguientes nomenclaturas para cada tipo de archivo:
 
 Donde:
 
-- `YYYY` es el año de la convocatoria.
+- `YYYY` es la fecha oficial de publicación de la convocatoria.
 - `T` es el tipo de convocatoria, que puede ser "L" (acceso libre), "I" (promoción interna) o "E" (estabilización de empleo temporal).
 - `N` es el llamamiento. Si no hay diferentes llamamientos, es `0`.
-- `M` es el modelo. Generalmente, variará entre "A", "B" y "X".
+- `M` es el modelo. Generalmente, variará entre "A" y "B". "X" se reserva para los llamamientos extraordinarios.
 - `S` distingue entre "T" para los exámenes y "R" para los solucionarios oficiales.
 
 ## [D003] Core del código: `opox`
@@ -40,3 +40,15 @@ El código utilizado para dar vida al proyecto será un proyecto Python llamado 
 `opox` deberá tener una interfaz por línea de comandos para ejecutar cada una de las funcionalidades que se vayan desarrollando.
 
 `README.md` se usará exclusivamente para describir el código y se redactará en inglés.
+
+## [D004] Preguntas de carácter psicotécnico
+
+> ACTIVO
+
+Dado que estas preguntas se responden mediante lógica o razonamiento, quedan fuera del pipeline de resolución agéntica. Se parsearán y categorizarán como las demás para futuros usos.
+
+## [D005] Convocatoria de 2018
+
+> ACTIVO
+
+Dado que los exámenes de la convocatoria de 2018 requieren OCR, quedan fuera de la fase experimental.
