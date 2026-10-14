@@ -5,6 +5,25 @@ Relación desestructurada de casos abiertos, ideas y otras notas.
 Se ordenan de más recientes a más antiguas.
 
 
+## Validez temporal de preguntas y fuentes
+
+> ABIERTO
+
+Cada pregunta se respondió conforme a la normativa (y versiones de software) vigentes en
+la fecha del examen. Si la fuente ha cambiado desde entonces, un agente que use el corpus
+actual podría fallar con razón, o acertar apoyándose en una fuente que entonces no
+existía. Esto afecta a:
+
+- **La hipótesis**: "sin fallos" debe entenderse respecto a la fuente vigente en la fecha
+  del examen, respecto a la actual, o distinguir ambos casos.
+- **El corpus**: puede requerir versionado temporal de las fuentes (p. ej., textos
+  consolidados del BOE a una fecha dada).
+- **La batería de preguntas**: preguntas que eran correctas pueden haber quedado
+  obsoletas; habría que detectarlas y marcarlas en lugar de contarlas como fallos.
+- **El criterio de éxito**: falta definir el umbral del *Filtro 2* y cómo tratar las
+  preguntas impugnadas o con errores en el solucionario definitivo.
+
+
 ## Escalabilidad de `data/raw/`
 
 > ABIERTO
@@ -70,30 +89,7 @@ oficial. Representaría el tercer nivel de clasificación.
 
 ## Preguntas con contexto
 
-> ABIERTO
-
-Algunas preguntas están asociadas a un contexto en forma de imagen, diagrama o tabla.
-En la iteración previa se vio complicado extraerlos automáticamente y luego detectar qué
-preguntas requerían su uso, así que se decidió resolverlo manualmente.
-
-En la iteración previa, el proceso consistía en un script que, examen por examen,
-recortaba cada figura o tabla detectada y la almacenaba en una carpeta `contexts/` con el código
-del examen y el nombre de la página en la que se halló (según la numeración del PDF,
-no la del examen). A continuación, manualmente se revisaba que se hubiera recogido todo
-el contexto y se completaba lo que faltase. A su vez, se modificaba el nombre del
-archivo para incluir el rango de preguntas que hacían referencia a ese contexto (usando
-para las preguntas la numeración en el examen). El script que finalmente extraía las
-preguntas de los exámenes consultaba en la carpeta y asignaba el contexto
-según se indicase. Los resultados de este mecanismo se hallan en `old/contexts/`.
-
-Este mecanismo no es el más adecuado. Primero, indicar las preguntas que hacen
-referencia al contexto mediante el propio nombre del archivo es chapucero. La solución
-más elegante sería hacerlo mediante una hoja de cálculo en la que indicar, al menos,
-el código del examen, la página donde se halla el contexto, y los índices de la primera
-y última pregunta (ambas incluidas) que lo requieren. Segundo, no queda del todo claro
-dónde debería vivir la carpeta `contexts/`, ya que mezcla acción automática (script que
-detecta y recorta figuras y tablas) y acción manual (revisión y añadido de contextos
-no detectados).
+> CERRADO → [D005]
 
 
 ## Modelo de datos para C2_AGE
@@ -121,7 +117,7 @@ id_convocatoria: str
 fuente: path
 año: int
 tipo_convocatoria: str		# "L", "I" o "E"
-formato {
+contenido {
 	n_plazas: int
 	info_versiones: str		# texto libre en el que se indique qué versiones de software se preguntan
 	penalización: float
@@ -140,7 +136,7 @@ formato {
 	]
 	programa [
 		{
-			id_materia: int
+			id_materia: int		# futuras categorías
 			nombre_materia: str
 			temario: list[str]
 		}
@@ -151,8 +147,8 @@ formato {
 ### Preguntas por examen
 
 ```
-id_pregunta: int
-fuente: str
+id_pregunta: str
+fuente: path
 año: int
 tipo_convocatoria: str		# "L", "I" o "E"
 modelo: str 				# "A", "B" o "X"
@@ -160,8 +156,7 @@ id_convocatoria: str 		# -> Bases de convocatoria
 parte: int
 es_reserva: bool
 num_en_examen: int
-tiene_contexto?: bool
-ruta_contexto: str?
+ruta_contexto: path?
 texto: str
 opciones: list[str]
 respuesta: int				# Si no tiene (pregunta anulada), vale -1
@@ -170,6 +165,7 @@ respuesta: int				# Si no tiene (pregunta anulada), vale -1
 ### Categorías
 
 Las **categorías** son transversales a todas las convocatorias. Se mantienen estables.
+Se extraen a partir de las materias, con cambios mínimos.
 Los **temas** pueden ser similares, pero cada convocatoria puede tener sus matices.
 
 ```
@@ -195,8 +191,8 @@ Dos preguntas iguales en texto, respuesta y opciones dejan de serlo si sus conte
 
 ```
 id_pregunta: int
-ids_originales: list[int]
-ruta_contexto: str?
+ids_originales: list[str]
+ruta_contexto: path?
 texto: str
 opciones: list[str]
 ```
