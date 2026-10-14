@@ -1,6 +1,6 @@
 # Estado actual
 
-## 12/10/2026
+## 14/10/2026
 
 - Documentos para guiar a los agentes preparados.
 - Proyecto Python iniciado como `opox` mediante `uv`.

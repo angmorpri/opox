@@ -4,179 +4,211 @@ Relación desestructurada de casos abiertos, ideas y otras notas.
 
 Se ordenan de más recientes a más antiguas.
 
+
 ## Escalabilidad de `data/raw/`
 
 > ABIERTO
 
-Ahora mismo mantengo el contenido de `/data/raw/` en el repositorio, pero si empezara a crecer mucho por nuevos exámenes u otras oposiciones, probablemente habría que buscar un mecanismo alternativo.
+Ahora mismo mantengo el contenido de `/data/raw/` en el control de cambios, pero si
+empezara a crecer mucho por nuevos exámenes u otras oposiciones, probablemente habría
+que buscar un mecanismo alternativo, sobre todo para que GitHub no se queje.
 
-## Nombre del proyecto
 
-> ABIERTO
-
-"Proyecto OPO" es sólo el nombre interno y `opox`, también. En algún momento tendré que decidir un nombre más comercial.
-
-## Contextos
+## Propuesta de pipeline agéntico para resolución de preguntas
 
 > ABIERTO
 
-Algunas preguntas de examen requieren de un contexto en forma de imágenes, diagramas o tablas. Identificarlas, extraerlas y almacenarlas es relativamente fácil, porque todos los archivos que vamos a usar (al menos, por ahora) son PDFs parseables. Sin embargo, conocer qué pregunta referencia a qué contexto puede ser más difícil de detectar.
+Asumiendo que ya disponemos de la batería de preguntas y de una primera versión del
+corpus:
 
-La solución a la que llegué en la iteración previa fue la siguiente: un script detecta y almacena los contextos en `/contexts/<id_exam>/`, indicando como nombre de archivo la página del PDF en el que aparece. Manualmente, yo reviso ese contexto, y, en el mismo nombre de archivo, indico la pregunta o rango de preguntas a las que aplica. El programa de extracción de preguntas puede saber, así, a qué preguntas asignar qué contexto.
+1. Separar *preguntas* y *respuestas*.
+2. **Agente 1**: Responde a las preguntas sin conocer las respuestas. Trata de usar las fuentes del corpus, pero si no es suficiente, puede buscar en internet. Debe justificar cada respuesta con la referencia más granular posible.
+3. **Agente 2**: Responde las mismas preguntas sin conocer las respuestas y **sólo** usando las referencias dadas por el agente anterior. Si con dicha referencia es incapaz de responder, la deja en blanco.
+4. *Filtro 1*: Si se dejan demasiadas preguntas en blanco, se vuelve al agente 1 y se le pide matizar o buscar otra referencia.
+5. **Agente 3**: Conoce las respuestas y corrige, generando una calificación. Realmente, no tiene por qué ser un agente.
+6. *Filtro 2*: Evalúa la calificación, aun por definir el umbral. Si no es suficiente, hay que volver al agente 1.
 
-Actualmente, tengo ese contexto extraído en `/old/contexts/...`. Si se decide que el mecanismo es adecuado y suficiente, habrá que moverlo a `/data/`, no sé si a `/interim/` o a `/processed/`. Si se decide que es más conveniente otro, habrá que crear un script previo que convierta de un formato al nuevo, y luego reubicar los archivos.
 
-### Propuesta 1
-
-Manualmente se genera una tabla, en formato hoja de cálculo, con cuatro columnas:
-
-* `test_id`: nombre del archivo del examen al que pertenece este contexto.
-* `page`: página en la que se halla la figura del contexto. Numeración según el PDF, no la que aparezca en las páginas del examen.
-* `q_first`: primera pregunta que referencia a la figura del contexto.
-* `q_last`: última pregunta que referencia a la figura del contexto.
-
-Esta hoja de cálculo se almacena en `data/raw/`, ya que es fuente de información obligatoria que se debe crear antes de ejecutar por primera vez el programa.
-
-Durante la extracción de preguntas, se consulta esta tabla, se valida que haya una figura en la página en cuestión, se extrae el contexto a `processed/contexts/`, y se le asigna en el parámetro adecuado según el modelo de datos. Si halla cualquier error en el camino, lo reporta en tiempo real, sin tener que cortar la ejecución. El programa puede ser idempotente, tal que, si se vuelve a ejecutar, sólo actualiza.
-
-Este mecanismo simplifica bastante el proceso respecto al usado en la iteración anterior, que requería ejecutar un script previo, modificar a mano nombres de archivo, y luego ejecutar el extractor de preguntas. Sería necesario un script temporal para transformar de la versión antigua a la nueva.
-
-## Pipeline de resolución agéntica
+## Extracción de *features* de preguntas
 
 > ABIERTO
 
-La idea es que existan, al menos, tres agentes independientes:
+Bajo este concepto se agruparían todos los procesos de categorización, tematización,
+detección de formatos y cualesquiera otros etiquetados pertinentes sobre las preguntas.
 
-1. **Resolutor**: Recibe cada pregunta, busca la respuesta en fuentes públicas de internet, y responde refereciando la respuesta con la mayor granularidad posible (fuente, sección, párrafo, frase...). Podría disponer de un catálogo de fuentes de partida. No tiene acceso a las respuestas oficiales.
-2. **Validador de referencias**: Recibe cada pregunta y la fuente y referencia dada por el agente anterior. Con esa información limitada, debe responder. Si considera que la información es insuficiente, la deja en blanco. No tiene acceso a las respuestas oficiales y debería tener acceso limitado o ningún acceso a internet. Si no se responde un número suficiente de preguntas, se vuelve al agente 1, pidiéndole matizar o buscar nuevas referencias.
-3. **Evaluador**: Evalúa las respuestas dadas contra las oficiales, obteniendo una calificación. Desconoce las fuentes usadas.
+Actualmente, con la C2_AGE en mente, se identifican las siguientes *features*.
 
-## Modelo de datos básico
+### Categorías
+
+Son **oficiales**, según se exponen en las bases de la convocatoria. Son comunes a lo
+largo de los años. Representan el primer nivel de clasificación.
+
+Dado que no dependen de la convocatoria, se podrían asignar a la batería de preguntas
+nada más ésta estuviera generada.
+
+### Temas
+
+Son **oficiales** según se exponen en las bases de cada convocatoria. Cada una define
+sus propios temas, aunque puedan ser muy parecidos entre años. Representan el segundo
+nivel de clasificación.
+
+Dado que sí dependen de la convocatoria, habría que retematizar la batería de preguntas
+para cada una según fuera necesario, aunque, normalmente, sólo será útil contra la
+convocatoria más reciente. Nótese también que algunos temas pueden dejar de aparecer,
+en cuyo caso, habrá preguntas que queden "descartadas".
+
+### Formato de preguntas
+
+Son **libres**. La idea es que un agente o modelo pudieran detectar formatos comunes
+de preguntas, que será útil en un futuro para generar preguntas sintéticas.
+
+### Etiquetado libre
+
+Son **libres**. Aquí la idea es detectar materias a más bajo nivel que la clasificación
+oficial. Representaría el tercer nivel de clasificación.
+
+
+## Preguntas con contexto
 
 > ABIERTO
 
-Propongo los siguientes cuatro modelos de datos, basándome en el análisis de los documentos oficiales de bases de convocatoria, exámenes y solucionarios.
+Algunas preguntas están asociadas a un contexto en forma de imagen, diagrama o tabla.
+En la iteración previa se vio complicado extraerlos automáticamente y luego detectar qué
+preguntas requerían su uso, así que se decidió resolverlo manualmente.
+
+En la iteración previa, el proceso consistía en un script que, examen por examen,
+recortaba cada figura o tabla detectada y la almacenaba en una carpeta `contexts/` con el código
+del examen y el nombre de la página en la que se halló (según la numeración del PDF,
+no la del examen). A continuación, manualmente se revisaba que se hubiera recogido todo
+el contexto y se completaba lo que faltase. A su vez, se modificaba el nombre del
+archivo para incluir el rango de preguntas que hacían referencia a ese contexto (usando
+para las preguntas la numeración en el examen). El script que finalmente extraía las
+preguntas de los exámenes consultaba en la carpeta y asignaba el contexto
+según se indicase. Los resultados de este mecanismo se hallan en `old/contexts/`.
+
+Este mecanismo no es el más adecuado. Primero, indicar las preguntas que hacen
+referencia al contexto mediante el propio nombre del archivo es chapucero. La solución
+más elegante sería hacerlo mediante una hoja de cálculo en la que indicar, al menos,
+el código del examen, la página donde se halla el contexto, y los índices de la primera
+y última pregunta (ambas incluidas) que lo requieren. Segundo, no queda del todo claro
+dónde debería vivir la carpeta `contexts/`, ya que mezcla acción automática (script que
+detecta y recorta figuras y tablas) y acción manual (revisión y añadido de contextos
+no detectados).
+
+
+## Modelo de datos para C2_AGE
+
+> ABIERTO
+
+Se propone una extracción en dos fases:
+
+*Fase 1*
+
+1. De las **bases de convocatoria** se extrae el formato de examen y el programa (categorías, temas).
+2. De los **exámenes** y **solucionarios** se extraen las preguntas por examen.
+
+*Fase 2*
+
+1. Del programa se extraen las **categorías**, transversales a todas las convocatorias, y dentro de cada una se organizan los **temarios** contenidos en cada una de las convocatorias.
+2. De las preguntas por examen se extrae una **batería completa de preguntas**, deduplicando, agrupando y eliminando preguntas con respuestas inválidas.
+
+Los modelos a bajo nivel propuestos se detallan a continuación.
 
 ### Bases de convocatoria
 
-Extraídas directamente de los documentos, con poca o ninguna limpieza de datos.
-
 ```
-id: str						# nombre del archivo
+id_convocatoria: str
+fuente: path
 año: int
-tipo_convocatoria: str
+tipo_convocatoria: str		# "L", "I" o "E"
 formato {
 	n_plazas: int
-	info_versiones: str     # en referencia a las versiones de Windows o paquete Office usado
-	penalizaciones: float
+	info_versiones: str		# texto libre en el que se indique qué versiones de software se preguntan
+	penalización: float
 	partes [
 		{
 			id_parte: int
-			n_preguntas_total: int
-			n_reservas: int
+			n_total_preguntas: int
+			n_extra_preguntas: int
 			secciones [
 				{
 					n_preguntas: int
-					id_materia: str
+					id_materia: int
 				}
 			]
 		}
 	]
 	programa [
 		{
-			id_materia
-			materia: str
+			id_materia: int
+			nombre_materia: str
 			temario: list[str]
 		}
 	]
 }
 ```
 
-### Preguntas de examen (iteración 1)
-
-Se extraen directamente de los documentos de examen y los solucionarios, sin limpieza alguna:
+### Preguntas por examen
 
 ```
-id_global
-fuente: str		# ruta al archivo
-bases: str		# apunta al ID de las bases asociadas
+id_pregunta: int
+fuente: str
 año: int
-tipo_convocatoria: str
-llamamiento: int
-modelo: str
+tipo_convocatoria: str		# "L", "I" o "E"
+modelo: str 				# "A", "B" o "X"
+id_convocatoria: str 		# -> Bases de convocatoria
 parte: int
-es_reserva: int
-numero_de_la_pregunta_en_su_parte: int
-hay_contexto: bool  # imágenes y diagramas asociados a una o varias preguntas
-contexto: str?      # ruta al contexto
+es_reserva: bool
+num_en_examen: int
+tiene_contexto?: bool
+ruta_contexto: str?
 texto: str
 opciones: list[str]
-respuesta: int   # si fue anulada, -1
+respuesta: int				# Si no tiene (pregunta anulada), vale -1
 ```
 
 ### Categorías
 
-Se extraen de las bases. Se deben realizar algunas divisiones de categorías en exámenes donde están fusionadas.
+Las **categorías** son transversales a todas las convocatorias. Se mantienen estables.
+Los **temas** pueden ser similares, pero cada convocatoria puede tener sus matices.
 
 ```
-id_categoría
+id_categoría: int
 nombre: str
-convocatorias [
+convocatorias: [
 	{
-		año: int
-		tipo_convocatoria: str
+		id_convocatoria: str	# -> Bases de convocatoria
 		temario: list[str]
 	}
 ]
 ```
 
-### Preguntas de examen (iteración 2)
+### Batería de preguntas
 
-Se extraen de la primera iteración de preguntas. Se eliminan duplicadas y preguntas con respuesta anulada.
+Se eliminan duplicados y preguntas con respuesta anulada.
+
+En caso de preguntas iguales con misma respuesta pero diferentes opciones, se agrupan
+las opciones. Además, en cualquiera de los casos, se ordenan las opciones tal que la
+primera siempre sea la correcta.
+
+Dos preguntas iguales en texto, respuesta y opciones dejan de serlo si sus contextos son diferentes.
 
 ```
-id
-fuentes: list[int]		# lista de IDs de la iteración 1
-hay_contexto?: bool
-contexto: str?
+id_pregunta: int
+ids_originales: list[int]
+ruta_contexto: str?
 texto: str
-opciones: list[str] 	# ordenadas tal que la primera siempre es la opción correcta
-categoría: int			# -> id de categoría.
+opciones: list[str]
 ```
 
-*Requisitos/Retos conocidos*
-- Diferenciar contextos. Probablemente también mecanismo híbrido.
-- Dos o más preguntas iguales en formulación y respuesta se consideran la misma incluso si sus otras opciones son distintas. `opciones` puede tener más de 4 elementos.
-- `categoría` se queda a 0 en una primera pasada, luego habrá que diseñar un mecanismo programático o agéntico para asignar categorías adecuadamente.
+*Retos conocidos*
+- Detectar si dos preguntas tienen contextos iguales puede requerir intervención manual.
 
-## Etiquetado
+
+## Nombre del proyecto
 
 > ABIERTO
 
-### Categorización
+"OPO" es un nombre temporal. Eventualmente habrá que buscar uno más comercial.
 
-Las categorías, al menos en C2 AGE, parecen bastante estables entre convocatorias. Se podrían asignar a cada pregunta de forma automática según lo que describan las bases, usando un agente clasificador sencillo para los casos ambiguos.
-
-### Tematización
-
-Los temas dependen de cada convocatoria y están contenidos en las categorías. Tematizar implica escoger una convocatoria concreta y clasificar las preguntas contra ella, con un agente clasificador.
-
-```
-bases: str 		# id de convocatoria
-preguntas: [
-	{
-		id_pregunta: int
-		categoría: int
-		tema: str
-	}
-]
-```
-
-### Mecanismo de clasificación asistida
-
-1. El agente clasifica según el contexto y las posibilidades, y otorga un nivel de confianza (por definir).
-2. Un programa sencillo permite repasar manualmente las decisiones más controvertidas y cambiarlas.
-
-### Otras etiquetas
-
-Quedan por definir etiquetas de más bajo nivel. Las categorías y temas son relativamente objetivos, porque salen directamente de las bases, pero conviene conocer otras formas de granularizar las preguntas. Extraer el "formato de pregunta" también podría ser muy práctico, sobre todo para generar preguntas sintéticas.
+`opox` podrá seguir llamándose así, ya que es algo interno.

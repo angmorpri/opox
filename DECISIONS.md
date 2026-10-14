@@ -1,24 +1,41 @@
 # Decisiones
 
-## [D001] Estructura de datos
+## [D001] Iteración previa
 
 > ACTIVO
 
-La carpeta raíz de datos es `data/`, dividida en tres, según la convención habitual en ciencia de datos:
+Este proyecto ya se llevó a cabo en una iteración previa, sin llegar a resolver la hipótesis.
+Todo el código y contenido que no se ha reutilizado se halla en una carpeta temporal `old/`.
 
-- `raw/`, para documentos oficiales sin modificar y otros archivos que se utilicen como fuente de información.
+Este contenido debe usarse sólo de forma orientativa, nunca como ejemplo o guía. Las
+excepciones a esta regla se mencionarán explícitamente.
+
+Esta carpeta se deja fuera del registro de cambios.
+
+
+## [D002] Estructura de datos
+
+> ACTIVO
+
+La carpeta raíz de datos es `data/`, dividida en tres, según la convención habitual en
+ciencia de datos:
+
+- `raw/`, para fuentes primarias de información: documentos oficiales, guías manuales...
 - `interim/`, para archivos y resultados intermedios.
 - `processed/`, para resultados definitivos.
 
-Todos los archivos en `interim` y `processed` deben poder ser regenerables a partir de `raw` mediante los scripts y programas del proyecto.
+Todo el contenido de `interim` y `processed` debe poder ser regenerable a partir del de
+`raw` mediante los scripts y programas del proyecto.
 
-Dentro de cada una, las diferentes oposiciones se organizan por sus identificadores (p. ej. `C2_AGE`).
+Dentro de cada carpeta, las diferentes oposiciones se organizan por sus identificadores
+(por ejemplo, "C2_AGE").
 
-## [D002] Nomenclatura para exámenes y bases de convocatorias
+
+## [D003] Nomenclatura para documentos oficiales de oposiciones
 
 > ACTIVO
 
-Se adoptan las siguientes nomenclaturas para cada tipo de archivo:
+Se adoptan las siguientes nomenclaturas para cada tipo de documento:
 
 - ***Bases de convocatoria***: `YYYYT`.
 - ***Exámenes y solucionarios***: `YYYYTNMS`.
@@ -27,28 +44,19 @@ Donde:
 
 - `YYYY` es la fecha oficial de publicación de la convocatoria.
 - `T` es el tipo de convocatoria, que puede ser "L" (acceso libre), "I" (promoción interna) o "E" (estabilización de empleo temporal).
-- `N` es el llamamiento. Si no hay diferentes llamamientos, es `0`.
-- `M` es el modelo. Generalmente, variará entre "A" y "B". "X" se reserva para los llamamientos extraordinarios.
-- `S` distingue entre "T" para los exámenes y "R" para los solucionarios oficiales.
+- `N` es el llamamiento. Si no hay diferentes llamamientos, es `0`. **Este campo está obsoleto**.
+- `M` es el modelo. Los exámenes ordinarios serán "A", "B"... Los llamamientos extraordinarios serán "X", "Y"...
+- `S` distingue entre "T" para los exámenes y "R" para los solucionarios definitivos.
 
-## [D003] Core del código: `opox`
+
+## [D004] Estructura de código
 
 > ACTIVO
 
-El código utilizado para dar vida al proyecto será un proyecto Python llamado `opox`, gestionado mediante `uv` y `pyproject.toml`. Se almacena en `src/opox/`.
+El código utilizado se englobará en un proyecto Python llamado `opox`, gestionado
+mediante `uv` y `pyproject.toml`. Su carpeta raíz estará en `src/opox/`.
 
-`opox` deberá tener una interfaz por línea de comandos para ejecutar cada una de las funcionalidades que se vayan desarrollando.
+`opox` deberá disponer de una interfaz por línea de comando desde la que ejecutar cada
+una de las funcionalidades principales que se desarrollen.
 
 `README.md` se usará exclusivamente para describir el código y se redactará en inglés.
-
-## [D004] Preguntas de carácter psicotécnico
-
-> ACTIVO
-
-Dado que estas preguntas se responden mediante lógica o razonamiento, quedan fuera del pipeline de resolución agéntica. Se parsearán y categorizarán como las demás para futuros usos.
-
-## [D005] Convocatoria de 2018
-
-> ACTIVO
-
-Dado que los exámenes de la convocatoria de 2018 requieren OCR, quedan fuera de la fase experimental.
