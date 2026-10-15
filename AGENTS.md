@@ -13,6 +13,7 @@
 - `STATUS.md` describe el estado actual y el siguiente paso.
 - `DECISIONS.md` contiene decisiones ya adoptadas.
 - `NOTES.md` contiene cuestiones abiertas, ideas y diseños no comprometidos.
+- `RUNBOOK.md` describe, en orden, los pasos para reconstruir los datos desde cero.
 
 ## Forma de trabajar
 

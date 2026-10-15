@@ -2,7 +2,9 @@
 authors = [
   {name = "angmorpri", email = "angelmorenoprieto@gmail.com"},
 ]
-dependencies = []
+dependencies = [
+    "pydantic>=2.14.1",
+]
 description = "Core of Project OPO - Artificial Intelligence for Spain's Civil Servant Exams"
 name = "opox"
 readme = "README.md"
@@ -10,7 +12,7 @@ requires-python = ">=3.14"
 version = "0.1.0"
 
 [project.scripts]
-opox = "opox:main"
+opox = "opox.cli:main"
 
 [build-system]
 build-backend = "uv_build"

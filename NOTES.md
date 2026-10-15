@@ -5,6 +5,17 @@ Relación desestructurada de casos abiertos, ideas y otras notas.
 Se ordenan de más recientes a más antiguas.
 
 
+## Procedencia de los datos
+
+> ABIERTO
+
+Desde [D002], `interim/` y `processed/` mezclan resultados de código, de agentes y
+manuales, y dejan de ser regenerables. Puede ser necesario registrar quién produjo cada
+dato y si ha sido revisado, sobre todo en los que sirven de referencia para evaluar la
+hipótesis (p. ej., las respuestas del solucionario). Se valorará en la primera situación
+que lo requiera.
+
+
 ## Validez temporal de preguntas y fuentes
 
 > ABIERTO
@@ -89,18 +100,19 @@ oficial. Representaría el tercer nivel de clasificación.
 
 ## Preguntas con contexto
 
-> CERRADO → [D005]
+> CERRADO -> [D005]
 
 
 ## Modelo de datos para C2_AGE
 
-> ABIERTO
+> EN CURSO
+> "Bases de convocatoria" -> [D008]
 
 Se propone una extracción en dos fases:
 
 *Fase 1*
 
-1. De las **bases de convocatoria** se extrae el formato de examen y el programa (categorías, temas).
+1. De las **bases de convocatoria** se extrae el formato de examen y el programa (bloques, temas).
 2. De los **exámenes** y **solucionarios** se extraen las preguntas por examen.
 
 *Fase 2*
@@ -112,37 +124,8 @@ Los modelos a bajo nivel propuestos se detallan a continuación.
 
 ### Bases de convocatoria
 
-```
-id_convocatoria: str
-fuente: path
-año: int
-tipo_convocatoria: str		# "L", "I" o "E"
-contenido {
-	n_plazas: int
-	info_versiones: str		# texto libre en el que se indique qué versiones de software se preguntan
-	penalización: float
-	partes [
-		{
-			id_parte: int
-			n_total_preguntas: int
-			n_extra_preguntas: int
-			secciones [
-				{
-					n_preguntas: int
-					id_materia: int
-				}
-			]
-		}
-	]
-	programa [
-		{
-			id_materia: int		# futuras categorías
-			nombre_materia: str
-			temario: list[str]
-		}
-	]
-}
-```
+> CERRADO -> [D008]
+
 
 ### Preguntas por examen
 
@@ -164,8 +147,7 @@ respuesta: int				# Si no tiene (pregunta anulada), vale -1
 
 ### Categorías
 
-Las **categorías** son transversales a todas las convocatorias. Se mantienen estables.
-Se extraen a partir de las materias, con cambios mínimos.
+Las **categorías** son transversales a todas las convocatorias. Se mantienen estables. Se extraen a partir de los bloques y los temas, con cambios mínimos.
 Los **temas** pueden ser similares, pero cada convocatoria puede tener sus matices.
 
 ```
@@ -178,6 +160,10 @@ convocatorias: [
 	}
 ]
 ```
+
+*Retos conocidos*
+- Algunas convocatorias fusionan "ofimática" y "actividad administrativa". Se pueden dividir teniendo en cuenta los temas.
+- Algunas convocatorias no denominan explícitamente su bloque. Se puede inferir de aquéllas en las que sí.
 
 ### Batería de preguntas
 

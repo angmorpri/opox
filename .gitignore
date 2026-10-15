@@ -1,6 +1,9 @@
 # Proyecto OPO
 old/
 
+# Cachés
+.ruff_cache/
+
 # Python-generated files
 __pycache__/
 *.py[oc]
