@@ -5,6 +5,15 @@ Relación desestructurada de casos abiertos, ideas y otras notas.
 Se ordenan de más recientes a más antiguas.
 
 
+## Solucionarios provisionales en 2025
+
+> ABIERTO
+> ⚠️ IMPORTANTE
+
+Los solucionarios que están siendo usados para las convocatorias de 2025 son provisionales, hasta que se publiquen los definitivos.
+Pendiente: comprobar si ya se han publicado los definitivos y sustituirlos en `raw/`.
+
+
 ## Procedencia de los datos
 
 > ABIERTO
@@ -107,6 +116,7 @@ oficial. Representaría el tercer nivel de clasificación.
 
 > EN CURSO
 > "Bases de convocatoria" -> [D008]
+> "Preguntas por examen" -> [D009]
 
 Se propone una extracción en dos fases:
 
@@ -129,21 +139,7 @@ Los modelos a bajo nivel propuestos se detallan a continuación.
 
 ### Preguntas por examen
 
-```
-id_pregunta: str
-fuente: path
-año: int
-tipo_convocatoria: str		# "L", "I" o "E"
-modelo: str 				# "A", "B" o "X"
-id_convocatoria: str 		# -> Bases de convocatoria
-parte: int
-es_reserva: bool
-num_en_examen: int
-ruta_contexto: path?
-texto: str
-opciones: list[str]
-respuesta: int				# Si no tiene (pregunta anulada), vale -1
-```
+> CERRADO -> [D009]
 
 ### Categorías
 

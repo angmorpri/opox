@@ -73,18 +73,37 @@ una de las funcionalidades principales que se desarrollen.
 
 > ACTIVO
 
-Algunas preguntas dependen de un contexto (imagen, diagrama o tabla). Su detección y
-asignación combina un paso automático y una revisión manual, ambos en
-`interim/<oposición>/contexts/`:
+Algunas preguntas dependen de un contexto (imagen, diagrama o tabla). Los contextos son
+datos finales, pues se entregarán íntegros a los agentes de resolución.
 
-1. Una función del programa detecta y recorta los contextos de cada examen y genera un
-   esqueleto de hoja de cálculo con todos los campos completos salvo las preguntas
-   asociadas. Respeta [D006]: no sobrescribe recortes ni hojas existentes.
-2. Manualmente, se completa la hoja indicando, al menos, el código del examen, la página
-   del contexto (numeración del PDF) y las preguntas primera y última que lo requieren
-   (ambas incluidas, numeración del examen). A la vez, se validan los recortes, se
-   corrigen los erróneos y se añaden los que falten.
-3. Las funciones posteriores toman esa hoja y esos recortes como única fuente de verdad.
+- **Recortes**: `processed/<oposición>/contexts/<exam_id>_p<página>.png`, donde
+  `exam_id` es el código del examen sin el sufijo `T`/`R` ([D003]) y la página sigue la
+  numeración del PDF.
+- **Hoja de control**: `interim/<oposición>/contexts.csv`, con columnas
+  `exam_id, page, first, last`: página del contexto y preguntas primera y última que lo
+  requieren (ambas incluidas).
+
+Se asume que cada página contiene, como mucho, un contexto, y que éste aparece antes que
+sus preguntas. Así, las preguntas de un contexto son las primeras con números `first` a
+`last` que aparecen a partir de su página, lo que resuelve la ambigüedad de la
+numeración, que se reinicia en cada parte y en cada bloque de reserva. Ambas premisas
+se cumplen en todos los exámenes de C2_AGE y deben revisarse en nuevas oposiciones.
+
+El flujo es el siguiente:
+
+1. `opox extract contexts` detecta los contextos de cada examen (imágenes incrustadas y
+   enunciados compartidos), guarda los recortes y genera la hoja de control. Respeta
+   [D006]: no sobrescribe recortes ni hojas existentes; si ya existen, informa de los
+   candidatos no cubiertos.
+2. Manualmente, se revisa la hoja y los recortes: se corrigen los erróneos, se añaden los
+   que falten y se eliminan los falsos positivos.
+3. `opox check contexts` valida la hoja frente a los recortes y las preguntas extraídas.
+4. `opox add contexts` asigna a cada pregunta la ruta de su recorte.
+5. `opox check questions` verifica la coherencia de las preguntas con la hoja e informa
+   si la asignación de contextos está pendiente.
+
+La hoja y los recortes son la única fuente de verdad. Si se vuelven a extraer las
+preguntas, basta con repetir `opox add contexts`.
 
 
 ## [D006] Escritura de datos por código
@@ -132,5 +151,27 @@ Sobre los bloques del programa:
 La extracción la realiza un agente directamente a `processed/<oposición>/rules.json`,
 un único archivo con todas las convocatorias, y se valida con
 `opox check rules` frente a un recuento manual de bloques y temas por convocatoria.
+
+
+## [D009] Modelo de datos para preguntas por examen
+
+> ACTIVO
+
+De cada examen y su solucionario se extraen sus preguntas. El modelo se define en
+`src/opox/models/questions.py` ([D007]), organizado por examen
+(`ExamCollection` → `Exam` → `Question`), y se almacena en un único
+`processed/<oposición>/questions.json`.
+
+- Cada examen se identifica por su código sin el sufijo `T`/`R` ([D003]), p. ej.
+  `2025L0A`, y apunta a su convocatoria ([D008]).
+- Las preguntas no repiten datos deducibles del examen o la convocatoria (año, tipo,
+  fuente).
+- Las preguntas anuladas no tienen respuesta (`answer = None`).
+- El contexto de cada pregunta se asigna después con `opox add contexts` ([D005]).
+
+La extracción la realiza el código mediante `opox extract questions`, usando
+`pdfplumber`. Al terminar, muestra la lista de puntos que requieren revisión o
+completarse manualmente. Se valida con `opox check questions`, frente a
+`rules.json` y la hoja de contextos.
 
 
