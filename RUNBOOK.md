@@ -55,4 +55,4 @@ completarla manualmente: el paso termina mostrando la lista de puntos pendientes
 - **Ejecutor**: código, `uv run opox extract contexts`, y revisión manual de la hoja y
   los recortes. Los rangos marcados como estimados (`REVIEW`) sólo cubren la página del
   contexto y pueden quedarse cortos si las preguntas continúan en la siguiente.
-- **Validación**: pendiente (`opox check contexts`).
+- **Validación**: `uv run opox check contexts`.

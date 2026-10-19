@@ -30,7 +30,8 @@ from opox.extract.questions import (
     parse_exam_lines,
     read_exam_lines,
 )
-from opox.models.rules import CallRulesCollection
+from opox.models.questions import make_question_id
+from opox.models.rules import CallRules, CallRulesCollection
 from opox.pdf import Line
 
 MIN_IMAGE_WIDTH = 200.0  # pt; smaller images are logos or decorations
@@ -45,6 +46,11 @@ SHEET_COLUMNS = ["exam_id", "page", "first", "last"]
 log = logging.getLogger(__name__)
 
 
+def crop_name(exam_id: str, page: int) -> str:
+    """File name of a context crop (D005)."""
+    return f"{exam_id}_p{page}.png"
+
+
 @dataclass(frozen=True, slots=True)
 class Context:
     exam_id: str
@@ -56,7 +62,47 @@ class Context:
 
     @property
     def file_name(self) -> str:
-        return f"{self.exam_id}_p{self.page}.png"
+        return crop_name(self.exam_id, self.page)
+
+
+@dataclass(frozen=True, slots=True)
+class QuestionPosition:
+    page: int
+    top: float
+    number: int
+    question_id: str
+
+
+def question_positions(exam_pdf: Path, rules: CallRules) -> list[QuestionPosition]:
+    """Start position of every question of an exam, in reading order."""
+    exam_id = exam_pdf.stem[:-1]
+    sections = expected_sections(rules)
+    lines, _ = read_exam_lines(exam_pdf)
+    drafts, _ = parse_exam_lines(lines, exam_id, sections)
+    positions = [
+        QuestionPosition(
+            d.page, d.top, d.number, make_question_id(exam_id, s.part, s.is_reserve, d.number)
+        )
+        for s, section_drafts in zip(sections, drafts, strict=True)
+        for d in section_drafts
+    ]
+    return sorted(positions, key=lambda p: (p.page, p.top))
+
+
+def locate_context(
+    positions: list[QuestionPosition], page: int, first: int, last: int
+) -> list[str] | None:
+    """Ids of questions `first` to `last`: the first ones found from `page` on (D005).
+
+    Return None if they do not appear in a row.
+    """
+    start = next((i for i, p in enumerate(positions) if p.page >= page and p.number == first), None)
+    if start is None:
+        return None
+    run = positions[start : start + last - first + 1]
+    if [p.number for p in run] != list(range(first, last + 1)):
+        return None
+    return [p.question_id for p in run]
 
 
 def _context_box(page: Page) -> tuple[float, float] | None:
@@ -126,9 +172,14 @@ def detect_contexts(
     return contexts, notes
 
 
-def _read_sheet(path: Path) -> set[tuple[str, int]]:
+def read_sheet(path: Path) -> list[dict[str, str]]:
+    """Rows of a control sheet, with stripped values."""
     with path.open(encoding="utf-8-sig", newline="") as f:
-        return {(r["exam_id"].strip(), int(r["page"])) for r in csv.DictReader(f)}
+        return [{k: (v or "").strip() for k, v in row.items()} for row in csv.DictReader(f)]
+
+
+def _read_sheet(path: Path) -> set[tuple[str, int]]:
+    return {(r["exam_id"], int(r["page"])) for r in read_sheet(path)}
 
 
 def _write_sheet(path: Path, contexts: list[Context]) -> None:

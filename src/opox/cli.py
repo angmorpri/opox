@@ -5,6 +5,7 @@ import logging
 import sys
 from pathlib import Path
 
+from opox.checks.contexts import check_contexts
 from opox.checks.questions import check_questions
 from opox.checks.rules import check_rules
 from opox.extract.contexts import extract_contexts
@@ -45,6 +46,17 @@ def _run_check_questions(args: argparse.Namespace) -> int:
         print(f"{len(errors)} problem(s) found.", file=sys.stderr)
         return 1
     print("Questions are consistent with rules and sources.")
+    return 0
+
+
+def _run_check_contexts(args: argparse.Namespace) -> int:
+    errors = check_contexts(args.data_dir, args.opposition)
+    for error in errors:
+        print(f"ERROR {error}", file=sys.stderr)
+    if errors:
+        print(f"{len(errors)} problem(s) found.", file=sys.stderr)
+        return 1
+    print("Contexts are consistent with crops and questions.")
     return 0
 
 
@@ -98,6 +110,12 @@ def _build_parser() -> argparse.ArgumentParser:
     )
     check_q.add_argument("opposition", nargs="?", default="C2_AGE")
     check_q.set_defaults(func=_run_check_questions)
+
+    check_c = targets.add_parser(
+        "contexts", parents=[common], help="check the context sheet and crops"
+    )
+    check_c.add_argument("opposition", nargs="?", default="C2_AGE")
+    check_c.set_defaults(func=_run_check_contexts)
 
     return parser
 

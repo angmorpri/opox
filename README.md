@@ -43,6 +43,20 @@ consecutive question on the same page, and listed for review (`REVIEW`).
 If the sheet or any crop already exists, nothing is written: it only lists the detected
 contexts missing from the sheet. `--force` overwrites, reporting each file replaced.
 
+### `opox check contexts [OPPOSITION]`
+
+Validates the context sheet `interim/<opposition>/contexts.csv` and its crops in
+`processed/<opposition>/contexts/`. Read-only. It checks that:
+
+- The sheet has the expected columns, valid values (`first <= last`) and no duplicate
+  `exam_id, page` pairs.
+- Every row has its PNG crop, and every file in the crops folder has its row.
+- The page exists in the exam PDF, and questions `first` to `last` appear in a row from
+  that page on (D005), exist in `processed/<opposition>/questions.json`, and belong to a
+  single context.
+
+Exits with code 1 and lists every problem found if any check fails.
+
 ### `opox check questions [OPPOSITION]`
 
 Validates `processed/<opposition>/questions.json`. Read-only. It checks that:
