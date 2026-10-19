@@ -46,3 +46,13 @@ completarla manualmente: el paso termina mostrando la lista de puntos pendientes
 - **Ejecutor**: código, `uv run opox extract questions`. Revisar los puntos `REVIEW`.
 - **Validación**: `uv run opox check questions`. El aviso de contextos pendientes se
   resuelve en los pasos de contextos ([D005]).
+
+### 4. Contextos de preguntas ([D005])
+
+- **Entrada**: `raw/C2_AGE/tests/<exam_id>T.pdf`; `processed/C2_AGE/rules.json`.
+- **Salida**: `processed/C2_AGE/contexts/<exam_id>_p<página>.png` e
+  `interim/C2_AGE/contexts.csv`.
+- **Ejecutor**: código, `uv run opox extract contexts`, y revisión manual de la hoja y
+  los recortes. Los rangos marcados como estimados (`REVIEW`) sólo cubren la página del
+  contexto y pueden quedarse cortos si las preguntas continúan en la siguiente.
+- **Validación**: pendiente (`opox check contexts`).

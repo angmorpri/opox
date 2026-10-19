@@ -12,6 +12,7 @@ headers. Text shared by several questions (e.g. "44 a 49. En la siguiente tabla.
 "Responda las siguientes preguntas...") is skipped and reported as a preamble.
 """
 
+import logging
 import re
 from dataclasses import dataclass, field
 from pathlib import Path, PurePosixPath
@@ -34,6 +35,8 @@ INDENT_TOLERANCE = 2.0  # pt; deeper indentation marks a continuation line
 CONTINUATION_GAP = 13.0  # pt; max vertical step to a continuation line (questions are ~16 apart)
 COLUMN_GAP = 40.0  # pt; min horizontal distance between answer key columns
 
+log = logging.getLogger(__name__)
+
 
 @dataclass(frozen=True, slots=True)
 class Section:
@@ -47,6 +50,7 @@ class _Draft:
     page: int
     number: int
     text: list[str]
+    top: float = 0.0
     options: list[list[str]] = field(default_factory=list)
     option_x0: float = 0.0
     last_page: int = 0
@@ -143,7 +147,12 @@ class _ExamParser:
             self.last_number = int(match[1])
             self.skipping = False
             self.current = _Draft(
-                line.page, self.last_number, [match[3]], last_page=line.page, last_top=line.top
+                line.page,
+                self.last_number,
+                [match[3]],
+                top=line.top,
+                last_page=line.page,
+                last_top=line.top,
             )
             segs = segs[1:]
             if not segs:
@@ -190,19 +199,35 @@ class _ExamParser:
         return self.results
 
 
+def read_exam_lines(path: Path) -> tuple[list[Line], set[int]]:
+    """Return the text lines of an exam PDF without cover pages and footers, and the cover pages."""
+    lines = read_lines(path)
+    cover_pages = {ln.page for ln in lines if COVER_MARKER in ln.text}
+    kept = [
+        ln
+        for ln in lines
+        if ln.page not in cover_pages
+        and not (ln.top > ln.page_height * FOOTER_ZONE and FOOTER_RE.search(ln.text))
+    ]
+    return kept, cover_pages
+
+
+def parse_exam_lines(
+    lines: list[Line], exam_id: str, sections: list[Section]
+) -> tuple[list[list[_Draft]], list[str]]:
+    """Split the lines of an exam into question drafts per section."""
+    parser = _ExamParser(exam_id, sections)
+    for line in lines:
+        parser.feed(line)
+    return parser.finish(), parser.notes
+
+
 def parse_exam(
     path: Path, exam_id: str, sections: list[Section]
 ) -> tuple[list[list[_Draft]], list[str]]:
     """Split an exam PDF into question drafts per section."""
-    lines = read_lines(path)
-    cover_pages = {ln.page for ln in lines if COVER_MARKER in ln.text}
-    parser = _ExamParser(exam_id, sections)
-    for line in lines:
-        is_footer = line.top > line.page_height * FOOTER_ZONE and FOOTER_RE.search(line.text)
-        if line.page in cover_pages or is_footer:
-            continue
-        parser.feed(line)
-    return parser.finish(), parser.notes
+    lines, _ = read_exam_lines(path)
+    return parse_exam_lines(lines, exam_id, sections)
 
 
 @dataclass(frozen=True, slots=True)
@@ -283,7 +308,9 @@ def build_exam(exam_id: str, rules: CallRules, tests_dir: Path) -> tuple[Exam | 
     if not key_pdf.is_file():
         return None, [f"{exam_id}: missing answer key {key_pdf.name}"]
 
+    log.info("  reading %s", exam_pdf.name)
     drafts, notes = parse_exam(exam_pdf, exam_id, sections)
+    log.info("  reading %s", key_pdf.name)
     answers, key_notes = parse_answer_key(key_pdf, sections)
     notes += key_notes
 
@@ -318,6 +345,8 @@ def build_exam(exam_id: str, rules: CallRules, tests_dir: Path) -> tuple[Exam | 
                 )
             )
 
+    expected = sum(s.size for s in sections)
+    log.info("  %d/%d questions, %d note(s)", len(questions), expected, len(notes))
     if not questions:
         return None, notes + [f"{exam_id}: no questions extracted"]
     exam = Exam(
@@ -346,8 +375,11 @@ def extract_questions(
 
     exams: list[Exam] = []
     notes: list[str] = []
-    for exam_pdf in sorted(tests_dir.glob("*T.pdf")):
+    exam_pdfs = sorted(tests_dir.glob("*T.pdf"))
+    log.info("%d exam(s) found in %s", len(exam_pdfs), tests_dir)
+    for i, exam_pdf in enumerate(exam_pdfs, start=1):
         exam_id = exam_pdf.stem[:-1]
+        log.info("[%d/%d] %s", i, len(exam_pdfs), exam_id)
         call_rules = rules_by_id.get(exam_id[:5])
         if call_rules is None:
             notes.append(f"{exam_id}: call {exam_id[:5]} not found in {rules_path}")

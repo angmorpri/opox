@@ -1,0 +1,202 @@
+"""Detect question contexts (images and tables) in exam PDFs and crop them (D005).
+
+Inputs, for a given opposition:
+- `raw/<opposition>/tests/<exam_id>T.pdf`: exams.
+- `processed/<opposition>/rules.json`: expected parts and reserve lists of each call.
+
+Outputs, never overwritten unless forced (D006):
+- `processed/<opposition>/contexts/<exam_id>_p<page>.png`: one crop per context.
+- `interim/<opposition>/contexts.csv`: control sheet, `exam_id, page, first, last`.
+
+A page holds a context if it has a large embedded image or a drawn table (many edges).
+The crop spans the page width, from the end of the previous question to the start of the
+next one. `last` comes from an explicit "N a M." range; otherwise it is estimated as the
+last consecutive question on the same page, and reported for review.
+"""
+
+import csv
+import logging
+import re
+from dataclasses import dataclass
+from pathlib import Path
+
+import pdfplumber
+from pdfplumber.page import Page
+
+from opox.extract.questions import (
+    FOOTER_ZONE,
+    _Draft,
+    expected_sections,
+    parse_exam_lines,
+    read_exam_lines,
+)
+from opox.models.rules import CallRulesCollection
+from opox.pdf import Line
+
+MIN_IMAGE_WIDTH = 200.0  # pt; smaller images are logos or decorations
+MIN_TABLE_EDGES = 40  # rects + lines; cover and instruction pages have fewer
+TOP_MARGIN = 20.0  # pt; crop start when no question precedes the context
+LINE_HEIGHT = 12.0  # pt; space below the top of a question's last line
+CROP_PADDING = 4.0  # pt
+RESOLUTION = 200  # dpi
+RANGE_RE = re.compile(r"^(\d+)\s+a\s+(\d+)\.")
+SHEET_COLUMNS = ["exam_id", "page", "first", "last"]
+
+log = logging.getLogger(__name__)
+
+
+@dataclass(frozen=True, slots=True)
+class Context:
+    exam_id: str
+    page: int
+    first: int
+    last: int
+    top: float  # crop box, in pt
+    bottom: float
+
+    @property
+    def file_name(self) -> str:
+        return f"{self.exam_id}_p{self.page}.png"
+
+
+def _context_box(page: Page) -> tuple[float, float] | None:
+    """Vertical extent of the context on a page, or None if there is none."""
+    images = [i for i in page.images if i["x1"] - i["x0"] >= MIN_IMAGE_WIDTH]
+    if images:
+        return min(i["top"] for i in images), max(i["bottom"] for i in images)
+    edges = page.rects + page.lines
+    if len(edges) >= MIN_TABLE_EDGES:
+        return min(e["top"] for e in edges), max(e["bottom"] for e in edges)
+    return None
+
+
+def _explicit_range(lines: list[Line], page: int, top: float, bottom: float) -> int | None:
+    """Last question of an explicit "N a M." range inside the crop, if any."""
+    for line in lines:
+        if line.page == page and top <= line.top <= bottom:
+            match = RANGE_RE.match(line.text.strip())
+            if match:
+                return int(match[2])
+    return None
+
+
+def detect_contexts(
+    pdf: pdfplumber.PDF,
+    exam_id: str,
+    lines: list[Line],
+    cover_pages: set[int],
+    drafts: list[_Draft],
+) -> tuple[list[Context], list[str]]:
+    """Find the contexts of an exam. Drafts must be in reading order."""
+    contexts: list[Context] = []
+    notes: list[str] = []
+    for number, page in enumerate(pdf.pages, start=1):
+        if number in cover_pages:
+            continue
+        box = _context_box(page)
+        if box is None:
+            continue
+        obj_top, obj_bottom = box
+        where = f"{exam_id} p{number}"
+
+        before = [d.last_top for d in drafts if d.last_page == number and d.last_top < obj_top]
+        top = max(before) + LINE_HEIGHT if before else TOP_MARGIN
+        after = [d for d in drafts if (d.page, d.top) > (number, obj_bottom)]
+        if not after:
+            notes.append(f"{where}: no question after the context, skipped")
+            continue
+        first = after[0]
+        on_page = first.page == number
+        bottom = first.top - CROP_PADDING if on_page else page.height * FOOTER_ZONE
+        if bottom <= top:
+            notes.append(f"{where}: empty crop box, skipped")
+            continue
+
+        last = _explicit_range(lines, number, top, bottom)
+        if last is None:
+            last = first.number
+            for draft in after[1:]:
+                if draft.page != first.page or draft.number != last + 1:
+                    break
+                last = draft.number
+            notes.append(f"{where}: questions {first.number}-{last} estimated")
+        elif last < first.number:
+            notes.append(f"{where}: range ends at {last}, before question {first.number}")
+        contexts.append(Context(exam_id, number, first.number, last, top, bottom))
+    return contexts, notes
+
+
+def _read_sheet(path: Path) -> set[tuple[str, int]]:
+    with path.open(encoding="utf-8-sig", newline="") as f:
+        return {(r["exam_id"].strip(), int(r["page"])) for r in csv.DictReader(f)}
+
+
+def _write_sheet(path: Path, contexts: list[Context]) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with path.open("w", encoding="utf-8", newline="") as f:
+        writer = csv.writer(f)
+        writer.writerow(SHEET_COLUMNS)
+        for c in contexts:
+            writer.writerow([c.exam_id, c.page, c.first, c.last])
+
+
+def extract_contexts(
+    data_dir: Path, opposition: str, force: bool = False
+) -> tuple[bool, list[str]]:
+    """Detect, crop and list the contexts of all exams. Return (written, review notes)."""
+    sheet_path = data_dir / "interim" / opposition / "contexts.csv"
+    crops_dir = data_dir / "processed" / opposition / "contexts"
+    rules_path = data_dir / "processed" / opposition / "rules.json"
+    tests_dir = data_dir / "raw" / opposition / "tests"
+
+    existing = sheet_path.exists() or any(crops_dir.glob("*.png"))
+    write = force or not existing
+    if not write:
+        log.info("existing contexts found; looking for candidates not covered")
+
+    rules = CallRulesCollection.model_validate_json(rules_path.read_text(encoding="utf-8"))
+    rules_by_id = {r.call_id: r for r in rules.root}
+
+    contexts: list[Context] = []
+    notes: list[str] = []
+    exam_pdfs = sorted(tests_dir.glob("*T.pdf"))
+    log.info("%d exam(s) found in %s", len(exam_pdfs), tests_dir)
+    for i, exam_pdf in enumerate(exam_pdfs, start=1):
+        exam_id = exam_pdf.stem[:-1]
+        log.info("[%d/%d] %s", i, len(exam_pdfs), exam_id)
+        call_rules = rules_by_id.get(exam_id[:5])
+        if call_rules is None:
+            notes.append(f"{exam_id}: call {exam_id[:5]} not found in {rules_path}")
+            continue
+        lines, cover_pages = read_exam_lines(exam_pdf)
+        sections, _ = parse_exam_lines(lines, exam_id, expected_sections(call_rules))
+        drafts = sorted((d for s in sections for d in s), key=lambda d: (d.page, d.top))
+        with pdfplumber.open(exam_pdf) as pdf:
+            found, exam_notes = detect_contexts(pdf, exam_id, lines, cover_pages, drafts)
+            notes += exam_notes
+            for c in found:
+                if write:
+                    path = crops_dir / c.file_name
+                    if path.exists():
+                        notes.append(f"overwriting {path}")
+                    crops_dir.mkdir(parents=True, exist_ok=True)
+                    page = pdf.pages[c.page - 1]
+                    page.crop((0, c.top, page.width, c.bottom)).to_image(
+                        resolution=RESOLUTION
+                    ).save(path)
+        log.info("  %d context(s)", len(found))
+        contexts += found
+
+    if not write:
+        covered = _read_sheet(sheet_path) if sheet_path.exists() else set()
+        missing = [c for c in contexts if (c.exam_id, c.page) not in covered]
+        return False, [
+            f"{sheet_path} or crops already exist; use --force to overwrite them",
+            *(f"{c.exam_id} p{c.page}: candidate not in {sheet_path}" for c in missing),
+        ]
+
+    if sheet_path.exists():
+        notes.insert(0, f"overwriting {sheet_path}")
+    _write_sheet(sheet_path, contexts)
+    log.info("%d context(s) written to %s", len(contexts), sheet_path)
+    return True, notes

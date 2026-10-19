@@ -9,6 +9,7 @@ Inputs, for a given opposition:
 This check is read-only. Errors are inconsistencies; warnings are pending steps.
 """
 
+import logging
 from pathlib import Path
 
 from pydantic import ValidationError
@@ -16,6 +17,8 @@ from pydantic import ValidationError
 from opox.extract.questions import expected_sections
 from opox.models.questions import ExamCollection
 from opox.models.rules import CallRulesCollection
+
+log = logging.getLogger(__name__)
 
 
 def check_questions(data_dir: Path, opposition: str) -> tuple[list[str], list[str]]:
@@ -42,7 +45,9 @@ def check_questions(data_dir: Path, opposition: str) -> tuple[list[str], list[st
     errors += [f"{i}: missing in {questions_path}" for i in sorted(expected_ids - exam_ids)]
     errors += [f"{i}: exam PDF not found" for i in sorted(exam_ids - expected_ids)]
 
+    log.info("checking %d exam(s) from %s", len(exams.root), questions_path)
     for exam in exams.root:
+        log.info("  %s: %d questions", exam.exam_id, len(exam.questions))
         for source in (exam.source, exam.key_source):
             if not (raw_dir / source).is_file():
                 errors.append(f"{exam.exam_id}: source not found: {raw_dir / source}")

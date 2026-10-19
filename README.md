@@ -10,6 +10,7 @@ uv run opox [--data-dir DIR] <command> ...
 ```
 
 `--data-dir` sets the data root (default: `data`). `OPPOSITION` defaults to `C2_AGE`.
+Every command accepts `-v`/`--verbose` to report its progress.
 
 ### `opox extract questions [OPPOSITION] [--force]`
 
@@ -23,6 +24,24 @@ Each exam is split into the parts and reserve lists set by its call rules
 questions (tables, "Responda las siguientes preguntas...") is skipped. At the end, it
 lists the points to review (`REVIEW`): shared preambles, section counts that do not
 match the rules, questions without four options or without an answer.
+
+### `opox extract contexts [OPPOSITION] [--force]`
+
+Detects the contexts (images and tables) shared by several questions in each exam of
+`raw/<opposition>/tests/`, and writes:
+
+- One crop per context: `processed/<opposition>/contexts/<exam_id>_p<page>.png`.
+- The control sheet `interim/<opposition>/contexts.csv`, with columns
+  `exam_id, page, first, last`: the context page and the first and last questions that
+  need it.
+
+A page holds a context if it has an image wider than 200 pt or more than 40 drawn edges
+(a table). The crop spans the page width, between the previous question and the next
+one. `last` comes from an explicit "N a M." range; otherwise it is estimated as the last
+consecutive question on the same page, and listed for review (`REVIEW`).
+
+If the sheet or any crop already exists, nothing is written: it only lists the detected
+contexts missing from the sheet. `--force` overwrites, reporting each file replaced.
 
 ### `opox check questions [OPPOSITION]`
 

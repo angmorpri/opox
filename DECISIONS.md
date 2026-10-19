@@ -173,5 +173,3 @@ La extracción la realiza el código mediante `opox extract questions`, usando
 `pdfplumber`. Al terminar, muestra la lista de puntos que requieren revisión o
 completarse manualmente. Se valida con `opox check questions`, frente a
 `rules.json` y la hoja de contextos.
-
-

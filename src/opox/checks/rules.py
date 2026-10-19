@@ -10,6 +10,7 @@ This check is read-only.
 """
 
 import csv
+import logging
 from pathlib import Path
 
 from pydantic import ValidationError
@@ -17,6 +18,8 @@ from pydantic import ValidationError
 from opox.models.rules import PSYCHOTECHNICAL_BLOCK_ID, CallRulesCollection
 
 _NO_BLOCK = "-"
+
+log = logging.getLogger(__name__)
 
 
 def _read_expected(csv_path: Path) -> dict[str, list[int]]:
@@ -47,6 +50,7 @@ def check_rules(data_dir: Path, opposition: str) -> list[str]:
         return [f"invalid model in {rules_path}\n{e}"]
     rules_by_id = {r.call_id: r for r in collection.root}
 
+    log.info("checking %d call(s) from %s", len(rules_by_id), rules_path)
     errors: list[str] = []
     for call_id in sorted(expected.keys() - rules_by_id.keys()):
         errors.append(f"{call_id}: missing in {rules_path}")
@@ -55,6 +59,7 @@ def check_rules(data_dir: Path, opposition: str) -> list[str]:
 
     for call_id in sorted(expected.keys() & rules_by_id.keys()):
         rules = rules_by_id[call_id]
+        log.info("  %s", call_id)
         if not (raw_dir / rules.source).is_file():
             errors.append(f"{call_id}: source not found: {raw_dir / rules.source}")
 
