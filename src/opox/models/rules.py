@@ -64,13 +64,11 @@ from fractions import Fraction
 from pathlib import PurePosixPath
 from typing import Self
 
-from pydantic import BaseModel, ConfigDict, Field, RootModel, model_validator
+from pydantic import ConfigDict, Field, RootModel, model_validator
+
+from opox.models.base import StrictModel
 
 PSYCHOTECHNICAL_BLOCK_ID = "PSICO"
-
-
-class _Model(BaseModel):
-    model_config = ConfigDict(frozen=True, extra="forbid")
 
 
 class AccessType(StrEnum):
@@ -79,12 +77,12 @@ class AccessType(StrEnum):
     STABILIZATION = "E"
 
 
-class Section(_Model):
+class Section(StrictModel):
     n_questions: int = Field(gt=0)
     block_id: str
 
 
-class Part(_Model):
+class Part(StrictModel):
     number: int = Field(ge=1)
     n_questions: int = Field(gt=0)
     n_reserve: int = Field(ge=0)
@@ -100,13 +98,13 @@ class Part(_Model):
         return self
 
 
-class Block(_Model):
+class Block(StrictModel):
     block_id: str
     name: str | None = None
     topics: list[str] = Field(min_length=1)  # topic number = index + 1
 
 
-class CallRules(_Model):
+class CallRules(StrictModel):
     call_id: str  # "2025L"
     source: PurePosixPath  # relative to data/raw/<opposition>/; POSIX for portable JSON
     year: int

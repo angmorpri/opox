@@ -3,6 +3,7 @@ authors = [
   {name = "angmorpri", email = "angelmorenoprieto@gmail.com"},
 ]
 dependencies = [
+    "pdfplumber>=0.11.10",
     "pydantic>=2.14.1",
 ]
 description = "Core of Project OPO - Artificial Intelligence for Spain's Civil Servant Exams"

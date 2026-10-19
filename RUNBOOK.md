@@ -37,3 +37,12 @@ completarla manualmente: el paso termina mostrando la lista de puntos pendientes
   - Particularidad conocida: en 2024I (tema 3) y 2024L (tema II.7), una línea visible en
     el PDF no está en su capa de texto y debe completarse manualmente.
 - **Validación**: `uv run opox check rules`.
+
+### 3. Extracción de preguntas por examen ([D009])
+
+- **Entrada**: `raw/C2_AGE/tests/<exam_id>T.pdf` y `<exam_id>R.pdf`;
+  `processed/C2_AGE/rules.json`.
+- **Salida**: `processed/C2_AGE/questions.json`.
+- **Ejecutor**: código, `uv run opox extract questions`. Revisar los puntos `REVIEW`.
+- **Validación**: `uv run opox check questions`. El aviso de contextos pendientes se
+  resuelve en los pasos de contextos ([D005]).

@@ -7,11 +7,7 @@ Se ordenan de más recientes a más antiguas.
 
 ## Solucionarios provisionales en 2025
 
-> ABIERTO
-> ⚠️ IMPORTANTE
-
-Los solucionarios que están siendo usados para las convocatorias de 2025 son provisionales, hasta que se publiquen los definitivos.
-Pendiente: comprobar si ya se han publicado los definitivos y sustituirlos en `raw/`.
+> CERRADO -> Solucionarios definitivos descargados
 
 
 ## Procedencia de los datos
@@ -135,7 +131,6 @@ Los modelos a bajo nivel propuestos se detallan a continuación.
 ### Bases de convocatoria
 
 > CERRADO -> [D008]
-
 
 ### Preguntas por examen
 
