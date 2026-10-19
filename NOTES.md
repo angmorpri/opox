@@ -12,13 +12,7 @@ Se ordenan de más recientes a más antiguas.
 
 ## Procedencia de los datos
 
-> ABIERTO
-
-Desde [D002], `interim/` y `processed/` mezclan resultados de código, de agentes y
-manuales, y dejan de ser regenerables. Puede ser necesario registrar quién produjo cada
-dato y si ha sido revisado, sobre todo en los que sirven de referencia para evaluar la
-hipótesis (p. ej., las respuestas del solucionario). Se valorará en la primera situación
-que lo requiera.
+> CERRADO -> Se confía en seguir correctamente el RUNBOOK.
 
 
 ## Validez temporal de preguntas y fuentes

@@ -92,15 +92,18 @@ se cumplen en todos los exámenes de C2_AGE y deben revisarse en nuevas oposicio
 El flujo es el siguiente:
 
 1. `opox extract contexts` detecta los contextos de cada examen (imágenes incrustadas y
-   enunciados compartidos), guarda los recortes y genera la hoja de control. Respeta
-   [D006]: no sobrescribe recortes ni hojas existentes; si ya existen, informa de los
-   candidatos no cubiertos.
+   tablas dibujadas), guarda los recortes y genera la hoja de control. Cuando el rango
+   de preguntas no es explícito ("N a M."), lo estima limitado a la página del contexto
+   y lo marca para revisión. Respeta [D006]: no sobrescribe recortes ni hojas
+   existentes; si ya existen, informa de los candidatos no cubiertos.
 2. Manualmente, se revisa la hoja y los recortes: se corrigen los erróneos, se añaden los
    que falten y se eliminan los falsos positivos.
 3. `opox check contexts` valida la hoja frente a los recortes y las preguntas extraídas.
 4. `opox add contexts` asigna a cada pregunta la ruta de su recorte.
-5. `opox check questions` verifica la coherencia de las preguntas con la hoja e informa
-   si la asignación de contextos está pendiente.
+5. `opox check questions` verifica que los recortes asignados existen e informa si la
+   asignación de contextos está pendiente. Mantener la asignación al día con la hoja es
+   responsabilidad de quien la edita: tras cada cambio en la hoja, repetir
+   `opox add contexts`.
 
 La hoja y los recortes son la única fuente de verdad. Si se vuelven a extraer las
 preguntas, basta con repetir `opox add contexts`.
@@ -172,4 +175,4 @@ De cada examen y su solucionario se extraen sus preguntas. El modelo se define e
 La extracción la realiza el código mediante `opox extract questions`, usando
 `pdfplumber`. Al terminar, muestra la lista de puntos que requieren revisión o
 completarse manualmente. Se valida con `opox check questions`, frente a
-`rules.json` y la hoja de contextos.
+`rules.json` y los recortes de contextos.

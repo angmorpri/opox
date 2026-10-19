@@ -1,5 +1,9 @@
+from pathlib import PurePosixPath
+
+from opox.add.contexts import assign_contexts
 from opox.checks.contexts import _parse_rows
 from opox.extract.contexts import QuestionPosition, locate_context
+from opox.models.questions import Exam, ExamCollection, Question
 
 # Part 1 ends with question 3 on page 2; its reserve list restarts at 1 on the same page.
 POSITIONS = [
@@ -31,3 +35,38 @@ def test_parse_rows_reports_invalid_and_duplicate_rows() -> None:
     parsed, errors = _parse_rows(rows)
     assert parsed == [("X", 2, 1, 2)]
     assert len(errors) == 3
+
+
+def _exams(*contexts: str | None) -> ExamCollection:
+    questions = [
+        Question(
+            question_id=f"2025L0A-1-{n}",
+            part=1,
+            is_reserve=False,
+            number=n,
+            text="?",
+            options=["a", "b", "c", "d"],
+            answer=0,
+            context=PurePosixPath(c) if c else None,
+        )
+        for n, c in enumerate(contexts, start=1)
+    ]
+    exam = Exam(
+        exam_id="2025L0A",
+        call_id="2025L",
+        model="A",
+        source=PurePosixPath("tests/2025L0AT.pdf"),
+        key_source=PurePosixPath("tests/2025L0AR.pdf"),
+        questions=questions,
+    )
+    return ExamCollection([exam])
+
+
+def test_assign_contexts_adds_replaces_and_clears() -> None:
+    exams = _exams(None, "contexts/old.png", "contexts/old.png", "contexts/new.png")
+    new = PurePosixPath("contexts/new.png")
+    assignment = {"2025L0A-1-1": new, "2025L0A-1-2": new, "2025L0A-1-4": new}
+    result, added, changed = assign_contexts(exams, assignment)
+    assert [q.context for q in result.root[0].questions] == [new, new, None, new]
+    assert added == ["2025L0A-1-1"]
+    assert len(changed) == 2

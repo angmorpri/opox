@@ -1,5 +1,13 @@
 # Estado actual
 
+## 19/10/2026
+
+- Añadido modo `-v` a los comandos de `opox`.
+- Preguntas extraídas (1510) y validadas; coinciden con `old/` salvo errores de la
+  iteración previa.
+- Contextos extraídos, revisados manualmente (47), validados con `opox check contexts` y
+  asignados con `opox add contexts`; coinciden con `old/contexts/`.
+
 ## 15/10/2026
 
 - Redefinido el papel de `data/` (D002, D006) y creado `RUNBOOK.md`.
@@ -9,8 +17,6 @@
 
 ## Próximo paso
 
-1. Lanzar `opox extract questions` y `opox check questions`, y revisar los resultados.
-2. Script temporal de rescate desde `old/`: generar `contexts.csv` y los recortes a partir
-   de los nombres de fichero (no de las asignaciones, incompletas en 5 contextos), y
-   comparar las preguntas antiguas con las nuevas.
-3. Implementar `opox extract contexts`, `check contexts` y `add contexts`.
+1. Diseñar el modelo de la batería de preguntas (Fase 2): criterio de igualdad, contextos
+   equivalentes entre modelos y trazabilidad a los exámenes originales.
+2. Implementar su generación y validación.

@@ -56,3 +56,12 @@ completarla manualmente: el paso termina mostrando la lista de puntos pendientes
   los recortes. Los rangos marcados como estimados (`REVIEW`) sólo cubren la página del
   contexto y pueden quedarse cortos si las preguntas continúan en la siguiente.
 - **Validación**: `uv run opox check contexts`.
+
+### 5. Asignación de contextos a preguntas ([D005])
+
+- **Entrada**: `interim/C2_AGE/contexts.csv`, `processed/C2_AGE/contexts/` y
+  `processed/C2_AGE/questions.json`.
+- **Salida**: `processed/C2_AGE/questions.json`, con el campo `context` asignado.
+- **Ejecutor**: código, `uv run opox add contexts`. Repetir tras cada nueva extracción
+  de preguntas.
+- **Validación**: `uv run opox check questions`.

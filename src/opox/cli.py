@@ -5,6 +5,7 @@ import logging
 import sys
 from pathlib import Path
 
+from opox.add.contexts import add_contexts
 from opox.checks.contexts import check_contexts
 from opox.checks.questions import check_questions
 from opox.checks.rules import check_rules
@@ -34,6 +35,13 @@ def _run_extract_contexts(args: argparse.Namespace) -> int:
         return 1
     print(f"Contexts written. {len(notes)} point(s) to review.")
     return 0
+
+
+def _run_add_contexts(args: argparse.Namespace) -> int:
+    ok, notes = add_contexts(args.data_dir, args.opposition, args.force)
+    for note in notes:
+        print(f"ERROR {note}" if not ok else note, file=sys.stderr if not ok else sys.stdout)
+    return 0 if ok else 1
 
 
 def _run_check_questions(args: argparse.Namespace) -> int:
@@ -97,6 +105,16 @@ def _build_parser() -> argparse.ArgumentParser:
     contexts.add_argument("opposition", nargs="?", default="C2_AGE")
     contexts.add_argument("--force", action="store_true", help="overwrite existing output")
     contexts.set_defaults(func=_run_extract_contexts)
+
+    add = commands.add_parser("add", help="merge reviewed data into processed data")
+    add_targets = add.add_subparsers(dest="target", required=True)
+
+    add_c = add_targets.add_parser(
+        "contexts", parents=[common], help="assign context crops to questions"
+    )
+    add_c.add_argument("opposition", nargs="?", default="C2_AGE")
+    add_c.add_argument("--force", action="store_true", help="replace existing contexts")
+    add_c.set_defaults(func=_run_add_contexts)
 
     check = commands.add_parser("check", help="validate data against references")
     targets = check.add_subparsers(dest="target", required=True)

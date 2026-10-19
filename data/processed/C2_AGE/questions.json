@@ -529,7 +529,7 @@
           "5"
         ],
         "answer": 1,
-        "context": null
+        "context": "contexts/2019E0A_p5.png"
       },
       {
         "question_id": "2019E0A-1-36",
@@ -544,7 +544,7 @@
           "La sala Seúl."
         ],
         "answer": 2,
-        "context": null
+        "context": "contexts/2019E0A_p5.png"
       },
       {
         "question_id": "2019E0A-1-37",
@@ -559,7 +559,7 @@
           "148 metros cuadrados."
         ],
         "answer": 3,
-        "context": null
+        "context": "contexts/2019E0A_p5.png"
       },
       {
         "question_id": "2019E0A-1-38",
@@ -574,7 +574,7 @@
           "La sala Seúl."
         ],
         "answer": 0,
-        "context": null
+        "context": "contexts/2019E0A_p5.png"
       },
       {
         "question_id": "2019E0A-1-39",
@@ -589,7 +589,7 @@
           "20,43 alumnos."
         ],
         "answer": 1,
-        "context": null
+        "context": "contexts/2019E0A_p5.png"
       },
       {
         "question_id": "2019E0A-1-40",
@@ -604,7 +604,7 @@
           "La sala Barcelona."
         ],
         "answer": 2,
-        "context": null
+        "context": "contexts/2019E0A_p5.png"
       },
       {
         "question_id": "2019E0A-1R-1",
@@ -1543,7 +1543,7 @@
           "1"
         ],
         "answer": 0,
-        "context": null
+        "context": "contexts/2019E0X_p4.png"
       },
       {
         "question_id": "2019E0X-1-23",
@@ -1558,7 +1558,7 @@
           "3"
         ],
         "answer": 2,
-        "context": null
+        "context": "contexts/2019E0X_p4.png"
       },
       {
         "question_id": "2019E0X-1-24",
@@ -1573,7 +1573,7 @@
           "1752"
         ],
         "answer": 2,
-        "context": null
+        "context": "contexts/2019E0X_p4.png"
       },
       {
         "question_id": "2019E0X-1-25",
@@ -1588,7 +1588,7 @@
           "1581"
         ],
         "answer": 3,
-        "context": null
+        "context": "contexts/2019E0X_p4.png"
       },
       {
         "question_id": "2019E0X-1-26",
@@ -1603,7 +1603,7 @@
           "Diccionario histórico abreviado."
         ],
         "answer": 0,
-        "context": null
+        "context": "contexts/2019E0X_p4.png"
       },
       {
         "question_id": "2019E0X-1-27",
@@ -1618,7 +1618,7 @@
           "Manuscrito."
         ],
         "answer": 1,
-        "context": null
+        "context": "contexts/2019E0X_p4.png"
       },
       {
         "question_id": "2019E0X-1-28",
@@ -2662,7 +2662,7 @@
           "Fusiona todas las secciones del documento en una sola."
         ],
         "answer": 1,
-        "context": null
+        "context": "contexts/2019I0A_p4.png"
       },
       {
         "question_id": "2019I0A-1-17",
@@ -2677,7 +2677,7 @@
           "Lista multinivel."
         ],
         "answer": 3,
-        "context": null
+        "context": "contexts/2019I0A_p4.png"
       },
       {
         "question_id": "2019I0A-1-18",
@@ -2692,7 +2692,7 @@
           "Todas las líneas del párrafo aparecerán desplazadas un centímetro hacia la izquierda."
         ],
         "answer": 0,
-        "context": null
+        "context": "contexts/2019I0A_p4.png"
       },
       {
         "question_id": "2019I0A-1-19",
@@ -2707,7 +2707,7 @@
           "Disposición."
         ],
         "answer": 3,
-        "context": null
+        "context": "contexts/2019I0A_p4.png"
       },
       {
         "question_id": "2019I0A-1-20",
@@ -2722,7 +2722,7 @@
           "Añadir una nota al pie en el lugar seleccionado del contenido del documento."
         ],
         "answer": 2,
-        "context": null
+        "context": "contexts/2019I0A_p4.png"
       },
       {
         "question_id": "2019I0A-1-21",
@@ -2737,7 +2737,7 @@
           ".pxl"
         ],
         "answer": 1,
-        "context": null
+        "context": "contexts/2019I0A_p5.png"
       },
       {
         "question_id": "2019I0A-1-22",
@@ -2752,7 +2752,7 @@
           "En las dos celdas inferiores se mostrará la suma (30) de los valores seleccionados."
         ],
         "answer": 1,
-        "context": null
+        "context": "contexts/2019I0A_p5.png"
       },
       {
         "question_id": "2019I0A-1-23",
@@ -2767,7 +2767,7 @@
           "=Destinatario: & D2"
         ],
         "answer": 1,
-        "context": null
+        "context": "contexts/2019I0A_p5.png"
       },
       {
         "question_id": "2019I0A-1-24",
@@ -2782,7 +2782,7 @@
           "=SUMA(G:2-4)"
         ],
         "answer": 1,
-        "context": null
+        "context": "contexts/2019I0A_p5.png"
       },
       {
         "question_id": "2019I0A-1-25",
@@ -2797,7 +2797,7 @@
           "FALSO en todos los casos."
         ],
         "answer": 1,
-        "context": null
+        "context": "contexts/2019I0A_p5.png"
       },
       {
         "question_id": "2019I0A-1-26",
@@ -2812,7 +2812,7 @@
           "Número."
         ],
         "answer": 2,
-        "context": null
+        "context": "contexts/2019I0A_p6.png"
       },
       {
         "question_id": "2019I0A-1-27",
@@ -2827,7 +2827,7 @@
           "Consulta de creación de tabla."
         ],
         "answer": 1,
-        "context": null
+        "context": "contexts/2019I0A_p6.png"
       },
       {
         "question_id": "2019I0A-1-28",
@@ -2842,7 +2842,7 @@
           "Año:FechaRegistro => AñoRegistro"
         ],
         "answer": 0,
-        "context": null
+        "context": "contexts/2019I0A_p6.png"
       },
       {
         "question_id": "2019I0A-1-29",
@@ -2857,7 +2857,7 @@
           "Regla de validación."
         ],
         "answer": 0,
-        "context": null
+        "context": "contexts/2019I0A_p6.png"
       },
       {
         "question_id": "2019I0A-1-30",
@@ -2872,7 +2872,7 @@
           "Word."
         ],
         "answer": 0,
-        "context": null
+        "context": "contexts/2019I0A_p6.png"
       },
       {
         "question_id": "2019I0A-1-31",
@@ -2887,7 +2887,7 @@
           "Un fichero comprimido de 0,5 GB."
         ],
         "answer": 2,
-        "context": null
+        "context": "contexts/2019I0A_p7.png"
       },
       {
         "question_id": "2019I0A-1-32",
@@ -2902,7 +2902,7 @@
           "Usuario A, Usuario B y Usuario C."
         ],
         "answer": 0,
-        "context": null
+        "context": "contexts/2019I0A_p7.png"
       },
       {
         "question_id": "2019I0A-1-33",
@@ -2917,7 +2917,7 @@
           "Para automatizar algunas tareas como mover o responder a correos, según criterios que definamos."
         ],
         "answer": 3,
-        "context": null
+        "context": "contexts/2019I0A_p7.png"
       },
       {
         "question_id": "2019I0A-1-34",
@@ -2932,7 +2932,7 @@
           "Solicitud Y aprobada"
         ],
         "answer": 2,
-        "context": null
+        "context": "contexts/2019I0A_p7.png"
       },
       {
         "question_id": "2019I0A-1-35",
@@ -2947,7 +2947,7 @@
           "Crear una carpeta donde almacenar correos recibidos en diferentes cuentas configuradas en Outlook."
         ],
         "answer": 1,
-        "context": null
+        "context": "contexts/2019I0A_p7.png"
       },
       {
         "question_id": "2019I0A-1-36",
@@ -3346,7 +3346,7 @@
           "Decimal."
         ],
         "answer": 3,
-        "context": null
+        "context": "contexts/2019I0X_p3.png"
       },
       {
         "question_id": "2019I0X-1-17",
@@ -3361,7 +3361,7 @@
           "Se inserta un salto de sección en la mitad superior de todas las páginas."
         ],
         "answer": 0,
-        "context": null
+        "context": "contexts/2019I0X_p3.png"
       },
       {
         "question_id": "2019I0X-1-18",
@@ -3376,7 +3376,7 @@
           "Iconos."
         ],
         "answer": 1,
-        "context": null
+        "context": "contexts/2019I0X_p3.png"
       },
       {
         "question_id": "2019I0X-1-19",
@@ -3391,7 +3391,7 @@
           "Es posible, seleccionando la columna y haciendo clic con el botón secundario del ratón, y en el menú desplegable, Ordenar."
         ],
         "answer": 2,
-        "context": null
+        "context": "contexts/2019I0X_p3.png"
       },
       {
         "question_id": "2019I0X-1-20",
@@ -3406,7 +3406,7 @@
           "Vista Diseño web."
         ],
         "answer": 1,
-        "context": null
+        "context": "contexts/2019I0X_p3.png"
       },
       {
         "question_id": "2019I0X-1-21",
@@ -3421,7 +3421,7 @@
           "Se eliminará la fila completa y todas las filas inferiores subirán una posición."
         ],
         "answer": 3,
-        "context": null
+        "context": "contexts/2019I0X_p4.png"
       },
       {
         "question_id": "2019I0X-1-22",
@@ -3436,7 +3436,7 @@
           "d-mm-aaaa"
         ],
         "answer": 3,
-        "context": null
+        "context": "contexts/2019I0X_p4.png"
       },
       {
         "question_id": "2019I0X-1-23",
@@ -3451,7 +3451,7 @@
           "Señor"
         ],
         "answer": 1,
-        "context": null
+        "context": "contexts/2019I0X_p4.png"
       },
       {
         "question_id": "2019I0X-1-24",
@@ -3466,7 +3466,7 @@
           "Disposición de página."
         ],
         "answer": 0,
-        "context": null
+        "context": "contexts/2019I0X_p4.png"
       },
       {
         "question_id": "2019I0X-1-25",
@@ -3481,7 +3481,7 @@
           "Establecer el tamaño de página."
         ],
         "answer": 0,
-        "context": null
+        "context": "contexts/2019I0X_p4.png"
       },
       {
         "question_id": "2019I0X-1-26",
@@ -3496,7 +3496,7 @@
           "El usuario puede escribir un dígito, espacio, signo más o signo menos. Si se omite, Access escribe un espacio en blanco."
         ],
         "answer": 3,
-        "context": null
+        "context": "contexts/2019I0X_p5.png"
       },
       {
         "question_id": "2019I0X-1-27",
@@ -3511,7 +3511,7 @@
           "Dónde"
         ],
         "answer": 0,
-        "context": null
+        "context": "contexts/2019I0X_p5.png"
       },
       {
         "question_id": "2019I0X-1-28",
@@ -3526,7 +3526,7 @@
           "Relaciones."
         ],
         "answer": 0,
-        "context": null
+        "context": "contexts/2019I0X_p5.png"
       },
       {
         "question_id": "2019I0X-1-29",
@@ -3541,7 +3541,7 @@
           "Si añadimos un registro en una tabla vinculada, no se añade en la tabla original."
         ],
         "answer": 1,
-        "context": null
+        "context": "contexts/2019I0X_p5.png"
       },
       {
         "question_id": "2019I0X-1-30",
@@ -3556,7 +3556,7 @@
           "Herramientas de Tabla > Tabla > Exportar a Excel"
         ],
         "answer": 0,
-        "context": null
+        "context": "contexts/2019I0X_p5.png"
       },
       {
         "question_id": "2019I0X-1-31",
@@ -3571,7 +3571,7 @@
           "Enviar una copia de un correo electrónico seleccionado a los destinatarios que elijamos."
         ],
         "answer": 3,
-        "context": null
+        "context": "contexts/2019I0X_p6.png"
       },
       {
         "question_id": "2019I0X-1-32",
@@ -3586,7 +3586,7 @@
           "lopedevega#inap.es"
         ],
         "answer": 2,
-        "context": null
+        "context": "contexts/2019I0X_p6.png"
       },
       {
         "question_id": "2019I0X-1-33",
@@ -3601,7 +3601,7 @@
           "Un documento de texto plano."
         ],
         "answer": 0,
-        "context": null
+        "context": "contexts/2019I0X_p6.png"
       },
       {
         "question_id": "2019I0X-1-34",
@@ -3616,7 +3616,7 @@
           "Buscar en el Asistente para programación tiempo libre del destinatario para una reunión."
         ],
         "answer": 2,
-        "context": null
+        "context": "contexts/2019I0X_p6.png"
       },
       {
         "question_id": "2019I0X-1-35",
@@ -3631,7 +3631,7 @@
           "Sí, Outlook genera una libreta de direcciones por cada contacto."
         ],
         "answer": 2,
-        "context": null
+        "context": "contexts/2019I0X_p6.png"
       },
       {
         "question_id": "2019I0X-1-36",
@@ -4255,7 +4255,7 @@
           "5"
         ],
         "answer": 1,
-        "context": null
+        "context": "contexts/2019L0A_p5.png"
       },
       {
         "question_id": "2019L0A-1-32",
@@ -4270,7 +4270,7 @@
           "La sala Seúl."
         ],
         "answer": 2,
-        "context": null
+        "context": "contexts/2019L0A_p5.png"
       },
       {
         "question_id": "2019L0A-1-33",
@@ -4285,7 +4285,7 @@
           "148 metros cuadrados."
         ],
         "answer": 3,
-        "context": null
+        "context": "contexts/2019L0A_p5.png"
       },
       {
         "question_id": "2019L0A-1-34",
@@ -4300,7 +4300,7 @@
           "La sala Seúl."
         ],
         "answer": 0,
-        "context": null
+        "context": "contexts/2019L0A_p5.png"
       },
       {
         "question_id": "2019L0A-1-35",
@@ -4315,7 +4315,7 @@
           "20,43 alumnos."
         ],
         "answer": 1,
-        "context": null
+        "context": "contexts/2019L0A_p5.png"
       },
       {
         "question_id": "2019L0A-1-36",
@@ -4330,7 +4330,7 @@
           "La sala Barcelona."
         ],
         "answer": 2,
-        "context": null
+        "context": "contexts/2019L0A_p5.png"
       },
       {
         "question_id": "2019L0A-1-37",
@@ -4450,7 +4450,7 @@
           "Marzo."
         ],
         "answer": 2,
-        "context": null
+        "context": "contexts/2019L0A_p6.png"
       },
       {
         "question_id": "2019L0A-1-45",
@@ -4465,7 +4465,7 @@
           "Noviembre."
         ],
         "answer": 1,
-        "context": null
+        "context": "contexts/2019L0A_p6.png"
       },
       {
         "question_id": "2019L0A-1-46",
@@ -4480,7 +4480,7 @@
           "Marzo."
         ],
         "answer": 3,
-        "context": null
+        "context": "contexts/2019L0A_p6.png"
       },
       {
         "question_id": "2019L0A-1-47",
@@ -4495,7 +4495,7 @@
           "Febrero."
         ],
         "answer": 1,
-        "context": null
+        "context": "contexts/2019L0A_p6.png"
       },
       {
         "question_id": "2019L0A-1-48",
@@ -4510,7 +4510,7 @@
           "Junio."
         ],
         "answer": 3,
-        "context": null
+        "context": "contexts/2019L0A_p6.png"
       },
       {
         "question_id": "2019L0A-1-49",
@@ -4525,7 +4525,7 @@
           "2.305."
         ],
         "answer": 2,
-        "context": null
+        "context": "contexts/2019L0A_p6.png"
       },
       {
         "question_id": "2019L0A-1-50",
@@ -6289,7 +6289,7 @@
           "1"
         ],
         "answer": 0,
-        "context": null
+        "context": "contexts/2019L0X_p6.png"
       },
       {
         "question_id": "2019L0X-1-47",
@@ -6304,7 +6304,7 @@
           "3"
         ],
         "answer": 2,
-        "context": null
+        "context": "contexts/2019L0X_p6.png"
       },
       {
         "question_id": "2019L0X-1-48",
@@ -6319,7 +6319,7 @@
           "1752"
         ],
         "answer": 2,
-        "context": null
+        "context": "contexts/2019L0X_p6.png"
       },
       {
         "question_id": "2019L0X-1-49",
@@ -6334,7 +6334,7 @@
           "1581"
         ],
         "answer": 3,
-        "context": null
+        "context": "contexts/2019L0X_p6.png"
       },
       {
         "question_id": "2019L0X-1-50",
@@ -6349,7 +6349,7 @@
           "Diccionario histórico abreviado."
         ],
         "answer": 0,
-        "context": null
+        "context": "contexts/2019L0X_p6.png"
       },
       {
         "question_id": "2019L0X-1-51",
@@ -6364,7 +6364,7 @@
           "Manuscrito."
         ],
         "answer": 1,
-        "context": null
+        "context": "contexts/2019L0X_p6.png"
       },
       {
         "question_id": "2019L0X-1-52",
@@ -6424,7 +6424,7 @@
           "Diciembre."
         ],
         "answer": 3,
-        "context": null
+        "context": "contexts/2019L0X_p7.png"
       },
       {
         "question_id": "2019L0X-1-56",
@@ -6439,7 +6439,7 @@
           "Abril."
         ],
         "answer": 3,
-        "context": null
+        "context": "contexts/2019L0X_p7.png"
       },
       {
         "question_id": "2019L0X-1-57",
@@ -6454,7 +6454,7 @@
           "Diciembre."
         ],
         "answer": 3,
-        "context": null
+        "context": "contexts/2019L0X_p7.png"
       },
       {
         "question_id": "2019L0X-1-58",
@@ -6469,7 +6469,7 @@
           "Junio."
         ],
         "answer": 1,
-        "context": null
+        "context": "contexts/2019L0X_p7.png"
       },
       {
         "question_id": "2019L0X-1-59",
@@ -6484,7 +6484,7 @@
           "Junio."
         ],
         "answer": 1,
-        "context": null
+        "context": "contexts/2019L0X_p7.png"
       },
       {
         "question_id": "2019L0X-1-60",
@@ -6499,7 +6499,7 @@
           "5.635"
         ],
         "answer": 1,
-        "context": null
+        "context": "contexts/2019L0X_p7.png"
       },
       {
         "question_id": "2019L0X-1R-1",
@@ -7918,7 +7918,7 @@
           "14"
         ],
         "answer": 1,
-        "context": null
+        "context": "contexts/2022E0A_p4.png"
       },
       {
         "question_id": "2022E0A-1-35",
@@ -7933,7 +7933,7 @@
           "15"
         ],
         "answer": 0,
-        "context": null
+        "context": "contexts/2022E0A_p4.png"
       },
       {
         "question_id": "2022E0A-1-36",
@@ -7948,7 +7948,7 @@
           "159"
         ],
         "answer": 3,
-        "context": null
+        "context": "contexts/2022E0A_p4.png"
       },
       {
         "question_id": "2022E0A-1-37",
@@ -7963,7 +7963,7 @@
           "37"
         ],
         "answer": 1,
-        "context": null
+        "context": "contexts/2022E0A_p4.png"
       },
       {
         "question_id": "2022E0A-1-38",
@@ -7978,7 +7978,7 @@
           "89"
         ],
         "answer": 2,
-        "context": null
+        "context": "contexts/2022E0A_p4.png"
       },
       {
         "question_id": "2022E0A-1-39",
@@ -7993,7 +7993,7 @@
           "119"
         ],
         "answer": 1,
-        "context": null
+        "context": "contexts/2022E0A_p4.png"
       },
       {
         "question_id": "2022E0A-1-40",
@@ -8008,7 +8008,7 @@
           "Contabilidad."
         ],
         "answer": 0,
-        "context": null
+        "context": "contexts/2022E0A_p4.png"
       },
       {
         "question_id": "2022E0A-1-41",
@@ -8857,7 +8857,7 @@
           "Word 2019 nos permite cambiar a negrita pero no el color."
         ],
         "answer": 1,
-        "context": null
+        "context": "contexts/2022I0A_p3.png"
       },
       {
         "question_id": "2022I0A-1-22",
@@ -8872,7 +8872,7 @@
           "Seleccionar la palabra \"examen\" y desde la pestaña Diseño pinchar icono Sinónimos y elegir el deseado en el desplegable situado a la derecha de la pantalla."
         ],
         "answer": 0,
-        "context": null
+        "context": "contexts/2022I0A_p3.png"
       },
       {
         "question_id": "2022I0A-1-23",
@@ -8887,7 +8887,7 @@
           "Desde la pestaña Diseño pulsar el icono Marca de agua, elegir Marcas de agua personalizadas y aplicar."
         ],
         "answer": 1,
-        "context": null
+        "context": "contexts/2022I0A_p3.png"
       },
       {
         "question_id": "2022I0A-1-24",
@@ -8902,7 +8902,7 @@
           "Se insertará la viñeta elegida en el encabezado del documento."
         ],
         "answer": 0,
-        "context": null
+        "context": "contexts/2022I0A_p3.png"
       },
       {
         "question_id": "2022I0A-1-25",
@@ -8917,7 +8917,7 @@
           "Sólo podemos cambiar el interlineado de la tabla si modificamos el del documento completo."
         ],
         "answer": 2,
-        "context": null
+        "context": "contexts/2022I0A_p3.png"
       },
       {
         "question_id": "2022I0A-1-26",
@@ -8932,7 +8932,7 @@
           "Seleccionar la columna y pulsando el botón derecho del ratón elegir Formato de celdas y en la pestaña Número seleccionar Fecha y elegir la opción de dos decimales."
         ],
         "answer": 2,
-        "context": null
+        "context": "contexts/2022I0A_p4.png"
       },
       {
         "question_id": "2022I0A-1-27",
@@ -8947,7 +8947,7 @@
           "La única opción es añadirla al final."
         ],
         "answer": 1,
-        "context": null
+        "context": "contexts/2022I0A_p4.png"
       },
       {
         "question_id": "2022I0A-1-28",
@@ -8962,7 +8962,7 @@
           "Seleccionando el gráfico y pulsando el botón derecho del ratón elegimos la opción \"Cambiar tipo de gráfico\" y en la pestaña \"Todos los gráficos\" optamos por \"Circular\"."
         ],
         "answer": 3,
-        "context": null
+        "context": "contexts/2022I0A_p4.png"
       },
       {
         "question_id": "2022I0A-1-29",
@@ -8977,7 +8977,7 @@
           "=B2+B3+B4+B5/5"
         ],
         "answer": 2,
-        "context": null
+        "context": "contexts/2022I0A_p4.png"
       },
       {
         "question_id": "2022I0A-1-30",
@@ -8992,7 +8992,7 @@
           "Se modifica el formato de la leyenda del área del gráfico."
         ],
         "answer": 1,
-        "context": null
+        "context": "contexts/2022I0A_p4.png"
       },
       {
         "question_id": "2022I0A-1-31",
@@ -9007,7 +9007,7 @@
           "Botón derecho > Hipervínculo > Crear hipervínculo."
         ],
         "answer": 1,
-        "context": null
+        "context": "contexts/2022I0A_p5.png"
       },
       {
         "question_id": "2022I0A-1-32",
@@ -9022,7 +9022,7 @@
           "Herramientas de bases de datos > Ordenar y filtrar > Ascendente."
         ],
         "answer": 2,
-        "context": null
+        "context": "contexts/2022I0A_p5.png"
       },
       {
         "question_id": "2022I0A-1-33",
@@ -9037,7 +9037,7 @@
           "Crearemos un informe, exclusivamente."
         ],
         "answer": 1,
-        "context": null
+        "context": "contexts/2022I0A_p5.png"
       },
       {
         "question_id": "2022I0A-1-34",
@@ -9052,7 +9052,7 @@
           "Sí, siempre que previamente seleccionados los registros, se exporten datos con formato y diseño y se elija la opción Exportar sólo los registros seleccionados."
         ],
         "answer": 3,
-        "context": null
+        "context": "contexts/2022I0A_p5.png"
       },
       {
         "question_id": "2022I0A-1-35",
@@ -9067,7 +9067,7 @@
           "De Diseño y Producción."
         ],
         "answer": 0,
-        "context": null
+        "context": "contexts/2022I0A_p5.png"
       },
       {
         "question_id": "2022I0A-1-36",
@@ -9082,7 +9082,7 @@
           "CPS@inap.es"
         ],
         "answer": 0,
-        "context": null
+        "context": "contexts/2022I0A_p6.png"
       },
       {
         "question_id": "2022I0A-1-37",
@@ -9097,7 +9097,7 @@
           "Desaparece el mensaje."
         ],
         "answer": 2,
-        "context": null
+        "context": "contexts/2022I0A_p6.png"
       },
       {
         "question_id": "2022I0A-1-38",
@@ -9112,7 +9112,7 @@
           "Ctrl + V"
         ],
         "answer": 2,
-        "context": null
+        "context": "contexts/2022I0A_p6.png"
       },
       {
         "question_id": "2022I0A-1-39",
@@ -9127,7 +9127,7 @@
           "Botón izquierdo + Suprimir"
         ],
         "answer": 0,
-        "context": null
+        "context": "contexts/2022I0A_p6.png"
       },
       {
         "question_id": "2022I0A-1-40",
@@ -9142,7 +9142,7 @@
           "Opciones."
         ],
         "answer": 2,
-        "context": null
+        "context": "contexts/2022I0A_p6.png"
       },
       {
         "question_id": "2022I0A-1R-1",
@@ -9961,7 +9961,7 @@
           "14"
         ],
         "answer": 1,
-        "context": null
+        "context": "contexts/2022L0A_p6.png"
       },
       {
         "question_id": "2022L0A-1-50",
@@ -9976,7 +9976,7 @@
           "15"
         ],
         "answer": 0,
-        "context": null
+        "context": "contexts/2022L0A_p6.png"
       },
       {
         "question_id": "2022L0A-1-51",
@@ -9991,7 +9991,7 @@
           "159"
         ],
         "answer": 3,
-        "context": null
+        "context": "contexts/2022L0A_p6.png"
       },
       {
         "question_id": "2022L0A-1-52",
@@ -10006,7 +10006,7 @@
           "37"
         ],
         "answer": 1,
-        "context": null
+        "context": "contexts/2022L0A_p6.png"
       },
       {
         "question_id": "2022L0A-1-53",
@@ -10021,7 +10021,7 @@
           "89"
         ],
         "answer": 2,
-        "context": null
+        "context": "contexts/2022L0A_p6.png"
       },
       {
         "question_id": "2022L0A-1-54",
@@ -10036,7 +10036,7 @@
           "119"
         ],
         "answer": 1,
-        "context": null
+        "context": "contexts/2022L0A_p6.png"
       },
       {
         "question_id": "2022L0A-1-55",
@@ -10051,7 +10051,7 @@
           "2"
         ],
         "answer": 3,
-        "context": null
+        "context": "contexts/2022L0A_p7.png"
       },
       {
         "question_id": "2022L0A-1-56",
@@ -10066,7 +10066,7 @@
           "Tulipán."
         ],
         "answer": 0,
-        "context": null
+        "context": "contexts/2022L0A_p7.png"
       },
       {
         "question_id": "2022L0A-1-57",
@@ -10081,7 +10081,7 @@
           "5"
         ],
         "answer": 2,
-        "context": null
+        "context": "contexts/2022L0A_p7.png"
       },
       {
         "question_id": "2022L0A-1-58",
@@ -10096,7 +10096,7 @@
           "21"
         ],
         "answer": 0,
-        "context": null
+        "context": "contexts/2022L0A_p7.png"
       },
       {
         "question_id": "2022L0A-1-59",
@@ -10111,7 +10111,7 @@
           "Orquídea."
         ],
         "answer": 1,
-        "context": null
+        "context": "contexts/2022L0A_p7.png"
       },
       {
         "question_id": "2022L0A-1-60",
@@ -10126,7 +10126,7 @@
           "Orquídea."
         ],
         "answer": 3,
-        "context": null
+        "context": "contexts/2022L0A_p7.png"
       },
       {
         "question_id": "2022L0A-1R-1",
@@ -11350,7 +11350,7 @@
           "Sepúlveda es un municipio."
         ],
         "answer": 0,
-        "context": null
+        "context": "contexts/2024I0A_p3.png"
       },
       {
         "question_id": "2024I0A-1-22",
@@ -11365,7 +11365,7 @@
           "Sección."
         ],
         "answer": 1,
-        "context": null
+        "context": "contexts/2024I0A_p3.png"
       },
       {
         "question_id": "2024I0A-1-23",
@@ -11380,7 +11380,7 @@
           "Alineación centrada."
         ],
         "answer": 2,
-        "context": null
+        "context": "contexts/2024I0A_p3.png"
       },
       {
         "question_id": "2024I0A-1-24",
@@ -11395,7 +11395,7 @@
           "Referencia cruzada."
         ],
         "answer": 2,
-        "context": null
+        "context": "contexts/2024I0A_p3.png"
       },
       {
         "question_id": "2024I0A-1-25",
@@ -11410,7 +11410,7 @@
           "Versalitas."
         ],
         "answer": 3,
-        "context": null
+        "context": "contexts/2024I0A_p3.png"
       },
       {
         "question_id": "2024I0A-1-26",
@@ -11425,7 +11425,7 @@
           "H12"
         ],
         "answer": 1,
-        "context": null
+        "context": "contexts/2024I0A_p4.png"
       },
       {
         "question_id": "2024I0A-1-27",
@@ -11440,7 +11440,7 @@
           "Borde superior e inferior."
         ],
         "answer": 1,
-        "context": null
+        "context": "contexts/2024I0A_p4.png"
       },
       {
         "question_id": "2024I0A-1-28",
@@ -11455,7 +11455,7 @@
           "=H3/(100*G3)"
         ],
         "answer": 0,
-        "context": null
+        "context": "contexts/2024I0A_p4.png"
       },
       {
         "question_id": "2024I0A-1-29",
@@ -11470,7 +11470,7 @@
           "=F3:F7"
         ],
         "answer": 2,
-        "context": null
+        "context": "contexts/2024I0A_p4.png"
       },
       {
         "question_id": "2024I0A-1-30",
@@ -11485,7 +11485,7 @@
           "Tipo de celda: Número. Posiciones decimales: 2. Usar separador de miles"
         ],
         "answer": 3,
-        "context": null
+        "context": "contexts/2024I0A_p4.png"
       },
       {
         "question_id": "2024I0A-1-31",
@@ -11500,7 +11500,7 @@
           "Detalle."
         ],
         "answer": 2,
-        "context": null
+        "context": "contexts/2024I0A_p5.png"
       },
       {
         "question_id": "2024I0A-1-32",
@@ -11515,7 +11515,7 @@
           "Ahora: 07/05/2024, 14:32"
         ],
         "answer": 0,
-        "context": null
+        "context": "contexts/2024I0A_p5.png"
       },
       {
         "question_id": "2024I0A-1-33",
@@ -11530,7 +11530,7 @@
           "Página 1 de 4"
         ],
         "answer": 3,
-        "context": null
+        "context": "contexts/2024I0A_p5.png"
       },
       {
         "question_id": "2024I0A-1-34",
@@ -11545,7 +11545,7 @@
           "En la primera página se mostrará primero el texto “Clientes”; a continuación los nombres de los campos; después el nombre de cada país y los valores correspondientes para cada cliente de sus campos “nombreEmpresa”, “pais”, y “empleados”. Al final de cada página se mostrará la fecha y hora según el formato aplicado, y un texto con la estructura “Página <número de página> de <total de páginas>”."
         ],
         "answer": 3,
-        "context": null
+        "context": "contexts/2024I0A_p5.png"
       },
       {
         "question_id": "2024I0A-1-35",
@@ -11560,7 +11560,7 @@
           "Se mostrará únicamente en la vista Diseño como información del informe."
         ],
         "answer": 1,
-        "context": null
+        "context": "contexts/2024I0A_p5.png"
       },
       {
         "question_id": "2024I0A-1-36",
@@ -11575,7 +11575,7 @@
           "En la plataforma Circuit."
         ],
         "answer": 2,
-        "context": null
+        "context": "contexts/2024I0A_p6.png"
       },
       {
         "question_id": "2024I0A-1-37",
@@ -11590,7 +11590,7 @@
           "11 reuniones más."
         ],
         "answer": 1,
-        "context": null
+        "context": "contexts/2024I0A_p6.png"
       },
       {
         "question_id": "2024I0A-1-38",
@@ -11605,7 +11605,7 @@
           "Sí, al seleccionar la opción Asistente para programación nos permite guardar los cambios en una carpeta específica, quedando disponible para cuando se pueda enviar."
         ],
         "answer": 0,
-        "context": null
+        "context": "contexts/2024I0A_p6.png"
       },
       {
         "question_id": "2024I0A-1-39",
@@ -11620,7 +11620,7 @@
           "Ctrl + 4"
         ],
         "answer": 0,
-        "context": null
+        "context": "contexts/2024I0A_p6.png"
       },
       {
         "question_id": "2024I0A-1-40",
@@ -11635,7 +11635,7 @@
           "Mostrar lectura."
         ],
         "answer": 2,
-        "context": null
+        "context": "contexts/2024I0A_p6.png"
       },
       {
         "question_id": "2024I0A-1R-1",
@@ -12034,7 +12034,7 @@
           "Sepúlveda es un municipio."
         ],
         "answer": 0,
-        "context": null
+        "context": "contexts/2024I0B_p3.png"
       },
       {
         "question_id": "2024I0B-1-22",
@@ -12049,7 +12049,7 @@
           "Sección."
         ],
         "answer": 1,
-        "context": null
+        "context": "contexts/2024I0B_p3.png"
       },
       {
         "question_id": "2024I0B-1-23",
@@ -12064,7 +12064,7 @@
           "Referencia cruzada."
         ],
         "answer": 2,
-        "context": null
+        "context": "contexts/2024I0B_p3.png"
       },
       {
         "question_id": "2024I0B-1-24",
@@ -12079,7 +12079,7 @@
           "Alineación centrada."
         ],
         "answer": 2,
-        "context": null
+        "context": "contexts/2024I0B_p3.png"
       },
       {
         "question_id": "2024I0B-1-25",
@@ -12094,7 +12094,7 @@
           "Versalitas."
         ],
         "answer": 3,
-        "context": null
+        "context": "contexts/2024I0B_p3.png"
       },
       {
         "question_id": "2024I0B-1-26",
@@ -12109,7 +12109,7 @@
           "H12"
         ],
         "answer": 1,
-        "context": null
+        "context": "contexts/2024I0B_p4.png"
       },
       {
         "question_id": "2024I0B-1-27",
@@ -12124,7 +12124,7 @@
           "Borde superior e inferior."
         ],
         "answer": 1,
-        "context": null
+        "context": "contexts/2024I0B_p4.png"
       },
       {
         "question_id": "2024I0B-1-28",
@@ -12139,7 +12139,7 @@
           "=F3:F7"
         ],
         "answer": 2,
-        "context": null
+        "context": "contexts/2024I0B_p4.png"
       },
       {
         "question_id": "2024I0B-1-29",
@@ -12154,7 +12154,7 @@
           "=H3/(100*G3)"
         ],
         "answer": 0,
-        "context": null
+        "context": "contexts/2024I0B_p4.png"
       },
       {
         "question_id": "2024I0B-1-30",
@@ -12169,7 +12169,7 @@
           "Tipo de celda: Número. Posiciones decimales: 2. Usar separador de miles"
         ],
         "answer": 3,
-        "context": null
+        "context": "contexts/2024I0B_p4.png"
       },
       {
         "question_id": "2024I0B-1-31",
@@ -12184,7 +12184,7 @@
           "Detalle."
         ],
         "answer": 2,
-        "context": null
+        "context": "contexts/2024I0B_p5.png"
       },
       {
         "question_id": "2024I0B-1-32",
@@ -12199,7 +12199,7 @@
           "Ahora: 07/05/2024, 14:32"
         ],
         "answer": 0,
-        "context": null
+        "context": "contexts/2024I0B_p5.png"
       },
       {
         "question_id": "2024I0B-1-33",
@@ -12214,7 +12214,7 @@
           "Página 1 de 4"
         ],
         "answer": 3,
-        "context": null
+        "context": "contexts/2024I0B_p5.png"
       },
       {
         "question_id": "2024I0B-1-34",
@@ -12229,7 +12229,7 @@
           "Se mostrará únicamente en la vista Diseño como información del informe."
         ],
         "answer": 1,
-        "context": null
+        "context": "contexts/2024I0B_p5.png"
       },
       {
         "question_id": "2024I0B-1-35",
@@ -12244,7 +12244,7 @@
           "En la primera página se mostrará primero el texto “Clientes”; a continuación los nombres de los campos; después el nombre de cada país y los valores correspondientes para cada cliente de sus campos “nombreEmpresa”, “pais”, y “empleados”. Al final de cada página se mostrará la fecha y hora según el formato aplicado, y un texto con la estructura “Página <número de página> de <total de páginas>”."
         ],
         "answer": 3,
-        "context": null
+        "context": "contexts/2024I0B_p5.png"
       },
       {
         "question_id": "2024I0B-1-36",
@@ -12259,7 +12259,7 @@
           "11 reuniones más."
         ],
         "answer": 1,
-        "context": null
+        "context": "contexts/2024I0B_p6.png"
       },
       {
         "question_id": "2024I0B-1-37",
@@ -12274,7 +12274,7 @@
           "En la plataforma Circuit."
         ],
         "answer": 2,
-        "context": null
+        "context": "contexts/2024I0B_p6.png"
       },
       {
         "question_id": "2024I0B-1-38",
@@ -12289,7 +12289,7 @@
           "Sí, al seleccionar la opción Asistente para programación nos permite guardar los cambios en una carpeta específica, quedando disponible para cuando se pueda enviar."
         ],
         "answer": 0,
-        "context": null
+        "context": "contexts/2024I0B_p6.png"
       },
       {
         "question_id": "2024I0B-1-39",
@@ -12304,7 +12304,7 @@
           "Mostrar lectura."
         ],
         "answer": 2,
-        "context": null
+        "context": "contexts/2024I0B_p6.png"
       },
       {
         "question_id": "2024I0B-1-40",
@@ -12319,7 +12319,7 @@
           "Ctrl + 4"
         ],
         "answer": 0,
-        "context": null
+        "context": "contexts/2024I0B_p6.png"
       },
       {
         "question_id": "2024I0B-1R-1",
@@ -13138,7 +13138,7 @@
           "Planta: 1. Pasillo: 3 derecha. Estanterías: 1 a 5."
         ],
         "answer": 3,
-        "context": null
+        "context": "contexts/2024L0A_p6.png"
       },
       {
         "question_id": "2024L0A-1-50",
@@ -13153,7 +13153,7 @@
           "Tema: Derecho laboral. Nombre: \"Contratos y acuerdos laborales\"."
         ],
         "answer": 1,
-        "context": null
+        "context": "contexts/2024L0A_p6.png"
       },
       {
         "question_id": "2024L0A-1-51",
@@ -13168,7 +13168,7 @@
           "Geografía Política."
         ],
         "answer": 1,
-        "context": null
+        "context": "contexts/2024L0A_p6.png"
       },
       {
         "question_id": "2024L0A-1-52",
@@ -13183,7 +13183,7 @@
           "Geografía Física."
         ],
         "answer": 2,
-        "context": null
+        "context": "contexts/2024L0A_p6.png"
       },
       {
         "question_id": "2024L0A-1-53",
@@ -13198,7 +13198,7 @@
           "Planta: 3 Pasillo: 1 derecha. Estanterías: 1 a 5."
         ],
         "answer": 2,
-        "context": null
+        "context": "contexts/2024L0A_p6.png"
       },
       {
         "question_id": "2024L0A-1-54",
@@ -13213,7 +13213,7 @@
           "Tema: Derecho económico. Nombre: \"Teoría y práctica del derecho económico\"."
         ],
         "answer": 0,
-        "context": null
+        "context": "contexts/2024L0A_p6.png"
       },
       {
         "question_id": "2024L0A-1-55",
@@ -13228,7 +13228,7 @@
           "Viernes."
         ],
         "answer": 1,
-        "context": null
+        "context": "contexts/2024L0A_p7.png"
       },
       {
         "question_id": "2024L0A-1-56",
@@ -13243,7 +13243,7 @@
           "Planta 4."
         ],
         "answer": 0,
-        "context": null
+        "context": "contexts/2024L0A_p7.png"
       },
       {
         "question_id": "2024L0A-1-57",
@@ -13258,7 +13258,7 @@
           "3"
         ],
         "answer": 1,
-        "context": null
+        "context": "contexts/2024L0A_p7.png"
       },
       {
         "question_id": "2024L0A-1-58",
@@ -13273,7 +13273,7 @@
           "Inmunología."
         ],
         "answer": 3,
-        "context": null
+        "context": "contexts/2024L0A_p7.png"
       },
       {
         "question_id": "2024L0A-1-59",
@@ -13288,7 +13288,7 @@
           "Ignacio Benítez."
         ],
         "answer": 0,
-        "context": null
+        "context": "contexts/2024L0A_p7.png"
       },
       {
         "question_id": "2024L0A-1-60",
@@ -13303,7 +13303,7 @@
           "Antonio Durán."
         ],
         "answer": 2,
-        "context": null
+        "context": "contexts/2024L0A_p7.png"
       },
       {
         "question_id": "2024L0A-1R-1",
@@ -14947,7 +14947,7 @@
           "Planta: 1. Pasillo: 3 derecha. Estanterías: 1 a 5."
         ],
         "answer": 3,
-        "context": null
+        "context": "contexts/2024L0B_p6.png"
       },
       {
         "question_id": "2024L0B-1-50",
@@ -14962,7 +14962,7 @@
           "Tema: Derecho laboral. Nombre: \"Contratos y acuerdos laborales\"."
         ],
         "answer": 1,
-        "context": null
+        "context": "contexts/2024L0B_p6.png"
       },
       {
         "question_id": "2024L0B-1-51",
@@ -14977,7 +14977,7 @@
           "Geografía Política."
         ],
         "answer": 1,
-        "context": null
+        "context": "contexts/2024L0B_p6.png"
       },
       {
         "question_id": "2024L0B-1-52",
@@ -14992,7 +14992,7 @@
           "Planta: 3 Pasillo: 1 derecha. Estanterías: 1 a 5."
         ],
         "answer": 2,
-        "context": null
+        "context": "contexts/2024L0B_p6.png"
       },
       {
         "question_id": "2024L0B-1-53",
@@ -15007,7 +15007,7 @@
           "Geografía Física."
         ],
         "answer": 2,
-        "context": null
+        "context": "contexts/2024L0B_p6.png"
       },
       {
         "question_id": "2024L0B-1-54",
@@ -15022,7 +15022,7 @@
           "Tema: Derecho económico. Nombre: \"Teoría y práctica del derecho económico\"."
         ],
         "answer": 0,
-        "context": null
+        "context": "contexts/2024L0B_p6.png"
       },
       {
         "question_id": "2024L0B-1-55",
@@ -15037,7 +15037,7 @@
           "Viernes."
         ],
         "answer": 1,
-        "context": null
+        "context": "contexts/2024L0B_p7.png"
       },
       {
         "question_id": "2024L0B-1-56",
@@ -15052,7 +15052,7 @@
           "3"
         ],
         "answer": 1,
-        "context": null
+        "context": "contexts/2024L0B_p7.png"
       },
       {
         "question_id": "2024L0B-1-57",
@@ -15067,7 +15067,7 @@
           "Ignacio Benítez."
         ],
         "answer": 0,
-        "context": null
+        "context": "contexts/2024L0B_p7.png"
       },
       {
         "question_id": "2024L0B-1-58",
@@ -15082,7 +15082,7 @@
           "Planta 4."
         ],
         "answer": 0,
-        "context": null
+        "context": "contexts/2024L0B_p7.png"
       },
       {
         "question_id": "2024L0B-1-59",
@@ -15097,7 +15097,7 @@
           "Antonio Durán."
         ],
         "answer": 2,
-        "context": null
+        "context": "contexts/2024L0B_p7.png"
       },
       {
         "question_id": "2024L0B-1-60",
@@ -15112,7 +15112,7 @@
           "Inmunología."
         ],
         "answer": 3,
-        "context": null
+        "context": "contexts/2024L0B_p7.png"
       },
       {
         "question_id": "2024L0B-1R-1",
@@ -16756,7 +16756,7 @@
           "345,86"
         ],
         "answer": 3,
-        "context": null
+        "context": "contexts/2024L0X_p6.png"
       },
       {
         "question_id": "2024L0X-1-50",
@@ -16771,7 +16771,7 @@
           "Mayo."
         ],
         "answer": 1,
-        "context": null
+        "context": "contexts/2024L0X_p6.png"
       },
       {
         "question_id": "2024L0X-1-51",
@@ -16786,7 +16786,7 @@
           "194"
         ],
         "answer": 2,
-        "context": null
+        "context": "contexts/2024L0X_p6.png"
       },
       {
         "question_id": "2024L0X-1-52",
@@ -16801,7 +16801,7 @@
           "Junio."
         ],
         "answer": 3,
-        "context": null
+        "context": "contexts/2024L0X_p6.png"
       },
       {
         "question_id": "2024L0X-1-53",
@@ -16816,7 +16816,7 @@
           "Abril."
         ],
         "answer": 0,
-        "context": null
+        "context": "contexts/2024L0X_p6.png"
       },
       {
         "question_id": "2024L0X-1-54",
@@ -16831,7 +16831,7 @@
           "Abril."
         ],
         "answer": 2,
-        "context": null
+        "context": "contexts/2024L0X_p6.png"
       },
       {
         "question_id": "2024L0X-1-55",
@@ -16846,7 +16846,7 @@
           "Ninguna de las anteriores."
         ],
         "answer": 2,
-        "context": null
+        "context": "contexts/2024L0X_p7.png"
       },
       {
         "question_id": "2024L0X-1-56",
@@ -16861,7 +16861,7 @@
           "Puedan coincidir en el primer número."
         ],
         "answer": 3,
-        "context": null
+        "context": "contexts/2024L0X_p7.png"
       },
       {
         "question_id": "2024L0X-1-57",
@@ -16876,7 +16876,7 @@
           "121212"
         ],
         "answer": 0,
-        "context": null
+        "context": "contexts/2024L0X_p7.png"
       },
       {
         "question_id": "2024L0X-1-58",
@@ -16891,7 +16891,7 @@
           "Corresponda a un archivo cuarto ejemplar del segundo pasillo en el primer estante en inglés."
         ],
         "answer": 0,
-        "context": null
+        "context": "contexts/2024L0X_p7.png"
       },
       {
         "question_id": "2024L0X-1-59",
@@ -16906,7 +16906,7 @@
           "Corresponda a un archivo cuarto ejemplar del cuarto pasillo en el segundo estante."
         ],
         "answer": 3,
-        "context": null
+        "context": "contexts/2024L0X_p7.png"
       },
       {
         "question_id": "2024L0X-1-60",
@@ -16921,7 +16921,7 @@
           "Todas las anteriores son ciertas."
         ],
         "answer": 3,
-        "context": null
+        "context": "contexts/2024L0X_p7.png"
       },
       {
         "question_id": "2024L0X-1R-1",
@@ -18145,7 +18145,7 @@
           "dislocación"
         ],
         "answer": 0,
-        "context": null
+        "context": "contexts/2025I0A_p3.png"
       },
       {
         "question_id": "2025I0A-1-22",
@@ -18160,7 +18160,7 @@
           "Ecuación."
         ],
         "answer": 2,
-        "context": null
+        "context": "contexts/2025I0A_p3.png"
       },
       {
         "question_id": "2025I0A-1-23",
@@ -18175,7 +18175,7 @@
           "Aumentar el espaciado anterior del párrafo."
         ],
         "answer": 0,
-        "context": null
+        "context": "contexts/2025I0A_p3.png"
       },
       {
         "question_id": "2025I0A-1-24",
@@ -18190,7 +18190,7 @@
           "Campo."
         ],
         "answer": 1,
-        "context": null
+        "context": "contexts/2025I0A_p3.png"
       },
       {
         "question_id": "2025I0A-1-25",
@@ -18205,7 +18205,7 @@
           "Letra capital."
         ],
         "answer": 3,
-        "context": null
+        "context": "contexts/2025I0A_p3.png"
       },
       {
         "question_id": "2025I0A-1-26",
@@ -18220,7 +18220,7 @@
           "=CONCAT(A2;A5)"
         ],
         "answer": 1,
-        "context": null
+        "context": "contexts/2025I0A_p4.png"
       },
       {
         "question_id": "2025I0A-1-27",
@@ -18235,7 +18235,7 @@
           "=PROMEDIO(F2..F5)"
         ],
         "answer": 0,
-        "context": null
+        "context": "contexts/2025I0A_p4.png"
       },
       {
         "question_id": "2025I0A-1-28",
@@ -18250,7 +18250,7 @@
           "Estilos."
         ],
         "answer": 3,
-        "context": null
+        "context": "contexts/2025I0A_p4.png"
       },
       {
         "question_id": "2025I0A-1-29",
@@ -18265,7 +18265,7 @@
           "#.## dd"
         ],
         "answer": 1,
-        "context": null
+        "context": "contexts/2025I0A_p4.png"
       },
       {
         "question_id": "2025I0A-1-30",
@@ -18280,7 +18280,7 @@
           "=DIAS360(E2;D2)"
         ],
         "answer": 1,
-        "context": null
+        "context": "contexts/2025I0A_p4.png"
       },
       {
         "question_id": "2025I0A-1-31",
@@ -18295,7 +18295,7 @@
           "64 caracteres."
         ],
         "answer": 1,
-        "context": null
+        "context": "contexts/2025I0A_p5.png"
       },
       {
         "question_id": "2025I0A-1-32",
@@ -18310,7 +18310,7 @@
           "Datos adjuntos."
         ],
         "answer": 2,
-        "context": null
+        "context": "contexts/2025I0A_p5.png"
       },
       {
         "question_id": "2025I0A-1-33",
@@ -18325,7 +18325,7 @@
           "Texto enriquecido."
         ],
         "answer": 0,
-        "context": null
+        "context": "contexts/2025I0A_p5.png"
       },
       {
         "question_id": "2025I0A-1-34",
@@ -18340,7 +18340,7 @@
           "Si el campo Empresa tiene el valor “Verdadero”, entonces mostrará el texto “Disponible”. En otro caso, mostrará el texto “Consultar”."
         ],
         "answer": 3,
-        "context": null
+        "context": "contexts/2025I0A_p5.png"
       },
       {
         "question_id": "2025I0A-1-35",
@@ -18355,7 +18355,7 @@
           "Objeto OLE."
         ],
         "answer": 1,
-        "context": null
+        "context": "contexts/2025I0A_p5.png"
       },
       {
         "question_id": "2025I0A-1-36",
@@ -18370,7 +18370,7 @@
           "Personas."
         ],
         "answer": 3,
-        "context": null
+        "context": "contexts/2025I0A_p6.png"
       },
       {
         "question_id": "2025I0A-1-37",
@@ -18385,7 +18385,7 @@
           "Editor."
         ],
         "answer": 2,
-        "context": null
+        "context": "contexts/2025I0A_p6.png"
       },
       {
         "question_id": "2025I0A-1-38",
@@ -18400,7 +18400,7 @@
           "Correo electrónico."
         ],
         "answer": 3,
-        "context": null
+        "context": "contexts/2025I0A_p6.png"
       },
       {
         "question_id": "2025I0A-1-39",
@@ -18415,7 +18415,7 @@
           "Alt + F1"
         ],
         "answer": 1,
-        "context": null
+        "context": "contexts/2025I0A_p6.png"
       },
       {
         "question_id": "2025I0A-1-40",
@@ -18430,7 +18430,7 @@
           "Contacto."
         ],
         "answer": 0,
-        "context": null
+        "context": "contexts/2025I0A_p6.png"
       },
       {
         "question_id": "2025I0A-1R-1",
@@ -18829,7 +18829,7 @@
           "dislocación."
         ],
         "answer": 0,
-        "context": null
+        "context": "contexts/2025I0B_p3.png"
       },
       {
         "question_id": "2025I0B-1-22",
@@ -18844,7 +18844,7 @@
           "Ecuación."
         ],
         "answer": 2,
-        "context": null
+        "context": "contexts/2025I0B_p3.png"
       },
       {
         "question_id": "2025I0B-1-23",
@@ -18859,7 +18859,7 @@
           "Aumentar el espaciado anterior del párrafo."
         ],
         "answer": 0,
-        "context": null
+        "context": "contexts/2025I0B_p3.png"
       },
       {
         "question_id": "2025I0B-1-24",
@@ -18874,7 +18874,7 @@
           "Campo."
         ],
         "answer": 1,
-        "context": null
+        "context": "contexts/2025I0B_p3.png"
       },
       {
         "question_id": "2025I0B-1-25",
@@ -18889,7 +18889,7 @@
           "Letra capital."
         ],
         "answer": 3,
-        "context": null
+        "context": "contexts/2025I0B_p3.png"
       },
       {
         "question_id": "2025I0B-1-26",
@@ -18904,7 +18904,7 @@
           "Personas."
         ],
         "answer": 3,
-        "context": null
+        "context": "contexts/2025I0B_p4.png"
       },
       {
         "question_id": "2025I0B-1-27",
@@ -18919,7 +18919,7 @@
           "Editor."
         ],
         "answer": 2,
-        "context": null
+        "context": "contexts/2025I0B_p4.png"
       },
       {
         "question_id": "2025I0B-1-28",
@@ -18934,7 +18934,7 @@
           "Correo electrónico."
         ],
         "answer": 3,
-        "context": null
+        "context": "contexts/2025I0B_p4.png"
       },
       {
         "question_id": "2025I0B-1-29",
@@ -18949,7 +18949,7 @@
           "Alt + F1"
         ],
         "answer": 1,
-        "context": null
+        "context": "contexts/2025I0B_p4.png"
       },
       {
         "question_id": "2025I0B-1-30",
@@ -18964,7 +18964,7 @@
           "Contacto."
         ],
         "answer": 0,
-        "context": null
+        "context": "contexts/2025I0B_p4.png"
       },
       {
         "question_id": "2025I0B-1-31",
@@ -18979,7 +18979,7 @@
           "64 caracteres."
         ],
         "answer": 1,
-        "context": null
+        "context": "contexts/2025I0B_p5.png"
       },
       {
         "question_id": "2025I0B-1-32",
@@ -18994,7 +18994,7 @@
           "Datos adjuntos."
         ],
         "answer": 2,
-        "context": null
+        "context": "contexts/2025I0B_p5.png"
       },
       {
         "question_id": "2025I0B-1-33",
@@ -19009,7 +19009,7 @@
           "Texto enriquecido."
         ],
         "answer": 0,
-        "context": null
+        "context": "contexts/2025I0B_p5.png"
       },
       {
         "question_id": "2025I0B-1-34",
@@ -19024,7 +19024,7 @@
           "Si el campo Empresa tiene el valor “Verdadero”, entonces mostrará el texto “Disponible”. En otro caso, mostrará el texto “Consultar”."
         ],
         "answer": 3,
-        "context": null
+        "context": "contexts/2025I0B_p5.png"
       },
       {
         "question_id": "2025I0B-1-35",
@@ -19039,7 +19039,7 @@
           "Objeto OLE."
         ],
         "answer": 1,
-        "context": null
+        "context": "contexts/2025I0B_p5.png"
       },
       {
         "question_id": "2025I0B-1-36",
@@ -19054,7 +19054,7 @@
           "=CONCAT(A2;A5)"
         ],
         "answer": 1,
-        "context": null
+        "context": "contexts/2025I0B_p6.png"
       },
       {
         "question_id": "2025I0B-1-37",
@@ -19069,7 +19069,7 @@
           "=PROMEDIO(F2..F5)"
         ],
         "answer": 0,
-        "context": null
+        "context": "contexts/2025I0B_p6.png"
       },
       {
         "question_id": "2025I0B-1-38",
@@ -19084,7 +19084,7 @@
           "Estilos."
         ],
         "answer": 3,
-        "context": null
+        "context": "contexts/2025I0B_p6.png"
       },
       {
         "question_id": "2025I0B-1-39",
@@ -19099,7 +19099,7 @@
           "#.## dd"
         ],
         "answer": 1,
-        "context": null
+        "context": "contexts/2025I0B_p6.png"
       },
       {
         "question_id": "2025I0B-1-40",
@@ -19114,7 +19114,7 @@
           "=DIAS360(E2;D2)"
         ],
         "answer": 1,
-        "context": null
+        "context": "contexts/2025I0B_p6.png"
       },
       {
         "question_id": "2025I0B-1R-1",
@@ -19933,7 +19933,7 @@
           "Santillana."
         ],
         "answer": 3,
-        "context": null
+        "context": "contexts/2025L0A_p6.png"
       },
       {
         "question_id": "2025L0A-1-50",
@@ -19948,7 +19948,7 @@
           "Plaza & Janés."
         ],
         "answer": 1,
-        "context": null
+        "context": "contexts/2025L0A_p6.png"
       },
       {
         "question_id": "2025L0A-1-51",
@@ -19963,7 +19963,7 @@
           "Un calor tan cercano."
         ],
         "answer": 2,
-        "context": null
+        "context": "contexts/2025L0A_p6.png"
       },
       {
         "question_id": "2025L0A-1-52",
@@ -19978,7 +19978,7 @@
           "Santillana."
         ],
         "answer": 0,
-        "context": null
+        "context": "contexts/2025L0A_p6.png"
       },
       {
         "question_id": "2025L0A-1-53",
@@ -19993,7 +19993,7 @@
           "Entre visillos."
         ],
         "answer": 1,
-        "context": null
+        "context": "contexts/2025L0A_p6.png"
       },
       {
         "question_id": "2025L0A-1-54",
@@ -20008,7 +20008,7 @@
           "Martín Gaite, Carmen."
         ],
         "answer": 0,
-        "context": null
+        "context": "contexts/2025L0A_p6.png"
       },
       {
         "question_id": "2025L0A-1-55",
@@ -20023,7 +20023,7 @@
           "Bilbao."
         ],
         "answer": 3,
-        "context": null
+        "context": "contexts/2025L0A_p7.png"
       },
       {
         "question_id": "2025L0A-1-56",
@@ -20038,7 +20038,7 @@
           "Administración."
         ],
         "answer": 0,
-        "context": null
+        "context": "contexts/2025L0A_p7.png"
       },
       {
         "question_id": "2025L0A-1-57",
@@ -20053,7 +20053,7 @@
           "Técnico."
         ],
         "answer": 3,
-        "context": null
+        "context": "contexts/2025L0A_p7.png"
       },
       {
         "question_id": "2025L0A-1-58",
@@ -20068,7 +20068,7 @@
           "M-254"
         ],
         "answer": 2,
-        "context": null
+        "context": "contexts/2025L0A_p7.png"
       },
       {
         "question_id": "2025L0A-1-59",
@@ -20083,7 +20083,7 @@
           "23,82 %"
         ],
         "answer": 1,
-        "context": null
+        "context": "contexts/2025L0A_p7.png"
       },
       {
         "question_id": "2025L0A-1-60",
@@ -20098,7 +20098,7 @@
           "31,68 %"
         ],
         "answer": 2,
-        "context": null
+        "context": "contexts/2025L0A_p7.png"
       },
       {
         "question_id": "2025L0A-1R-1",
@@ -21742,7 +21742,7 @@
           "Plaza & Janés."
         ],
         "answer": 1,
-        "context": null
+        "context": "contexts/2025L0B_p6.png"
       },
       {
         "question_id": "2025L0B-1-50",
@@ -21757,7 +21757,7 @@
           "Un calor tan cercano."
         ],
         "answer": 2,
-        "context": null
+        "context": "contexts/2025L0B_p6.png"
       },
       {
         "question_id": "2025L0B-1-51",
@@ -21772,7 +21772,7 @@
           "Santillana."
         ],
         "answer": 3,
-        "context": null
+        "context": "contexts/2025L0B_p6.png"
       },
       {
         "question_id": "2025L0B-1-52",
@@ -21787,7 +21787,7 @@
           "Entre visillos."
         ],
         "answer": 1,
-        "context": null
+        "context": "contexts/2025L0B_p6.png"
       },
       {
         "question_id": "2025L0B-1-53",
@@ -21802,7 +21802,7 @@
           "Santillana."
         ],
         "answer": 0,
-        "context": null
+        "context": "contexts/2025L0B_p6.png"
       },
       {
         "question_id": "2025L0B-1-54",
@@ -21817,7 +21817,7 @@
           "Martín Gaite, Carmen."
         ],
         "answer": 0,
-        "context": null
+        "context": "contexts/2025L0B_p6.png"
       },
       {
         "question_id": "2025L0B-1-55",
@@ -21832,7 +21832,7 @@
           "Técnico."
         ],
         "answer": 3,
-        "context": null
+        "context": "contexts/2025L0B_p7.png"
       },
       {
         "question_id": "2025L0B-1-56",
@@ -21847,7 +21847,7 @@
           "M-254"
         ],
         "answer": 2,
-        "context": null
+        "context": "contexts/2025L0B_p7.png"
       },
       {
         "question_id": "2025L0B-1-57",
@@ -21862,7 +21862,7 @@
           "Bilbao."
         ],
         "answer": 3,
-        "context": null
+        "context": "contexts/2025L0B_p7.png"
       },
       {
         "question_id": "2025L0B-1-58",
@@ -21877,7 +21877,7 @@
           "Administración."
         ],
         "answer": 0,
-        "context": null
+        "context": "contexts/2025L0B_p7.png"
       },
       {
         "question_id": "2025L0B-1-59",
@@ -21892,7 +21892,7 @@
           "31,68 %"
         ],
         "answer": 2,
-        "context": null
+        "context": "contexts/2025L0B_p7.png"
       },
       {
         "question_id": "2025L0B-1-60",
@@ -21907,7 +21907,7 @@
           "23,82 %"
         ],
         "answer": 1,
-        "context": null
+        "context": "contexts/2025L0B_p7.png"
       },
       {
         "question_id": "2025L0B-1R-1",

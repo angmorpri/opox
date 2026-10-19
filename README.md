@@ -43,6 +43,15 @@ consecutive question on the same page, and listed for review (`REVIEW`).
 If the sheet or any crop already exists, nothing is written: it only lists the detected
 contexts missing from the sheet. `--force` overwrites, reporting each file replaced.
 
+### `opox add contexts [OPPOSITION] [--force]`
+
+Sets the `context` of each question in `processed/<opposition>/questions.json` from the
+context sheet and crops (D005), after validating them as `opox check contexts` does;
+questions outside the sheet get no context. Running it again changes nothing.
+
+Adding a context is always allowed. If an existing context would be replaced or cleared,
+nothing is written and the affected questions are listed; `--force` applies the changes.
+
 ### `opox check contexts [OPPOSITION]`
 
 Validates the context sheet `interim/<opposition>/contexts.csv` and its crops in

@@ -11,7 +11,7 @@ This check is read-only.
 
 import logging
 from collections import defaultdict
-from pathlib import Path
+from pathlib import Path, PurePosixPath
 
 import pdfplumber
 from pydantic import ValidationError
@@ -56,6 +56,14 @@ def _parse_rows(rows: list[dict[str, str]]) -> tuple[list[tuple[str, int, int, i
 
 def check_contexts(data_dir: Path, opposition: str) -> list[str]:
     """Return a list of problems found; empty if everything is consistent."""
+    return resolve_contexts(data_dir, opposition)[0]
+
+
+def resolve_contexts(data_dir: Path, opposition: str) -> tuple[list[str], dict[str, PurePosixPath]]:
+    """Validate the sheet and crops; return (problems, context path of each question id).
+
+    Paths are relative to `processed/<opposition>/`, as stored in `Question.context`.
+    """
     sheet_path = data_dir / "interim" / opposition / "contexts.csv"
     processed_dir = data_dir / "processed" / opposition
     crops_dir = processed_dir / "contexts"
@@ -65,14 +73,14 @@ def check_contexts(data_dir: Path, opposition: str) -> list[str]:
 
     for path in (sheet_path, questions_path, rules_path):
         if not path.is_file():
-            return [f"file not found: {path}"]
+            return [f"file not found: {path}"], {}
     rows = read_sheet(sheet_path)
     if rows and list(rows[0]) != SHEET_COLUMNS:
-        return [f"{sheet_path}: columns must be {', '.join(SHEET_COLUMNS)}"]
+        return [f"{sheet_path}: columns must be {', '.join(SHEET_COLUMNS)}"], {}
     try:
         exams = ExamCollection.model_validate_json(questions_path.read_text(encoding="utf-8"))
     except ValidationError as e:
-        return [f"invalid model in {questions_path}\n{e}"]
+        return [f"invalid model in {questions_path}\n{e}"], {}
     rules = CallRulesCollection.model_validate_json(rules_path.read_text(encoding="utf-8"))
     rules_by_id = {r.call_id: r for r in rules.root}
     question_ids = {q.question_id for e in exams.root for q in e.questions}
@@ -95,6 +103,7 @@ def check_contexts(data_dir: Path, opposition: str) -> list[str]:
             errors.append(f"crop not in {sheet_path}: {path}")
 
     # Questions: each range must be found from its page on, and used by one context only.
+    assignment: dict[str, PurePosixPath] = {}
     by_exam: dict[str, list[tuple[int, int, int]]] = defaultdict(list)
     for exam_id, page, first, last in contexts:
         by_exam[exam_id].append((page, first, last))
@@ -127,5 +136,6 @@ def check_contexts(data_dir: Path, opposition: str) -> list[str]:
                 if qid in owner:
                     errors.append(f"{where}: {qid} already used by {exam_id} p{owner[qid]}")
                 owner[qid] = page
+                assignment[qid] = PurePosixPath(crops_dir.name, crop_name(exam_id, page))
 
-    return errors
+    return errors, assignment
