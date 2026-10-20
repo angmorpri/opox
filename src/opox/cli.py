@@ -5,10 +5,13 @@ import logging
 import sys
 from pathlib import Path
 
+from opox.add.bank import add_bank
 from opox.add.contexts import add_contexts
+from opox.checks.bank import check_bank
 from opox.checks.contexts import check_contexts
 from opox.checks.questions import check_questions
 from opox.checks.rules import check_rules
+from opox.extract.bank import SIMILARITY_THRESHOLD, extract_bank
 from opox.extract.contexts import extract_contexts
 from opox.extract.questions import extract_questions
 
@@ -34,6 +37,31 @@ def _run_extract_contexts(args: argparse.Namespace) -> int:
     if not written:
         return 1
     print(f"Contexts written. {len(notes)} point(s) to review.")
+    return 0
+
+
+def _run_extract_bank(args: argparse.Namespace) -> int:
+    written, notes = extract_bank(args.data_dir, args.opposition, args.force, args.threshold)
+    for note in notes:
+        print(note if written else f"ERROR {note}", file=sys.stdout if written else sys.stderr)
+    return 0 if written else 1
+
+
+def _run_add_bank(args: argparse.Namespace) -> int:
+    ok, notes = add_bank(args.data_dir, args.opposition, args.force)
+    for note in notes:
+        print(note if ok else f"ERROR {note}", file=sys.stdout if ok else sys.stderr)
+    return 0 if ok else 1
+
+
+def _run_check_bank(args: argparse.Namespace) -> int:
+    errors = check_bank(args.data_dir, args.opposition)
+    for error in errors:
+        print(f"ERROR {error}", file=sys.stderr)
+    if errors:
+        print(f"{len(errors)} problem(s) found.", file=sys.stderr)
+        return 1
+    print("Every answered question is in the bank.")
     return 0
 
 
@@ -106,6 +134,19 @@ def _build_parser() -> argparse.ArgumentParser:
     contexts.add_argument("--force", action="store_true", help="overwrite existing output")
     contexts.set_defaults(func=_run_extract_contexts)
 
+    bank = sources.add_parser(
+        "bank", parents=[common], help="build the question bank and its control sheets"
+    )
+    bank.add_argument("opposition", nargs="?", default="C2_AGE")
+    bank.add_argument("--force", action="store_true", help="overwrite existing output")
+    bank.add_argument(
+        "--threshold",
+        type=float,
+        default=SIMILARITY_THRESHOLD,
+        help=f"text and answer similarity for candidates (default: {SIMILARITY_THRESHOLD})",
+    )
+    bank.set_defaults(func=_run_extract_bank)
+
     add = commands.add_parser("add", help="merge reviewed data into processed data")
     add_targets = add.add_subparsers(dest="target", required=True)
 
@@ -115,6 +156,13 @@ def _build_parser() -> argparse.ArgumentParser:
     add_c.add_argument("opposition", nargs="?", default="C2_AGE")
     add_c.add_argument("--force", action="store_true", help="replace existing contexts")
     add_c.set_defaults(func=_run_add_contexts)
+
+    add_b = add_targets.add_parser(
+        "bank", parents=[common], help="add decided candidates to the question bank"
+    )
+    add_b.add_argument("opposition", nargs="?", default="C2_AGE")
+    add_b.add_argument("--force", action="store_true", help="replace differing entries")
+    add_b.set_defaults(func=_run_add_bank)
 
     check = commands.add_parser("check", help="validate data against references")
     targets = check.add_subparsers(dest="target", required=True)
@@ -134,6 +182,10 @@ def _build_parser() -> argparse.ArgumentParser:
     )
     check_c.add_argument("opposition", nargs="?", default="C2_AGE")
     check_c.set_defaults(func=_run_check_contexts)
+
+    check_b = targets.add_parser("bank", parents=[common], help="check the question bank")
+    check_b.add_argument("opposition", nargs="?", default="C2_AGE")
+    check_b.set_defaults(func=_run_check_bank)
 
     return parser
 

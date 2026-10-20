@@ -176,3 +176,71 @@ La extracción la realiza el código mediante `opox extract questions`, usando
 `pdfplumber`. Al terminar, muestra la lista de puntos que requieren revisión o
 completarse manualmente. Se valida con `opox check questions`, frente a
 `rules.json` y los recortes de contextos.
+
+
+## [D010] Modelo de datos para la batería de preguntas
+
+> EN DEFINICIÓN, consultar NOTES
+
+La **batería** reúne las preguntas por examen ([D009]) sin duplicados. El modelo se
+define en `src/opox/models/bank.py` ([D007]) y se almacena en un único
+`processed/<oposición>/bank.json`.
+
+```
+BankQuestion
+  bank_id: str                  # question_id del representante
+  sources: list[str]            # question_id de todas las apariciones
+  text: str
+  context: PurePosixPath | None
+  answer: str
+  distractors: list[str]        # pool deduplicado, al menos 3
+```
+
+- **Igualdad**: dos preguntas son iguales si enunciado (texto + contexto) y respuesta
+  correcta serían iguales para un opositor. El texto se compara sin mayúsculas, tildes
+  ni puntuación. Respuesta y opciones, con una normalización conservadora (Unicode,
+  comillas, guiones, espacios y punto final), que conserva tildes, mayúsculas y
+  puntuación para no confundir opciones de preguntas de ortografía.
+- **Representante**: la aparición más reciente (año de convocatoria y, a igualdad,
+  `exam_id`). Su texto y contexto son los canónicos y su `question_id` es el `bank_id`,
+  estable aunque se regenere la batería.
+- **Distractores**: unión de los de todas las versiones, deduplicados tras normalizar.
+  Al montar un examen se eligen 3 al azar y se mezclan con la respuesta.
+- Las preguntas **anuladas** se excluyen. Las **obsoletas** se incluyen, pues aún no se
+  detectan (ver "Validez temporal" en `NOTES.md`).
+- No se contemplan opciones fijas (p. ej. "a y b son correctas"): en C2_AGE no hay
+  ningún caso en el que mezclar distractores rompa una pregunta. Se revisará con la
+  detección de formatos de preguntas.
+
+El flujo sigue el patrón de [D005]:
+
+1. `opox extract bank` agrupa las coincidencias exactas (mismo texto, respuesta, conjunto
+   de opciones y recorte de contexto) y busca **candidatos**: grupos cuyo texto y
+   respuesta superan un umbral de similitud (`rapidfuzz`, sobre texto sin mayúsculas,
+   tildes ni puntuación). El umbral es **0,85** por defecto (`--threshold`), ajustado a
+   ojo sobre C2_AGE: recoge todos los casos conocidos, pero no se ha medido cuántas
+   reformulaciones más lejanas se escapan.
+   - Escribe `bank.json` con los grupos no ligados a ningún candidato.
+   - Escribe dos hojas de control en `interim/<oposición>/`, únicas fuentes de verdad
+     de las decisiones manuales:
+     - `bank_merges.csv` (`question_a, question_b, reason, merge, note`): pares de
+       grupos, identificados por su representante. `reason` es `text`, `answer`,
+       `options` o `context` (sólo uno tiene contexto).
+     - `bank_contexts.csv` (`context_a, context_b, same`): pares de recortes en
+       preguntas por lo demás iguales. Ningún recorte coincide píxel a píxel, ni entre
+       modelos A y B, así que la equivalencia se decide por imagen y se aplica a todas
+       las preguntas que los usan.
+   - Escribe `bank_review.md`, derivado: los pendientes lado a lado, con las
+     diferencias resaltadas y las imágenes.
+   - Si ya existen las hojas o la batería, se detiene salvo con `--force`.
+2. Manualmente se rellena `merge` / `same` con `y` o `n`.
+3. `opox add bank` aplica las decisiones. Los grupos ligados por filas forman bloques,
+   que sólo se añaden cuando todas sus filas están decididas; las fusiones son
+   transitivas y un `n` contradicho por otras fusiones es un error. No toca entradas
+   existentes salvo con `--force`, falla ante valores no válidos, informa de añadidas,
+   existentes y pendientes, y regenera `bank_review.md`.
+4. `opox check bank` verifica que toda pregunta con respuesta está en exactamente una
+   entrada y que cada entrada es coherente con `questions.json`.
+
+Al fusionar versiones cuya respuesta está redactada de forma distinta, las redacciones
+descartadas no pasan a distractores.

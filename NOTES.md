@@ -5,19 +5,43 @@ Relación desestructurada de casos abiertos, ideas y otras notas.
 Se ordenan de más recientes a más antiguas.
 
 
+## Mecanismo de deduplicación
+
+Se genera un nuevo ID para cada pregunta del banco. La razón es que en varios de los procesos descritos abajos, la "pregunta canónica" puede que no sea la más reciente. Para evitar tener un criterio arbitrario a la hora de decidir qué ID se le asigna a la pregunta del banco, veo preferible generar uno desde 0.
+
+Se añade un nuevo parámetro al modelo: contexto opcional. Marcará cuándo el contexto es obligatorio (todas las preguntas originales lo tienen) y cuándo es opcional (sólo algunas de las preguntas originales lo tiene).
+
+El flujo cambia de forma. Ahora, se divide en 4 grandes pasos, en función de qué parámetro se esté analizando:
+
+1. **Respuesta**: Se normaliza de forma conservadora. Dos o más respuestas exactamente iguales pasan al siguiente paso. Dos o más respuestas que superen cierto umbral de parecido marcan la opción de revisión manual y pasan al siguiente paso.
+
+2. **Enunciado**: Se normaliza de forma agresiva. Dos o más enunciados exactamente iguales pasan al siguiente paso. Dos o más enunciados que superen cierto umbral de parecido marcan la opción de revisión manual y pasan al siguiente paso. Dos o más enunciados que no superen el umbral de parecido se descartan, desmarcan la revisión manual de sus respuestas y no pasan al siguiente paso.
+
+3. **Contexto**: Si sólo una de las preguntas posee contexto, se asigna y se asigna el contexto como opcional. Si dos o más preguntas, pero no todas, poseen contexto, se marcan para revisión manual y se asigna el contexto como opcional. Si todas las preguntas poseen contexto, se marca para revisión manual y no se asigna el contexto como opcional.
+
+4. **Distractores**: Se normalizan de forma conservadora. Se añaden todos los que sean totalmente diferentes.
+
+La revisión manual requerirá:
+- Comparación simultánea de todas las preguntas potencialmente iguales, así como de los contextos.
+- Selección de pregunta canónica, es decir, aquella de la que se extraerá la respuesta y el enunciado (cada cual donde proceda).
+- Contemplar toda la casuística antes descrita y proporcionar un formato de revisión manual que sea cómodo y abarque las condiciones expuestas.
+
+Si este nuevo flujo complica mucho la ejecución, se podría valorar separar los pases, tal que la revisión manual ocurra entre cada uno y no al final del todo.
+
+
 ## Solucionarios provisionales en 2025
 
-> CERRADO -> Solucionarios definitivos descargados
+> 🔴 CERRADO -> Solucionarios definitivos descargados
 
 
 ## Procedencia de los datos
 
-> CERRADO -> Se confía en seguir correctamente el RUNBOOK.
+> 🔴 CERRADO -> Se confía en seguir correctamente el RUNBOOK.
 
 
 ## Validez temporal de preguntas y fuentes
 
-> ABIERTO
+> 🟢 ABIERTO
 
 Cada pregunta se respondió conforme a la normativa (y versiones de software) vigentes en
 la fecha del examen. Si la fuente ha cambiado desde entonces, un agente que use el corpus
@@ -36,7 +60,7 @@ existía. Esto afecta a:
 
 ## Escalabilidad de `data/raw/`
 
-> ABIERTO
+> 🟢 ABIERTO
 
 Ahora mismo mantengo el contenido de `/data/raw/` en el control de cambios, pero si
 empezara a crecer mucho por nuevos exámenes u otras oposiciones, probablemente habría
@@ -45,7 +69,7 @@ que buscar un mecanismo alternativo, sobre todo para que GitHub no se queje.
 
 ## Propuesta de pipeline agéntico para resolución de preguntas
 
-> ABIERTO
+> 🟢 ABIERTO
 
 Asumiendo que ya disponemos de la batería de preguntas y de una primera versión del
 corpus:
@@ -60,7 +84,7 @@ corpus:
 
 ## Extracción de *features* de preguntas
 
-> ABIERTO
+> 🟢 ABIERTO
 
 Bajo este concepto se agruparían todos los procesos de categorización, tematización,
 detección de formatos y cualesquiera otros etiquetados pertinentes sobre las preguntas.
@@ -91,6 +115,10 @@ en cuyo caso, habrá preguntas que queden "descartadas".
 Son **libres**. La idea es que un agente o modelo pudieran detectar formatos comunes
 de preguntas, que será útil en un futuro para generar preguntas sintéticas.
 
+Servirán también para evaluar si los distractores acumulados en la batería ([D010]) son
+útiles o pueden generarse sintéticamente, y para detectar formatos que exijan opciones
+fijas ("a y b son correctas", "todas las anteriores", elemento discordante).
+
 ### Etiquetado libre
 
 Son **libres**. Aquí la idea es detectar materias a más bajo nivel que la clasificación
@@ -99,14 +127,15 @@ oficial. Representaría el tercer nivel de clasificación.
 
 ## Preguntas con contexto
 
-> CERRADO -> [D005]
+> 🔴 CERRADO -> [D005]
 
 
 ## Modelo de datos para C2_AGE
 
-> EN CURSO
+> 🟡 EN CURSO
 > "Bases de convocatoria" -> [D008]
 > "Preguntas por examen" -> [D009]
+> "Batería de preguntas" -> [D010]
 
 Se propone una extracción en dos fases:
 
@@ -124,11 +153,11 @@ Los modelos a bajo nivel propuestos se detallan a continuación.
 
 ### Bases de convocatoria
 
-> CERRADO -> [D008]
+> 🔴 CERRADO -> [D008]
 
 ### Preguntas por examen
 
-> CERRADO -> [D009]
+> 🔴 CERRADO -> [D009]
 
 ### Categorías
 
@@ -152,29 +181,12 @@ convocatorias: [
 
 ### Batería de preguntas
 
-Se eliminan duplicados y preguntas con respuesta anulada.
-
-En caso de preguntas iguales con misma respuesta pero diferentes opciones, se agrupan
-las opciones. Además, en cualquiera de los casos, se ordenan las opciones tal que la
-primera siempre sea la correcta.
-
-Dos preguntas iguales en texto, respuesta y opciones dejan de serlo si sus contextos son diferentes.
-
-```
-id_pregunta: int
-ids_originales: list[str]
-ruta_contexto: path?
-texto: str
-opciones: list[str]
-```
-
-*Retos conocidos*
-- Detectar si dos preguntas tienen contextos iguales puede requerir intervención manual.
+> 🟡 EN CURSO -> [D010]
 
 
 ## Nombre del proyecto
 
-> ABIERTO
+> 🟢 ABIERTO
 
 "OPO" es un nombre temporal. Eventualmente habrá que buscar uno más comercial.
 

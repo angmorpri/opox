@@ -43,6 +43,39 @@ consecutive question on the same page, and listed for review (`REVIEW`).
 If the sheet or any crop already exists, nothing is written: it only lists the detected
 contexts missing from the sheet. `--force` overwrites, reporting each file replaced.
 
+### `opox extract bank [OPPOSITION] [--force] [--threshold T]`
+
+Builds the question bank `processed/<opposition>/bank.json` (D010) from the answered
+questions in `questions.json`. Questions with the same text (ignoring case, accents and
+punctuation), answer, option set and context crop (after a conservative normalization)
+are grouped automatically.
+
+Groups whose text and answer are similar (ratio >= `T`, default 0.85, on folded text)
+are candidates for manual review and stay out of the bank. They are written to:
+
+- `interim/<opposition>/bank_merges.csv`: `question_a, question_b, reason, merge, note`.
+- `interim/<opposition>/bank_contexts.csv`: `context_a, context_b, same`, for questions
+  that differ only by their context crop.
+- `interim/<opposition>/bank_review.md`: pending rows side by side, differences in bold.
+
+If the sheets or the bank already exist, nothing is written; `--force` overwrites them,
+discarding any decision taken.
+
+### `opox add bank [OPPOSITION] [--force]`
+
+Reads the decisions (`y`, `n` or blank) in the bank sheets and adds the resulting
+entries to `bank.json`. Groups linked by rows are added only once all their rows are
+decided; `y` merges are transitive. Fails on invalid values, unknown questions, or an
+`n` contradicted by other merges. Existing entries are kept; differing ones are replaced
+only with `--force`. Reports entries added, already present and decisions pending, and
+rewrites `bank_review.md`.
+
+### `opox check bank [OPPOSITION]`
+
+Validates `processed/<opposition>/bank.json` against `questions.json`. Read-only. Every
+answered question must be in exactly one entry, and each entry's text, context and
+answer must match its representative question.
+
 ### `opox add contexts [OPPOSITION] [--force]`
 
 Sets the `context` of each question in `processed/<opposition>/questions.json` from the
