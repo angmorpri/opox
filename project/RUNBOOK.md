@@ -65,17 +65,3 @@ completarla manualmente: el paso termina mostrando la lista de puntos pendientes
 - **Ejecutor**: código, `uv run opox add contexts`. Repetir tras cada nueva extracción
   de preguntas.
 - **Validación**: `uv run opox check questions`.
-
-### 6. Batería de preguntas ([D010])
-
-- **Entrada**: `processed/C2_AGE/questions.json` y `processed/C2_AGE/contexts/`.
-- **Salida**: `processed/C2_AGE/bank.json`; `interim/C2_AGE/bank_merges.csv`,
-  `bank_contexts.csv` y `bank_review.md`.
-- **Ejecutor**:
-  1. Código, `uv run opox extract bank`: escribe la batería sin los casos dudosos y las
-     hojas de control.
-  2. Manual: se completan `merge` y `same` en las hojas (`y` / `n`) con ayuda de
-     `bank_review.md`.
-  3. Código, `uv run opox add bank`: añade los casos decididos. Puede repetirse a medida
-     que se avanza en la revisión.
-- **Validación**: `uv run opox check bank`.

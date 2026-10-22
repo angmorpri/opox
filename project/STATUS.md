@@ -1,18 +1,19 @@
 # Estado actual
 
-## 20/10/2026
+## 22/10/2026
 
-- Diseñado el modelo de la batería de preguntas (D010) e implementados
-  `opox extract bank`, `opox add bank` y `opox check bank`, con tests.
-- Ejecutado `opox extract bank` sobre C2_AGE: 55 fusiones y 15 pares de contextos a
-  revisar en `interim/C2_AGE/`. La revisión manual está empezada (4 de 55 fusiones) y
-  en pausa.
-- **El mecanismo de detección de preguntas iguales se está reevaluando**; el rediseño
-  se anotará en `NOTES.md`. Hasta entonces, las hojas, `bank_review.md` y `bank.json`
-  generados son provisionales.
+- Replanteada la deduplicación de la batería desde cero, mediante experimentos acotados
+  en `lab/` cuyas conclusiones se acumulan en D011.
+- Primer experimento cerrado: las respuestas se comparan con normalización moderada sin
+  mayúsculas.
+- `bank.json` y `bank_review.md` de C2_AGE, y la implementación actual de
+  `opox extract/add/check bank`, son obsoletos hasta adaptar el código.
 
 ## Próximo paso
 
-1. Cerrar el rediseño de la detección de preguntas iguales y contrastarlo con D010.
-2. Adaptar la implementación si procede, completar la revisión manual y validar con
-   `opox check bank`.
+1. Siguiente experimento: normalización y similitud del **enunciado** dentro de cada
+   grupo de respuestas iguales. Medir cuántos enunciados coinciden exactamente con cada
+   normalización y cómo se distribuye la similitud entre los que no coinciden, para
+   fijar el criterio de igualdad y de revisión.
+2. Después, el contexto (comparación por parejas y caso extremo con contextos dispares)
+   y los distractores, hasta cerrar D011 y adaptar la implementación.

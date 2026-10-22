@@ -5,7 +5,21 @@ Relación desestructurada de casos abiertos, ideas y otras notas.
 Se ordenan de más recientes a más antiguas.
 
 
-## Mecanismo de deduplicación
+## Propuesta a alto nivel para el pipeline de generación de batería de preguntas
+
+> 🟢 ABIERTO
+
+1. `opox extract bank`: agrupa coincidencias exactas. Identifica candidatos y genera
+   hojas de control para determinar si son equivalentes o no.
+2. Manualmente se rellenan las hojas de control, comparando los candidatos.
+3. `opox add bank`: añade los candidatos resueltos en las hojas de control.
+4. `opox check bank`: garantiza que todas las preguntas de examen con respuesta están
+   representadas en las preguntas del banco.
+
+
+## Propuesta de mecanismo de deduplicación
+
+> 🟠 EN REVISIÓN -> [D011]
 
 Se genera un nuevo ID para cada pregunta del banco. La razón es que en varios de los procesos descritos abajos, la "pregunta canónica" puede que no sea la más reciente. Para evitar tener un criterio arbitrario a la hora de decidir qué ID se le asigna a la pregunta del banco, veo preferible generar uno desde 0.
 

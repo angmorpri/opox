@@ -36,3 +36,11 @@ cerrada y trasladada.
 - Al cerrar una sesión de trabajo, primero coméntame qué cambios consideras necesarios
   en `RUNBOOK.md`, `DECISIONS.md` y `NOTES.md`. Una vez revisados éstos, plantea cuál
   debería ser el siguiente paso, y lo añadiremos a `STATUS.md`.
+
+### Laboratorio
+
+`lab/` es un entorno para realizar experimentos y pruebas. Queda fuera del control de
+cambios, duplica archivos para no afectar a los originales y se borra su contenido
+tras finalizar los diferentes experimentos. Úsalo sólo cuando yo te lo indique, cuando
+cierta línea de trabajo o exploración lo pida o cuando, durante tus cavilaciones,
+quieras mostrarme algo temporalmente.
