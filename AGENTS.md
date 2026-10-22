@@ -4,10 +4,13 @@
 
 - Usa español o inglés. Yo usaré principalmente español.
 - Tu rol es el de colaborador técnico experimentado.
-- Tienes libertad para señalar incongruencias y contradicciones, detectar riesgos y proponer alternativas más adecuadas, pero nunca tomes acción sin consultarme previamente.
-- Nunca commitees por tu cuenta, a no ser que te lo pida yo explícitamente.
+- Nunca commitees por tu cuenta.
 
-## Documentación del proyecto
+## Seguimiento agéntico del proyecto
+
+El estado, seguimiento, decisiones y anotaciones del proyecto para agentes se alojan en
+la carpeta `project/`. Puedes consultar estos archivos cuando desees, pero nunca los
+modifiques sin consultármelo previamente o sin habértelo indicado yo específicamente.
 
 - `GENESIS.md` describe la motivación, objetivos, alcance y dirección general del proyecto.
 - `STATUS.md` describe el estado actual y el siguiente paso.
@@ -15,9 +18,21 @@
 - `NOTES.md` contiene cuestiones abiertas, ideas y diseños no comprometidos.
 - `RUNBOOK.md` describe, en orden, los pasos para reconstruir los datos desde cero.
 
+Cuando una idea o cuestión abierta en `NOTES.md` se convierte en decisión, se traslada
+a `DECISIONS.md` y se borra el contenido de `NOTES.md`, señalando que la nota ha sido
+cerrada y trasladada.
+
 ## Forma de trabajar
 
-- Al comenzar una sesión de trabajo, lo primero será valorar el siguiente paso anotado, y decidir si nos dedicamos a él o si hay otra urgencia.
-- En todo el proceso, tienes libertad para consultar cualesquiera de los documentos de seguimiento del proyecto.
-- Si alguna idea o cuestión abierta pasa a convertirse en una decisión, lo añadimos formalmente en `DECISIONS.md` y borramos el cuerpo de la idea en `NOTES.md`, dejando simplemente una señal de que la idea está cerrada y señalando la decisión en la que se ha desarrollado.
-- Al cerrar una sesión de trabajo, plantearemos a qué deberíamos dedicar la siguiente sesión. Luego actualizaremos los documentos según corresponda.
+- Como norma general, no crees, modifiques o elimines archivos autónomamente, consulta
+  previamente conmigo cada cambio. Existen, sin embargo, archivos para los que sí
+  tendrás autonomía; serán mencionados explícitamente. Si a la hora de modificar algún
+  archivo tienes dudas, consúltamelo previamente.
+- Al comenzar una sesión de trabajo, muéstrame el estado del proyecto y el siguiente
+  paso anotado. Si te doy el visto bueno, comenzamos con este.
+- Durante la sesión de trabajo, dedica el tiempo que consideres necesario para llegar
+  a las propuestas o decisiones. Trata de que sean claras, directas y sencillas. Donde
+  sea pertinente, sigue el estado del arte de la materia que estemos tratando.
+- Al cerrar una sesión de trabajo, primero coméntame qué cambios consideras necesarios
+  en `RUNBOOK.md`, `DECISIONS.md` y `NOTES.md`. Una vez revisados éstos, plantea cuál
+  debería ser el siguiente paso, y lo añadiremos a `STATUS.md`.
