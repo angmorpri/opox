@@ -66,6 +66,9 @@ mediante `uv` y `pyproject.toml`. Su carpeta raíz estará en `src/opox/`.
 `opox` deberá disponer de una interfaz por línea de comando desde la que ejecutar cada
 una de las funcionalidades principales que se desarrollen.
 
+Los subcomandos de `opox` deben admitir cualquier prefijo que no sea ambiguo
+(`opox dedup check ans`, `opox ext cont`).
+
 `README.md` se usará exclusivamente para describir el código y se redactará en inglés.
 
 
@@ -180,59 +183,49 @@ completarse manualmente. Se valida con `opox check questions`, frente a
 
 ## [D010] Modelo de datos para la batería de preguntas
 
-> ACTIVO
-
-La **batería** reúne las preguntas por examen ([D009]) sin duplicados. El modelo se
-define en `src/opox/models/bank.py` ([D007]) y se almacena en un único
-`processed/<oposición>/bank.json`.
-
-```
-BankQuestion
-  bank_id: str
-  sources: list[str]            # question_id de todas las apariciones
-  text: str
-  context: PurePosixPath | None
-  context_optional: bool        # si hay contexto, pero no aparece
-  answer: str
-  distractors: list[str]        # pool deduplicado, al menos 3
-```
-
-`bank_id` es único y no está relacionado ni con las preguntas originales ni con la
-secuencia original de las preguntas. En cada regeneración del banco de preguntas, podrá
-cambiar.
+> RESERVADO
 
 
 ## [D011] Decisiones sobre la deduplicación de preguntas
 
-> EN DESARROLLO
+> ACTIVO
 
-### Normalización de respuestas
+### Normalización
 
-Las respuestas se comparan con una normalización **moderada sin mayúsculas**:
-Unicode (NFKC), comillas, guiones y espacios unificados, sin punto final y sin
-mayúsculas. Se conservan tildes, puntuación y símbolos.
+- **Base** o **moderada**: Estandarizando Unicode (NFKC), comillas, guiones y espacios,
+  eliminando el punto final y las mayúsculas. Conserva tildes, puntuación y símbolos;
+  necesario para psicotécnico verbal, fórmulas y operaciones, que, de lo contrario, se
+  perderían o mezclarían pese a ser diferentes. Usado en **respuestas**.
+- **Extendida** o **agresiva**: Base más eliminación de tildes y puntuación de prosa,
+  con la particularidad de que `. , ; :` sólo se elimina cuando le sigue un espacio o
+  es el final del texto, para evitar romper fórmulas y operaciones. Usado en
+  **enunciados**.
 
-Sobre las 1493 preguntas con respuesta de C2_AGE (preguntas con respuesta única /
-repetida):
+### Igualdad
 
-| Normalización                               | Únicas | Repetidas |
-|---------------------------------------------|--------|-----------|
-| Ninguna                                     | 410    | 1083      |
-| Moderada                                    | 402    | 1091      |
-| Moderada sin mayúsculas                     | 396    | 1097      |
-| ... y sin puntuación de prosa               | 394    | 1099      |
-| ... y sin ninguna puntuación ni símbolo     | 388    | 1105      |
-| ... y sin tildes                            | 386    | 1107      |
+En **respuestas** y **enunciados**, dos o más son directamente **iguales** si, tras
+normalizar, coinciden al 100%. A su vez, se consideran **similares** si superan cierto
+umbral bajo la similitud de Levenshtein normalizada (`1 - ediciones / longitud mayor`).
+En este caso, se realiza una revisión manual para determinar si son verdaderamente
+iguales o no.
 
-- **Mayúsculas**: ninguna pregunta tiene opciones que difieran sólo en mayúsculas. Su
-  eliminación sólo une variantes irrelevantes (`Ctrl`/`CTRL`, `Geiser`/`GEISER`).
-- **Tildes**: pueden ser relevantes en el psicotécnico verbal, y eliminarlas apenas
-  aporta.
-- **Puntuación y símbolos**: son contenido en fórmulas, operadores, atajos, rutas,
-  números negativos o criterios de Access. Eliminarlos hace coincidir opciones de una
-  misma pregunta en unas 30 preguntas (`=F3+F7`/`=F3:F7`, `-9`/`9`) y deja vacías
-  respuestas como `+ | + | -` o `&`. Limitarse a la puntuación de prosa (`. , ; : ¿ ? ¡ !`, comillas) aún falla
-  en 2 (`=SUMA(A1,A5)`/`=SUMA(A1:A5)`, `Solicitud aprobada`/`"Solicitud aprobada"`) y
-  sólo ganaría una frase que difiere en una coma, así que no compensa.
+Los **enunciados** sólo miden su igualdad entre respuestas iguales.
 
+La **revisión manual** consiste en comparar clústers de 2 o más miembros, asignándoles
+una etiqueta común de **grupo** ('1', 'a'...). Todos aquellos que compartan grupo serán
+considerados iguales. En el caso de las **respuestas**, deben juzagarse a ciegas, sin
+conocer el enunciado, para valorar el significado.
 
+Actualmente, los umbrales de similitud son los siguientes:
+
+- Para respuestas: **70%**
+- Para enunciados: **75%**
+
+### Preguntas canónicas
+
+La pregunta canónica define el texto del enunciado, la respuesta y los distractores
+principales. Su utilidad se limita a la extracción de *features*. A la hora de usar una
+pregunta como pregunta, se escogerá una al azar de entre las `sources`.
+
+Se escoge como canónica la pregunta más reciente. En caso de empate, se escoge la
+primera por según `question_id`.

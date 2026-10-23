@@ -4,6 +4,7 @@ lab/
 
 # Cachés
 .ruff_cache/
+.pytest_cache/
 
 # Python-generated files
 __pycache__/

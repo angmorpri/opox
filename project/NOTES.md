@@ -8,39 +8,91 @@ Se ordenan de más recientes a más antiguas.
 ## Propuesta a alto nivel para el pipeline de generación de batería de preguntas
 
 > 🟢 ABIERTO
+> Propuesta casi cerrada, a falta de decidir deduplicación de contextos y distractores.
 
-1. `opox extract bank`: agrupa coincidencias exactas. Identifica candidatos y genera
-   hojas de control para determinar si son equivalentes o no.
-2. Manualmente se rellenan las hojas de control, comparando los candidatos.
-3. `opox add bank`: añade los candidatos resueltos en las hojas de control.
-4. `opox check bank`: garantiza que todas las preguntas de examen con respuesta están
-   representadas en las preguntas del banco.
+La deduplicación de **respuestas** y **enunciados** se hace en dos etapas: primero las
+respuestas (`answers`) y después los enunciados (`stems`). Sustituye a
+`opox extract/add/check bank`. `bank.json` ([D010]) sólo se genera después, tras
+resolver contextos y distractores.
+
+### Comandos
+
+Para cada etapa `<s>` (`answers` o `stems`):
+
+- `opox dedup extract <s>`: genera el JSON intermedio con los grupos automáticos (igualdad
+  exacta), la hoja de revisión y su guía. Respeta [D006]: no sobrescribe el JSON ni la
+  hoja si existen; con `--force`, regenera la hoja conservando las decisiones cuyos
+  miembros siguen existiendo e informa de las que se pierden. La guía no contiene trabajo
+  manual y siempre se regenera.
+- `opox dedup add <s>`: reconstruye el JSON a partir de los grupos automáticos y la hoja
+  completa. Es idempotente, y deshacer una unión en la hoja basta para deshacerla en el
+  JSON. Avisa de las filas de la hoja cuyos miembros ya no existen.
+- `opox dedup check <s>`: comprueba que cada pregunta con respuesta está en exactamente
+  un grupo y que el JSON coincide con lo que produciría `add`. Si falla, recuerda si la
+  hoja tiene casos sin rellenar. En `stems`, además, que la hoja y el JSON siguen siendo
+  coherentes con el `dedup_answers.json` actual.
+
+`stems` parte de `dedup_answers.json`: si se rehace la etapa de respuestas, hay que
+repetir la de enunciados.
+
+### Ficheros
+
+En `interim/<oposición>/`, en el control de cambios ([D002]):
+
+| Etapa   | JSON                 | Hoja                        | Guía                       |
+|---------|----------------------|-----------------------------|----------------------------|
+| answers | `dedup_answers.json` | `dedup_answers_review.csv`  | `dedup_answers_review.md`  |
+| stems   | `dedup_stems.json`   | `dedup_stems_review.csv`    | `dedup_stems_review.md`    |
+
+La hoja es la única fuente de verdad de las decisiones manuales; el JSON es un resultado
+derivado de `questions.json` (y, en `stems`, de `dedup_answers.json`) y de la hoja.
+
+Las hojas de revisión son CSV en UTF-8 con BOM, separados por ';', una fila por miembro:
+
+```
+case;member;group;max_similarity;questions;text
+```
+
+- Un **caso** reúne los miembros enlazados por similitud, directa o encadenada. Se
+  ordenan de menor a mayor similitud.
+- Un **miembro** es un grupo automático (A, B, C…). Se identifica por sus `question_id`
+  (`questions`), no por el número de caso, para conservar las decisiones al regenerar.
+- `group` se rellena a mano: los miembros de un caso con la misma etiqueta son iguales.
+- `text` es la respuesta (en `answers`) o el enunciado (en `stems`) de la pregunta
+  canónica del miembro.
+
+La guía en Markdown muestra cada caso con la similitud de cada pareja y un diff por
+palabras frente al miembro A. En `answers` sólo muestra respuestas; en `stems`, también
+la respuesta, las opciones y la pregunta canónica resultante.
+
+### Modelo de datos
+
+Ambos JSON comparten modelo, en `src/opox/models/dedup.py` ([D007]):
+
+```
+DedupGroup
+  canonical: str               # question_id de la pregunta canónica ([D011])
+  members: list[DedupMember]   # 1 si es automático, 2+ si se unió en la revisión
+DedupMember
+  key: str                     # respuesta o enunciado normalizado
+  sources: list[str]           # question_id con esa clave
+```
+
+- Cada pregunta con respuesta aparece en exactamente un `sources` de cada JSON.
+- En `stems`, los miembros de un grupo pertenecen siempre a un mismo grupo de
+  `dedup_answers.json`.
+- Los grupos se ordenan por `canonical`, y los miembros y sus `sources`, por
+  `question_id`, para que la salida sea estable.
 
 
 ## Propuesta de mecanismo de deduplicación
 
-> 🟠 EN REVISIÓN -> [D011]
+> 🟡 EN CURSO
+> "Respuestas" y "enunciados" cerrados en otras notas y en [D011]
+> "Contextos" y "distractores" pendientes.
 
-Se genera un nuevo ID para cada pregunta del banco. La razón es que en varios de los procesos descritos abajos, la "pregunta canónica" puede que no sea la más reciente. Para evitar tener un criterio arbitrario a la hora de decidir qué ID se le asigna a la pregunta del banco, veo preferible generar uno desde 0.
-
-Se añade un nuevo parámetro al modelo: contexto opcional. Marcará cuándo el contexto es obligatorio (todas las preguntas originales lo tienen) y cuándo es opcional (sólo algunas de las preguntas originales lo tiene).
-
-El flujo cambia de forma. Ahora, se divide en 4 grandes pasos, en función de qué parámetro se esté analizando:
-
-1. **Respuesta**: Se normaliza de forma conservadora. Dos o más respuestas exactamente iguales pasan al siguiente paso. Dos o más respuestas que superen cierto umbral de parecido marcan la opción de revisión manual y pasan al siguiente paso.
-
-2. **Enunciado**: Se normaliza de forma agresiva. Dos o más enunciados exactamente iguales pasan al siguiente paso. Dos o más enunciados que superen cierto umbral de parecido marcan la opción de revisión manual y pasan al siguiente paso. Dos o más enunciados que no superen el umbral de parecido se descartan, desmarcan la revisión manual de sus respuestas y no pasan al siguiente paso.
-
-3. **Contexto**: Si sólo una de las preguntas posee contexto, se asigna y se asigna el contexto como opcional. Si dos o más preguntas, pero no todas, poseen contexto, se marcan para revisión manual y se asigna el contexto como opcional. Si todas las preguntas poseen contexto, se marca para revisión manual y no se asigna el contexto como opcional.
-
-4. **Distractores**: Se normalizan de forma conservadora. Se añaden todos los que sean totalmente diferentes.
-
-La revisión manual requerirá:
-- Comparación simultánea de todas las preguntas potencialmente iguales, así como de los contextos.
-- Selección de pregunta canónica, es decir, aquella de la que se extraerá la respuesta y el enunciado (cada cual donde proceda).
-- Contemplar toda la casuística antes descrita y proporcionar un formato de revisión manual que sea cómodo y abarque las condiciones expuestas.
-
-Si este nuevo flujo complica mucho la ejecución, se podría valorar separar los pases, tal que la revisión manual ocurra entre cada uno y no al final del todo.
+- **Contexto**: Si sólo una de las preguntas posee contexto, se asigna y se asigna el contexto como opcional. Si dos o más preguntas, pero no todas, poseen contexto, se marcan para revisión manual y se asigna el contexto como opcional. Si todas las preguntas poseen contexto, se marca para revisión manual y no se asigna el contexto como opcional.
+- **Distractores**: Se normalizan de forma conservadora. Se añaden todos los que sean totalmente diferentes.
 
 
 ## Solucionarios provisionales en 2025
@@ -195,7 +247,27 @@ convocatorias: [
 
 ### Batería de preguntas
 
-> 🟡 EN CURSO -> [D010]
+> 🟢 ABIERTO -> [D010] reservado para cuando se cierre definitivamente
+
+Acumula las preguntas deduplicadas, referenciando claramente sus versiones originales y
+presentando una canónica para ser usada en la extracción de *features*.
+
+```
+BankQuestion
+  bank_id: str
+  sources: list[str]            # question_id de todas las apariciones
+  text: str
+  context: PurePosixPath | None
+  context_optional: bool        # si hay contexto, pero no aparece siempre
+  answer: str
+  distractors: list[str]        # pool deduplicado, al menos 3
+```
+
+`bank_id` es único y no está relacionado ni con las preguntas originales ni con la
+secuencia original de las preguntas. En cada regeneración del banco de preguntas puede
+cambiar.
+
+Se almacena en `bank.json`.
 
 
 ## Nombre del proyecto

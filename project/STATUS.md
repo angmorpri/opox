@@ -1,5 +1,13 @@
 # Estado actual
 
+## 23/10/2026
+
+- Cerrados los experimentos de deduplicación de respuestas y enunciados (D011):
+  normalización base/extendida, igualdad exacta y revisión manual por similitud
+  (respuestas ≥ 70%, enunciados ≥ 75%).
+- Propuesto el flujo `opox dedup extract/add/check answers|stems` (NOTES).
+- `bank.json`, `bank_review.md` y `opox extract/add/check bank` siguen obsoletos.
+
 ## 22/10/2026
 
 - Replanteada la deduplicación de la batería desde cero, mediante experimentos acotados
@@ -11,9 +19,8 @@
 
 ## Próximo paso
 
-1. Siguiente experimento: normalización y similitud del **enunciado** dentro de cada
-   grupo de respuestas iguales. Medir cuántos enunciados coinciden exactamente con cada
-   normalización y cómo se distribuye la similitud entre los que no coinciden, para
-   fijar el criterio de igualdad y de revisión.
-2. Después, el contexto (comparación por parejas y caso extremo con contextos dispares)
-   y los distractores, hasta cerrar D011 y adaptar la implementación.
+1. Implementar `opox dedup` para `answers` y `stems`: modelo `dedup.py`, normalización,
+   hojas y guías, prefijos de subcomandos y tests. Retirar `opox ... bank`.
+2. Probar el pipeline desde cero en C2_AGE: revisión de respuestas (29 casos),
+   revisión de enunciados y `check` de ambas etapas. Añadir los pasos al RUNBOOK.
+3. Una vez validado, cerrar contextos y distractores, generar `bank.json` y cerrar D010.
