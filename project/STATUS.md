@@ -1,26 +1,17 @@
 # Estado actual
 
-## 23/10/2026
+## 26/10/2026
 
-- Cerrados los experimentos de deduplicación de respuestas y enunciados (D011):
-  normalización base/extendida, igualdad exacta y revisión manual por similitud
-  (respuestas ≥ 70%, enunciados ≥ 75%).
-- Propuesto el flujo `opox dedup extract/add/check answers|stems` (NOTES).
-- `bank.json`, `bank_review.md` y `opox extract/add/check bank` siguen obsoletos.
-
-## 22/10/2026
-
-- Replanteada la deduplicación de la batería desde cero, mediante experimentos acotados
-  en `lab/` cuyas conclusiones se acumulan en D011.
-- Primer experimento cerrado: las respuestas se comparan con normalización moderada sin
-  mayúsculas.
-- `bank.json` y `bank_review.md` de C2_AGE, y la implementación actual de
-  `opox extract/add/check bank`, son obsoletos hasta adaptar el código.
+- Implementado `opox dedup extract/add/check answers|stems|contexts` y
+  `opox dedup check all` (D011), con prefijos de subcomandos en toda la CLI (D004).
+- Ejecutada la deduplicación en C2_AGE: 1493 preguntas con respuesta dan 963 únicas.
+  Distractores unidos sólo por igualdad exacta con normalización base (D011).
+- Implementado `opox extract bank` y `opox check bank`; generado `bank.json` con
+  963 entradas y 2919 distractores. Cerrado D010. Añadidos los pasos 6 a 9 al RUNBOOK.
 
 ## Próximo paso
 
-1. Implementar `opox dedup` para `answers` y `stems`: modelo `dedup.py`, normalización,
-   hojas y guías, prefijos de subcomandos y tests. Retirar `opox ... bank`.
-2. Probar el pipeline desde cero en C2_AGE: revisión de respuestas (29 casos),
-   revisión de enunciados y `check` de ambas etapas. Añadir los pasos al RUNBOOK.
-3. Una vez validado, cerrar contextos y distractores, generar `bank.json` y cerrar D010.
+1. Diseñar el modelo de categorías ("Modelo de datos para C2_AGE" en NOTES): extraerlas
+   de los bloques de `rules.json` y organizar los temarios de cada convocatoria.
+2. Asignar las categorías a la batería, como primera *feature* (NOTES, "Extracción de
+   *features* de preguntas").

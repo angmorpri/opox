@@ -1,0 +1,56 @@
+﻿case;member;group;max_similarity;questions;text
+C01;A;1;76;2025I0A-1-3;¿Cuál es una de las funciones principales de la BIOS?
+C01;B;1;76;2025I0B-1-1;¿Cuál es la función principal de la BIOS?
+C02;A;2;77;2022E0A-1-7;El tercer eje del Plan de Gobierno Abierto vigente está dedicado a la:
+C02;B;2;77;2022L0A-1-12;El tercer eje del vigente Plan de Gobierno Abierto está dedicado a la:
+C03;A;103;77;2024L0A-1-15, 2024L0B-1-16;Según lo dispuesto en la Ley 40/2015, de 1 de octubre, de Régimen Jurídico del Sector Público, en la Administración General del Estado en el exterior son órganos directivos:
+C03;B;104;77;2024L0X-1-16;Según la Ley 40/2015, de 1 de octubre, de Régimen Jurídico del Sector Público en la Administración General del Estado en el exterior:
+C04;A;4;77;2025L0A-2-32;"En una hoja de Microsoft Excel 365, donde la Columna A es Fecha, Columna B es Concepto, Columna C es Importe, ¿qué valores se sumarán si se utiliza la siguiente fórmula? =SUMAR.SI.CONJUNTO(C2:C6;B2:B6;""Nómina"";C2:C6;"">2000"";A2:A6;"">=01/01/2025"";A2:A6;""<=31/12/2025"")"
+C04;B;4;77;2025L0B-2-33;"En una hoja de Microsoft Excel 365, donde la Columna A es Fecha, Columna B es Concepto, Columna C es Importe, se utiliza la fórmula =SUMAR.SI.CONJUNTO(C2:C6;B2:B6;""Nómina"";C2:C6;"">2000"";A2:A6;"">=01/01/2025"";A2:A6;""<=31/12/2025""), ¿qué valores se sumarán?"
+C05;A;5;89;2024L0A-1R-3, 2024L0B-1R-3;Indique entre las siguientes palabras cuál es el antónimo de la palabra VENTURA.
+C05;B;5;89;2025L0A-1-36, 2025L0B-1-34;Indique entre las siguientes palabras cuál es el antónimo u opuesto de la palabra VENTURA.
+C05;C;6;89;2019L0X-1-38;Indique, entre las siguientes palabras, cuál es el antónimo de la palabra PROSPERIDAD:
+C06;A;7;79;2025I0A-1-31, 2025I0B-1-31;¿Cuál es la longitud máxima de un campo de tipo Texto corto?
+C06;B;7;79;2019L0A-2-37;"¿Cuál es la longitud máxima de un campo de tipo ""Texto corto"" en Access 2019?"
+C07;A;8;80;2025L0A-1-49, 2025L0B-1-51;¿Cuál de las siguientes editoriales acumula un mayor número de ejemplares disponibles?
+C07;B;9;80;2025L0A-1-50, 2025L0B-1-49;¿Cuál de las siguientes editoriales acumula un mayor número de préstamos realizados?
+C08;A;10;82;2024I0A-1-6;Indique cuál de las siguientes afirmaciones es la correcta.
+C08;B;10;82;2024I0B-1-5;Indique cuál de las siguientes afirmaciones es la única verdadera.
+C09;A;11;84;2019L0A-2-31;"Al diseñar una tabla de Access, en el campo FechaAlta incluimos la siguiente Regla de validación (sin las comillas): "">=Fecha()"". ¿Qué efecto tendrá la regla?"
+C09;B;11;84;2022E0A-1-56;Al diseñar una tabla de Access 2019, en el campo FechaAlta incluimos la siguiente Regla de validación >=Fecha() ¿Qué efecto tendrá la regla?
+C10;A;12;85;2019E0A-2-13, 2019L0A-2-29;En una hoja Excel seleccionamos tres celdas de una columna con los valores 5, 10 y 15. Arrastramos el controlador de relleno (esquina inferior derecha de la selección) a las dos celdas inferiores que están vacías. ¿Qué obtendremos en esas dos celdas inferiores?
+C10;B;12;85;2019I0A-1-22;En la hoja Excel mostrada seleccionamos las celdas B2, B3 y B4 (con los valores 5, 10 y 15). Arrastramos hacia abajo el controlador de relleno (esquina inferior derecha de la selección) a las dos celdas inferiores que están vacías. ¿Qué obtendremos en esas dos celdas inferiores?
+C11;A;13;87;2019E0A-1-6;Según la Ley Orgánica 6/1985, de 1 de julio, del Poder judicial, el Consejo General del Poder Judicial se renovará en su totalidad:
+C11;B;13;87;2019L0A-1-7;Según la Ley Orgánica 6/1985, de 1 de julio, del Poder judicial (en adelante LOPJ), el Consejo General del Poder Judicial se renovará en su totalidad:
+C12;A;14;88;2025I0A-1R-2, 2025I0B-1R-2;Microsoft Excel 365 clasifica las funciones por categorías. ¿Cuáles de las siguientes pertenecen a la categoría Matemáticas y Trigonométricas?
+C12;B;14;88;2022E0A-1-49;Excel 2019 clasifica las funciones por categorías. ¿Cuál de las siguientes pertenecen a la categoría “Matemáticas y Trigonométricas”?
+C13;A;15;90;2022L0A-2R-1;Señale cuál es la afirmación correcta en relación con el procedimiento de acceso a documentos y archivos, según el Real Decreto 1708/2011, de 18 de noviembre, por el que se establece el Sistema Español de Archivos y se regula el Sistema de Archivo de la Administración General del Estado y de sus Organismos Públicos:
+C13;B;15;90;2024L0X-2-5;Señale cuál es la afirmación correcta en relación con el procedimiento de acceso a documentos y archivos, según el Real Decreto 1708/2011, de 18 de noviembre, por el que se establece el Sistema Español de Archivos y se regula el Sistema de Archivo de la AGE y de sus Organismos Públicos:
+C14;A;16;91;2025I0A-1-2, 2025I0B-1-5;¿Cuál de los siguientes elementos tiene como tarea procesar los datos de la CPU y transformarlos en información representable en el dispositivo de salida?
+C14;B;16;91;2024L0X-2-35;¿Cuál de los siguientes elementos tiene como tarea procesar datos y transformarlos en información representable en el dispositivo de salida?
+C15;A;17;91;2022E0A-1R-5;Según el Real Decreto 462/2002, de 24 de Mayo, de Indemnizaciones por razón de Servicio, con carácter general, ¿cuál es la duración máxima de una comisión de servicio?
+C15;B;17;91;2022L0A-1-25;Según el artículo 5 del Real Decreto 462/2002, de 24 de Mayo, de Indemnizaciones por razón de Servicio, con carácter general, ¿cual es la duración máxima de una comisión de servicio?
+C16;A;18;93;2024L0A-1-25, 2024L0B-1-25;Conforme al artículo 40 de la Ley 47/2003, de 26 de noviembre, General Presupuestaria, en relación con la clasificación económica de los estados de gastos, se distinguen como créditos para operaciones de capital:
+C16;B;18;93;2022L0A-1R-4;Conforme al artículo 40 de la Ley 47/2003, de 26 de noviembre, General Presupuestaria, según la clasificación económica de los estados de gastos, se distingue como créditos para operaciones de capital:
+C17;A;19;93;2024I0A-1-38;Tenemos que aplazar el envío de la convocatoria de reuniones durante un par de horas. En dicha convocatoria hemos realizado algunos cambios. En este caso, ¿podemos guardarla para enviarla más adelante?
+C17;B;19;93;2024I0B-1-38;Tenemos que aplazar el envío de la convocatoria de reuniones durante un par de horas. En dicha convocatoria hemos realizado algunos cambios. En este caso, ¿podemos guardar la convocatoria para enviarla más adelante?
+C18;A;20;94;2019E0A-2-5, 2019L0A-2R-3;"La opción ""Columnas"" de Word permite seleccionar el número de columnas en que dispondremos el texto. ¿En cuál de las siguientes pestañas de la cinta de opciones de Word se encuentra de forma predeterminada?"
+C18;B;20;94;2019I0A-1-19;"La opción ""Columnas"" de Word permite seleccionar el número de columnas en que dispondremos el texto. ¿En cuál de las siguientes pestañas de la cinta de opciones de Word se encuentra dicha opción de forma predeterminada?"
+C19;A;21;94;2025L0A-1-24;Conforme al artículo 88.2 del Real Decreto Legislativo 5/2015, de 30 de octubre, por el que se aprueba el texto refundido de la Ley del Estatuto Básico del Empleado Público, ¿en qué situación se encuentran los funcionarios transferidos a las Comunidades Autónomas en la función pública en la que se integran?
+C19;B;21;94;2025L0B-1-22;Conforme al artículo 88.2 del Real Decreto Legislativo 5/2015, por el que se aprueba el texto refundido de la Ley del Estatuto Básico del Empleado Público, ¿en qué situación se encuentran los funcionarios transferidos a las Comunidades Autónomas en la función pública en la que se integran?
+C20;A;22;95;2025L0A-2-2;¿Cuándo y en qué sentido se reformó la Constitución Española de 1978 en garantía de los derechos de las personas con discapacidad para la igualdad real?
+C20;B;22;95;2025L0B-2-1;¿Cuando y en qué sentido se reformó la Constitución Española en garantia de los derechos de las personas con discapacidad para la igualdad real?
+C21;A;23;95;2022I0A-1R-5;En un sistema Windows se ha configurado la obtención automática de direcciones IP para acceder a una LAN. ¿Cómo se llama este protocolo?
+C21;B;23;95;2022L0A-2-20;En un sistema Windows se ha configurado la obtención automática de direcciones IP para acceder a una LAN. ¿Cómo se llama este servicio?
+C22;A;24;98;2025I0A-1-20;El archivo de texto que contiene información sobre la actividad del usuario y es enviado por un sitio web y almacenado en el navegador se denomina:
+C22;B;24;98;2025I0B-1-19;El archivo de texto que contiene la información sobre la actividad del usuario y es enviado por un sitio web y almacenado en el navegador se denomina:
+C23;A;25;98;2019E0X-1-15;De acuerdo el Capítulo I del Real Decreto Legislativo 5/2015, de 30 de octubre, por el que se aprueba el Texto Refundido del Estatuto Básico del Empleado Público (en adelante TREBEP), el funcionario de carrera es:
+C23;B;25;98;2019L0X-1-19;De acuerdo con el Capítulo I del Real Decreto Legislativo 5/2015, de 30 de octubre, por el que se aprueba el Texto Refundido del Estatuto Básico del Empleado Público (en adelante TREBEP), el funcionario de carrera es:
+C24;A;26;98;2022I0A-1R-4;¿Cuál de los siguientes lenguajes de programación pueden interpretar los navegadores web de forma nativa para mejorar las funcionalidades y el dinamismo de las páginas web?
+C24;B;26;98;2022L0A-2-30;¿Cuál de los siguientes lenguajes de programación pueden interpretar los navegadores web de forma nativa para mejorar las funcionalidades y dinamismo de las páginas web?
+C25;A;27;98;2024L0X-1-36;Halle el valor de x en la siguiente ecuación: 13(7x-64) = 2x
+C25;B;27;98;2024L0X-1R-4;Halla el valor de x en la siguiente ecuación: 13(7x-64) = 2x
+C26;A;28;98;2025L0A-1-47;Halla el valor de x en la siguiente ecuación: 9(7x - 13) = -x + 1
+C26;B;28;98;2025L0B-1-48;Halla el valor de x en la siguiente ecuación: 9(7x - 13) = -x +1
+C27;A;29;98;2025I0A-1-8;¿Qué acción permite la combinación de teclas Alt + F4 en Windows 11?
+C27;B;29;98;2025I0B-1-6;¿Qué acción permite la combinación de teclas Alt +F4 en Windows 11?

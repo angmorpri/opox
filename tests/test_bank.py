@@ -1,162 +1,72 @@
-from pathlib import PurePosixPath
+import json
+from pathlib import Path
 
-from opox.add.bank import merge_entries
-from opox.extract.bank import (
-    exact_groups,
-    find_candidates,
-    make_entry,
-    normalize,
-    resolve_bank,
-)
-from opox.models.questions import Exam, ExamCollection, Question
+from test_dedup import _label, _q, _write
+
+from opox.checks.bank import check_bank
+from opox.dedup import commands, contexts
+from opox.dedup.pipeline import check_all
+from opox.extract.bank import build_bank, extract_bank, make_entry
 
 
-def _q(
-    qid: str, text: str, options: list[str], answer: int | None = 0, context: str | None = None
-) -> Question:
-    exam_id, part, number = qid.split("-")
-    return Question(
-        question_id=qid,
-        part=int(part.rstrip("R")),
-        is_reserve=part.endswith("R"),
-        number=int(number),
-        text=text,
-        options=options,
-        answer=answer,
-        context=PurePosixPath(context) if context else None,
-    )
+def test_entry_takes_canonical_and_pools_distractors() -> None:
+    old = _q("2019L0A-1-1", "¿Cuál?", ["Sí.", "No.", "Quizá.", "Nunca."], context="c/old.png")
+    new = _q("2024L0A-1-1", "¿Cuál es?", ["Nunca", "sí", "Siempre.", "No."], answer=1)
+    entry, joined = make_entry("B0001", [old, new])
+    assert (entry.canonical, entry.text, entry.answer) == ("2024L0A-1-1", "¿Cuál es?", "sí")
+    assert entry.context == old.context
+    assert entry.distractors == ["Nunca", "Siempre.", "No.", "Quizá."]
+    assert joined == 2
 
 
-def _exams(*questions: Question) -> ExamCollection:
-    by_exam: dict[str, list[Question]] = {}
-    for q in questions:
-        by_exam.setdefault(q.question_id.split("-")[0], []).append(q)
-    return ExamCollection(
-        [
-            Exam(
-                exam_id=e,
-                call_id=e[:5],
-                model=e[-1],
-                source=PurePosixPath(f"tests/{e}T.pdf"),
-                key_source=PurePosixPath(f"tests/{e}R.pdf"),
-                questions=qs,
-            )
-            for e, qs in by_exam.items()
-        ]
-    )
-
-
-OPTS = ["Right.", "Wrong one.", "Wrong two.", "Wrong three."]
-
-
-def test_normalize_keeps_accents_and_case() -> None:
-    assert normalize(" “Sólo”  esto. ") == '"Sólo" esto'
-    assert normalize("Sólo") != normalize("Solo")
-    assert normalize("A – b") == normalize("A - b")
-
-
-def test_exact_groups_skip_annulled_and_split_contexts() -> None:
-    groups = exact_groups(
-        _exams(
-            _q("2019L0A-1-1", "¿q?", OPTS),
-            _q("2024L0A-1-1", "Q?", OPTS[::-1], answer=3),
-            _q("2024L0A-1-2", "Q?", OPTS, context="contexts/2024L0A_p1.png"),
-            _q("2024L0A-1-3", "Annulled?", OPTS, answer=None),
-        )
-    )
-    assert sorted(len(g.questions) for g in groups) == [1, 2]
-    assert {g.rep.question_id for g in groups} == {"2024L0A-1-1", "2024L0A-1-2"}
-
-
-def test_make_entry_takes_most_recent_and_drops_other_answers() -> None:
-    entry = make_entry(
-        [
-            _q(
-                "2019L0A-1-1",
-                "Old wording?",
-                ["Right (old).", "Wrong one.", "Wrong two.", "Wrong four."],
-            ),
-            _q("2024L0A-1-5", "New wording?", OPTS),
-        ]
-    )
-    assert entry.bank_id == "2024L0A-1-5"
-    assert entry.text == "New wording?"
-    assert entry.answer == "Right."
-    assert entry.distractors == ["Wrong one.", "Wrong two.", "Wrong three.", "Wrong four."]
-    assert entry.sources == ["2019L0A-1-1", "2024L0A-1-5"]
-
-
-def test_candidates_and_resolution() -> None:
-    groups = exact_groups(
-        _exams(
-            _q("2019L0A-1-1", "¿Cuál es la capital de España?", OPTS),
-            _q("2024L0A-1-1", "¿Cuál es hoy la capital de España?", OPTS),
-            _q(
-                "2019L0A-1-2",
-                "Mira la tabla. ¿Qué fila suma más?",
-                OPTS,
-                context="contexts/2019L0A_p2.png",
-            ),
-            _q(
-                "2024L0A-1-2",
-                "Mira la tabla. ¿Qué fila suma más?",
-                OPTS,
-                context="contexts/2024L0A_p2.png",
-            ),
-            _q("2024L0A-1-3", "Something unrelated?", OPTS),
-        )
-    )
-    merges, contexts = find_candidates(groups)
-    assert [(r["question_a"], r["question_b"], r["reason"]) for r in merges] == [
-        ("2019L0A-1-1", "2024L0A-1-1", "text")
-    ]
-    assert [(r["context_a"], r["context_b"]) for r in contexts] == [
-        ("contexts/2019L0A_p2.png", "contexts/2024L0A_p2.png")
-    ]
-
-    pending = resolve_bank(groups, merges, contexts)
-    assert [e.bank_id for e in pending.entries] == ["2024L0A-1-3"]
-    assert pending.pending == 2 and not pending.errors
-
-    merges[0]["merge"] = "y"
-    contexts[0]["same"] = "n"
-    decided = resolve_bank(groups, merges, contexts)
-    assert [(e.bank_id, len(e.sources)) for e in decided.entries] == [
-        ("2019L0A-1-2", 1),
-        ("2024L0A-1-1", 2),
-        ("2024L0A-1-2", 1),
-        ("2024L0A-1-3", 1),
+def test_bank_ids_follow_canonical() -> None:
+    qs = {q.question_id: q for q in (_q("2024L0A-1-1", "a"), _q("2019L0A-1-1", "b"))}
+    bank, _ = build_bank(qs, [["2024L0A-1-1"], ["2019L0A-1-1"]])
+    assert [(e.bank_id, e.canonical) for e in bank.root] == [
+        ("B0001", "2019L0A-1-1"),
+        ("B0002", "2024L0A-1-1"),
     ]
 
 
-def test_resolution_reports_invalid_and_conflicting_decisions() -> None:
-    groups = exact_groups(
-        _exams(
-            _q("2019L0A-1-1", "Same question one?", OPTS),
-            _q("2022L0A-1-1", "Same question two?", OPTS),
-            _q("2024L0A-1-1", "Same question six?", OPTS),
-        )
+def test_extract_reports_missing_dedup_and_check_detects_changes(tmp_path: Path) -> None:
+    _write(
+        tmp_path,
+        _q("2019L0A-1-1", "¿Qué ley?", ["Ley 39/2015.", "a", "b", "c"]),
+        _q("2024L0A-1-1", "¿Qué ley?", ["Ley 39/2015", "a", "d", "c"]),
     )
-    row = {"reason": "text", "note": ""}
-    merges = [
-        {**row, "question_a": "2019L0A-1-1", "question_b": "2022L0A-1-1", "merge": "y"},
-        {**row, "question_a": "2022L0A-1-1", "question_b": "2024L0A-1-1", "merge": "y"},
-        {**row, "question_a": "2019L0A-1-1", "question_b": "2024L0A-1-1", "merge": "n"},
-        {**row, "question_a": "2019L0A-1-1", "question_b": "2024L0A-1-1", "merge": "maybe"},
-    ]
-    result = resolve_bank(groups, merges, [])
-    assert not result.entries
-    assert len(result.errors) == 2
+    ok, notes = extract_bank(tmp_path, "X")
+    assert not ok and "no deduplication found" in notes[0]
+
+    assert commands.extract(tmp_path, "X", "answers")[0]
+    ok, notes = extract_bank(tmp_path, "X")
+    assert not ok and "'stems' is not complete" in notes[0]
+
+    assert commands.extract(tmp_path, "X", "stems")[0]
+    assert contexts.extract(tmp_path, "X")[0]
+    assert not any(check_all(tmp_path, "X").values())
+    ok, notes = extract_bank(tmp_path, "X")
+    assert ok
+    assert check_bank(tmp_path, "X") == []
+    assert "already up to date" in extract_bank(tmp_path, "X")[1][0]
+
+    path = tmp_path / "processed" / "X" / "bank.json"
+    data = json.loads(path.read_text(encoding="utf-8"))
+    assert data[0]["distractors"] == ["a", "d", "c", "b"]
+    data[0]["text"] = "Otro texto"
+    path.write_text(json.dumps(data), encoding="utf-8")
+    assert check_bank(tmp_path, "X") == ["B0001: text does not match its sources"]
+    assert not extract_bank(tmp_path, "X")[0]  # D006
+    assert extract_bank(tmp_path, "X", force=True)[0]
 
 
-def test_merge_entries_keeps_existing_unless_forced() -> None:
-    old = make_entry([_q("2019L0A-1-1", "Q?", OPTS)])
-    new = make_entry([_q("2019L0A-1-1", "Q?", OPTS), _q("2024L0A-1-1", "Q!?", OPTS)])
-    other = make_entry([_q("2024L0A-1-2", "Other?", OPTS)])
-
-    bank, added, unchanged, conflicts = merge_entries([old], [old, new, other], force=False)
-    assert (added, unchanged, len(conflicts)) == (1, 1, 1)
-    assert sorted(e.bank_id for e in bank) == ["2019L0A-1-1", "2024L0A-1-2"]
-
-    bank, added, _, _ = merge_entries([old], [new], force=True)
-    assert added == 1 and [e.bank_id for e in bank] == ["2024L0A-1-1"]
+def test_check_all_reports_every_stage(tmp_path: Path) -> None:
+    _write(
+        tmp_path,
+        _q("2019L0A-1-1", "a", ["x", "y", "z", "w"]),
+        _q("2020L0A-1-1", "b", ["x.", "y", "z", "v"]),
+    )
+    assert commands.extract(tmp_path, "X", "answers")[0]
+    _label(tmp_path, "answers", {})
+    results = check_all(tmp_path, "X")
+    assert list(results) == ["answers", "stems", "contexts"]
+    assert results["answers"] == [] and results["stems"] and results["contexts"]

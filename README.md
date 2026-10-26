@@ -10,7 +10,8 @@ uv run opox [--data-dir DIR] <command> ...
 ```
 
 `--data-dir` sets the data root (default: `data`). `OPPOSITION` defaults to `C2_AGE`.
-Every command accepts `-v`/`--verbose` to report its progress.
+Every command accepts `-v`/`--verbose` to report its progress. Subcommands accept any
+unambiguous prefix: `opox ext q` runs `opox extract questions`.
 
 ### `opox extract questions [OPPOSITION] [--force]`
 
@@ -42,39 +43,6 @@ consecutive question on the same page, and listed for review (`REVIEW`).
 
 If the sheet or any crop already exists, nothing is written: it only lists the detected
 contexts missing from the sheet. `--force` overwrites, reporting each file replaced.
-
-### `opox extract bank [OPPOSITION] [--force] [--threshold T]`
-
-Builds the question bank `processed/<opposition>/bank.json` (D010) from the answered
-questions in `questions.json`. Questions with the same text (ignoring case, accents and
-punctuation), answer, option set and context crop (after a conservative normalization)
-are grouped automatically.
-
-Groups whose text and answer are similar (ratio >= `T`, default 0.85, on folded text)
-are candidates for manual review and stay out of the bank. They are written to:
-
-- `interim/<opposition>/bank_merges.csv`: `question_a, question_b, reason, merge, note`.
-- `interim/<opposition>/bank_contexts.csv`: `context_a, context_b, same`, for questions
-  that differ only by their context crop.
-- `interim/<opposition>/bank_review.md`: pending rows side by side, differences in bold.
-
-If the sheets or the bank already exist, nothing is written; `--force` overwrites them,
-discarding any decision taken.
-
-### `opox add bank [OPPOSITION] [--force]`
-
-Reads the decisions (`y`, `n` or blank) in the bank sheets and adds the resulting
-entries to `bank.json`. Groups linked by rows are added only once all their rows are
-decided; `y` merges are transitive. Fails on invalid values, unknown questions, or an
-`n` contradicted by other merges. Existing entries are kept; differing ones are replaced
-only with `--force`. Reports entries added, already present and decisions pending, and
-rewrites `bank_review.md`.
-
-### `opox check bank [OPPOSITION]`
-
-Validates `processed/<opposition>/bank.json` against `questions.json`. Read-only. Every
-answered question must be in exactly one entry, and each entry's text, context and
-answer must match its representative question.
 
 ### `opox add contexts [OPPOSITION] [--force]`
 
@@ -125,5 +93,89 @@ It checks that:
 The reference has one row per call, with columns `call_id, n_topics_block_1,
 n_topics_block_2, ...`. Columns follow the order of the syllabus blocks, ignoring the
 psychotechnical block; `-` means the call has no such block.
+
+Exits with code 1 and lists every problem found if any check fails.
+
+### Deduplication: `opox dedup extract | add | check STAGE [OPPOSITION]`
+
+Groups the answered questions of `processed/<opposition>/questions.json` that are the
+same question (D011), in three chained stages: `answers`, `stems` and `contexts`. Each
+stage `<s>` writes to `interim/<opposition>/`:
+
+- `dedup_<s>.json`: the groups, following `DedupCollection` (`opox.models.dedup`).
+  Each group has its canonical question (the most recent) and its members: questions
+  with equal normalized key. Every answered question is in exactly one group.
+- `dedup_<s>_review.csv`: the review sheet, the only source of manual decisions. UTF-8
+  with BOM, `;`-separated.
+- `dedup_<s>_review.md`: the review guide.
+
+| Stage     | Key                                                   | Compared within       | Review at |
+|-----------|-------------------------------------------------------|-----------------------|-----------|
+| `answers` | answer, moderate normalization (no case)              | all answered          | >= 70%    |
+| `stems`   | stem, aggressive normalization (no accents nor prose punctuation) | each group of `dedup_answers.json` | >= 75% |
+
+In `answers` and `stems`, members with equal key are joined automatically. Members
+whose keys are similar (normalized Levenshtein similarity), directly or chained, form a
+review case. The sheet has one row per member, `case;member;group;max_similarity;
+questions;text`, and the guide shows each case with the similarity of each pair and
+word diffs against member A. Members sharing a `group` label are joined; labels are
+global to the sheet but cannot span several cases. Blank labels are pending and leave
+the member alone.
+
+In `contexts`, every pair of context crops found together in a `stems` group is
+reviewed once. The sheet has one row per pair, `context_a;context_b;same;groups`, and
+the guide shows both crops with the questions that use them. `same` is `y`, `n` or
+blank (pending, kept together). A pair marked `n` splits every group holding it, one per
+context; questions without context stay with the most recent context. An `n`
+contradicted by other `y` pairs is an error.
+
+Each stage reads the JSON of the previous one: if a stage changes, repeat the next ones.
+
+- `opox dedup extract STAGE [--force]`: writes the sheet, the guide and the groups. If
+  the JSON or the sheet exist, nothing is written; `--force` regenerates them, keeping
+  the decisions of the members (or pairs) that still exist and reporting the lost ones.
+- `opox dedup add STAGE`: rebuilds the JSON from the sheet; running it again changes
+  nothing. Fails on invalid or contradictory decisions and repeated rows, and warns
+  about rows that no longer exist, members or pairs missing from the sheet and pending
+  rows.
+- `opox dedup check STAGE`: read-only. Checks that every answered question is in exactly
+  one group, that `stems` groups stay within one answer group, that the sheet is
+  complete and up to date, and that the JSON matches what `add` would produce. Exits
+  with code 1 and lists every problem found if any check fails. `opox dedup check all`
+  checks the three stages in order.
+
+### `opox extract bank [OPPOSITION] [--force]`
+
+Builds the question bank `processed/<opposition>/bank.json` (D010), following
+`QuestionBank` (`opox.models.bank`), from `questions.json` and the groups of the last
+deduplication stage, `interim/<opposition>/dedup_contexts.json`. Every deduplication
+stage must pass its check; otherwise it reports the first incomplete stage, or points to
+the documentation if none has been run.
+
+Each group becomes an entry:
+
+- `bank_id`: `B0001`, `B0002`... in the order of `canonical`; it may change when the
+  bank is regenerated.
+- `canonical`: the most recent source (latest year, ties by `question_id`); `text` and
+  `answer` are its own.
+- `sources`: every `question_id` of the group.
+- `context`: that of the most recent source with context, if any.
+- `distractors`: the wrong options of all sources, the canonical ones first and then by
+  recency, joined only when equal after the moderate normalization. Options equal to an
+  answer of the group are left out.
+
+If the bank exists and is identical, nothing changes. If it differs, nothing is written
+and the entries added, removed and changed are reported; `--force` overwrites it.
+
+### `opox check bank [OPPOSITION]`
+
+Validates `processed/<opposition>/bank.json` against `questions.json`. Read-only. The
+grouping is taken as given (see `opox dedup check`). It checks that:
+
+- The JSON matches the `QuestionBank` model.
+- Every answered question is in exactly one entry.
+- `bank_id` follows the order of `canonical`.
+- Each entry's `canonical`, `text`, `context`, `answer` and `distractors` match what its
+  sources produce, and its context crop exists.
 
 Exits with code 1 and lists every problem found if any check fails.

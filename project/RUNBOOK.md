@@ -65,3 +65,46 @@ completarla manualmente: el paso termina mostrando la lista de puntos pendientes
 - **Ejecutor**: código, `uv run opox add contexts`. Repetir tras cada nueva extracción
   de preguntas.
 - **Validación**: `uv run opox check questions`.
+
+### 6. Deduplicación de respuestas ([D011])
+
+- **Entrada**: `processed/C2_AGE/questions.json`.
+- **Salida**: `interim/C2_AGE/dedup_answers.json`, `dedup_answers_review.csv` y
+  `dedup_answers_review.md`.
+- **Ejecutor**: código y manual. `uv run opox dedup extract answers`; se rellena `group`
+  en la hoja, a ciegas y con ayuda de la guía; `uv run opox dedup add answers`.
+- **Validación**: `uv run opox dedup check answers`.
+
+### 7. Deduplicación de enunciados ([D011])
+
+- **Entrada**: `processed/C2_AGE/questions.json` e `interim/C2_AGE/dedup_answers.json`.
+- **Salida**: `interim/C2_AGE/dedup_stems.json`, `dedup_stems_review.csv` y
+  `dedup_stems_review.md`.
+- **Ejecutor**: código y manual, como en el paso 6, con `stems`.
+- **Validación**: `uv run opox dedup check stems`.
+
+### 8. Deduplicación de contextos ([D011])
+
+- **Entrada**: `processed/C2_AGE/questions.json`, `processed/C2_AGE/contexts/` e
+  `interim/C2_AGE/dedup_stems.json`.
+- **Salida**: `interim/C2_AGE/dedup_contexts.json`, `dedup_contexts_review.csv` y
+  `dedup_contexts_review.md`.
+- **Ejecutor**: código y manual. `uv run opox dedup extract contexts`; se rellena `same`
+  (`y`/`n`) en la hoja, comparando los recortes de la guía;
+  `uv run opox dedup add contexts`.
+- **Validación**: `uv run opox dedup check contexts`.
+
+Si se repite la extracción de preguntas (paso 3) o de contextos (pasos 4 y 5), o cambian
+los grupos de una etapa (pasos 6 a 8), se regeneran las etapas afectadas con
+`extract --force`, que conserva las decisiones de los miembros o pares que siguen
+existiendo, y se completan los casos nuevos. `uv run opox dedup check all` comprueba
+las tres etapas en orden.
+
+### 9. Batería de preguntas ([D010])
+
+- **Entrada**: `processed/C2_AGE/questions.json` e `interim/C2_AGE/dedup_contexts.json`,
+  con las tres etapas de deduplicación completas.
+- **Salida**: `processed/C2_AGE/bank.json`.
+- **Ejecutor**: código, `uv run opox extract bank`. Repetir, con `--force`, tras cualquier
+  cambio en los pasos 3 a 8.
+- **Validación**: `uv run opox check bank`.

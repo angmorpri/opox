@@ -7,92 +7,12 @@ Se ordenan de más recientes a más antiguas.
 
 ## Propuesta a alto nivel para el pipeline de generación de batería de preguntas
 
-> 🟢 ABIERTO
-> Propuesta casi cerrada, a falta de decidir deduplicación de contextos y distractores.
-
-La deduplicación de **respuestas** y **enunciados** se hace en dos etapas: primero las
-respuestas (`answers`) y después los enunciados (`stems`). Sustituye a
-`opox extract/add/check bank`. `bank.json` ([D010]) sólo se genera después, tras
-resolver contextos y distractores.
-
-### Comandos
-
-Para cada etapa `<s>` (`answers` o `stems`):
-
-- `opox dedup extract <s>`: genera el JSON intermedio con los grupos automáticos (igualdad
-  exacta), la hoja de revisión y su guía. Respeta [D006]: no sobrescribe el JSON ni la
-  hoja si existen; con `--force`, regenera la hoja conservando las decisiones cuyos
-  miembros siguen existiendo e informa de las que se pierden. La guía no contiene trabajo
-  manual y siempre se regenera.
-- `opox dedup add <s>`: reconstruye el JSON a partir de los grupos automáticos y la hoja
-  completa. Es idempotente, y deshacer una unión en la hoja basta para deshacerla en el
-  JSON. Avisa de las filas de la hoja cuyos miembros ya no existen.
-- `opox dedup check <s>`: comprueba que cada pregunta con respuesta está en exactamente
-  un grupo y que el JSON coincide con lo que produciría `add`. Si falla, recuerda si la
-  hoja tiene casos sin rellenar. En `stems`, además, que la hoja y el JSON siguen siendo
-  coherentes con el `dedup_answers.json` actual.
-
-`stems` parte de `dedup_answers.json`: si se rehace la etapa de respuestas, hay que
-repetir la de enunciados.
-
-### Ficheros
-
-En `interim/<oposición>/`, en el control de cambios ([D002]):
-
-| Etapa   | JSON                 | Hoja                        | Guía                       |
-|---------|----------------------|-----------------------------|----------------------------|
-| answers | `dedup_answers.json` | `dedup_answers_review.csv`  | `dedup_answers_review.md`  |
-| stems   | `dedup_stems.json`   | `dedup_stems_review.csv`    | `dedup_stems_review.md`    |
-
-La hoja es la única fuente de verdad de las decisiones manuales; el JSON es un resultado
-derivado de `questions.json` (y, en `stems`, de `dedup_answers.json`) y de la hoja.
-
-Las hojas de revisión son CSV en UTF-8 con BOM, separados por ';', una fila por miembro:
-
-```
-case;member;group;max_similarity;questions;text
-```
-
-- Un **caso** reúne los miembros enlazados por similitud, directa o encadenada. Se
-  ordenan de menor a mayor similitud.
-- Un **miembro** es un grupo automático (A, B, C…). Se identifica por sus `question_id`
-  (`questions`), no por el número de caso, para conservar las decisiones al regenerar.
-- `group` se rellena a mano: los miembros de un caso con la misma etiqueta son iguales.
-- `text` es la respuesta (en `answers`) o el enunciado (en `stems`) de la pregunta
-  canónica del miembro.
-
-La guía en Markdown muestra cada caso con la similitud de cada pareja y un diff por
-palabras frente al miembro A. En `answers` sólo muestra respuestas; en `stems`, también
-la respuesta, las opciones y la pregunta canónica resultante.
-
-### Modelo de datos
-
-Ambos JSON comparten modelo, en `src/opox/models/dedup.py` ([D007]):
-
-```
-DedupGroup
-  canonical: str               # question_id de la pregunta canónica ([D011])
-  members: list[DedupMember]   # 1 si es automático, 2+ si se unió en la revisión
-DedupMember
-  key: str                     # respuesta o enunciado normalizado
-  sources: list[str]           # question_id con esa clave
-```
-
-- Cada pregunta con respuesta aparece en exactamente un `sources` de cada JSON.
-- En `stems`, los miembros de un grupo pertenecen siempre a un mismo grupo de
-  `dedup_answers.json`.
-- Los grupos se ordenan por `canonical`, y los miembros y sus `sources`, por
-  `question_id`, para que la salida sea estable.
+> 🔴 CERRADO -> [D010] y [D011]
 
 
 ## Propuesta de mecanismo de deduplicación
 
-> 🟡 EN CURSO
-> "Respuestas" y "enunciados" cerrados en otras notas y en [D011]
-> "Contextos" y "distractores" pendientes.
-
-- **Contexto**: Si sólo una de las preguntas posee contexto, se asigna y se asigna el contexto como opcional. Si dos o más preguntas, pero no todas, poseen contexto, se marcan para revisión manual y se asigna el contexto como opcional. Si todas las preguntas poseen contexto, se marca para revisión manual y no se asigna el contexto como opcional.
-- **Distractores**: Se normalizan de forma conservadora. Se añaden todos los que sean totalmente diferentes.
+> 🔴 CERRADO -> Respuestas, enunciados, contextos y distractores en [D011]
 
 
 ## Solucionarios provisionales en 2025
@@ -247,27 +167,7 @@ convocatorias: [
 
 ### Batería de preguntas
 
-> 🟢 ABIERTO -> [D010] reservado para cuando se cierre definitivamente
-
-Acumula las preguntas deduplicadas, referenciando claramente sus versiones originales y
-presentando una canónica para ser usada en la extracción de *features*.
-
-```
-BankQuestion
-  bank_id: str
-  sources: list[str]            # question_id de todas las apariciones
-  text: str
-  context: PurePosixPath | None
-  context_optional: bool        # si hay contexto, pero no aparece siempre
-  answer: str
-  distractors: list[str]        # pool deduplicado, al menos 3
-```
-
-`bank_id` es único y no está relacionado ni con las preguntas originales ni con la
-secuencia original de las preguntas. En cada regeneración del banco de preguntas puede
-cambiar.
-
-Se almacena en `bank.json`.
+> 🔴 CERRADO -> [D010]
 
 
 ## Nombre del proyecto
