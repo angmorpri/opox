@@ -4,7 +4,8 @@ Inputs, for a given opposition:
 - `raw/<opposition>/tests/<exam_id>T.pdf` and `<exam_id>R.pdf`: exam and answer key.
 - `processed/<opposition>/rules.json`: expected parts and reserve lists of each call.
 
-Output: `processed/<opposition>/questions.json`. Never overwritten unless forced (D006).
+Output: `processed/<opposition>/questions.json`. Exams already in it are kept as they are
+and only new ones are added; it is rebuilt from scratch only if forced (D006).
 
 Numbering restarts at 1 in each part and each reserve list, so both PDFs are split into
 the sections expected by the call rules on every numbering reset, instead of relying on
@@ -362,11 +363,16 @@ def build_exam(exam_id: str, rules: CallRules, tests_dir: Path) -> tuple[Exam | 
 
 def extract_questions(
     data_dir: Path, opposition: str, force: bool = False
-) -> tuple[bool, list[str]]:
-    """Extract all exams of an opposition. Return (written, review notes)."""
+) -> tuple[list[Exam], list[str]]:
+    """Extract the exams of an opposition not yet in the output. Return (added exams, notes).
+
+    Existing exams are kept as they are (D006); `force` extracts them all again.
+    """
     out_path = data_dir / "processed" / opposition / "questions.json"
+    existing: list[Exam] = []
     if out_path.exists() and not force:
-        return False, [f"{out_path} already exists; use --force to overwrite it"]
+        existing = ExamCollection.model_validate_json(out_path.read_text(encoding="utf-8")).root
+    known = {e.exam_id for e in existing}
 
     rules_path = data_dir / "processed" / opposition / "rules.json"
     rules = CallRulesCollection.model_validate_json(rules_path.read_text(encoding="utf-8"))
@@ -376,9 +382,11 @@ def extract_questions(
     exams: list[Exam] = []
     notes: list[str] = []
     exam_pdfs = sorted(tests_dir.glob("*T.pdf"))
-    log.info("%d exam(s) found in %s", len(exam_pdfs), tests_dir)
+    log.info("%d exam(s) found in %s, %d already extracted", len(exam_pdfs), tests_dir, len(known))
     for i, exam_pdf in enumerate(exam_pdfs, start=1):
         exam_id = exam_pdf.stem[:-1]
+        if exam_id in known:
+            continue
         log.info("[%d/%d] %s", i, len(exam_pdfs), exam_id)
         call_rules = rules_by_id.get(exam_id[:5])
         if call_rules is None:
@@ -389,8 +397,11 @@ def extract_questions(
         if exam is not None:
             exams.append(exam)
 
+    if not exams:
+        return [], notes
     out_path.parent.mkdir(parents=True, exist_ok=True)
     if force and out_path.exists():
         notes.insert(0, f"overwriting {out_path}")
-    out_path.write_text(ExamCollection(exams).model_dump_json(indent=2) + "\n", encoding="utf-8")
-    return True, notes
+    collection = ExamCollection(sorted(existing + exams, key=lambda e: e.exam_id))
+    out_path.write_text(collection.model_dump_json(indent=2) + "\n", encoding="utf-8")
+    return exams, notes

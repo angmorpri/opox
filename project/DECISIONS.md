@@ -97,12 +97,16 @@ El flujo es el siguiente:
 1. `opox extract contexts` detecta los contextos de cada examen (imágenes incrustadas y
    tablas dibujadas), guarda los recortes y genera la hoja de control. Cuando el rango
    de preguntas no es explícito ("N a M."), lo estima limitado a la página del contexto
-   y lo marca para revisión. Respeta [D006]: no sobrescribe recortes ni hojas
-   existentes; si ya existen, informa de los candidatos no cubiertos.
+   y lo marca para revisión. Es incremental por examen ([D006]): los exámenes con alguna
+   fila en la hoja o algún recorte se dan por cubiertos y no se tocan, de modo que se
+   conservan las correcciones y los falsos positivos eliminados. Sólo se escanean los
+   demás, y sus contextos se recortan y se añaden al final de la hoja. Los exámenes sin
+   contextos se vuelven a escanear en cada ejecución. `--force` lo reconstruye todo.
 2. Manualmente, se revisa la hoja y los recortes: se corrigen los erróneos, se añaden los
    que falten y se eliminan los falsos positivos.
 3. `opox check contexts` valida la hoja frente a los recortes y las preguntas extraídas.
-4. `opox add contexts` asigna a cada pregunta la ruta de su recorte.
+4. `opox add contexts` asigna a cada pregunta la ruta de su recorte. Sobrescribe
+   siempre cualquier ejecución previa.
 5. `opox check questions` verifica que los recortes asignados existen e informa si la
    asignación de contextos está pendiente. Mantener la asignación al día con la hoja es
    responsabilidad de quien la edita: tras cada cambio en la hoja, repetir
@@ -119,12 +123,11 @@ preguntas, basta con repetir `opox add contexts`.
 Como `interim/` y `processed/` admiten edición manual y de agentes ([D002]), el código
 debe proteger ese trabajo:
 
-- Siempre que sea posible, las operaciones son idempotentes: ejecutarlas de nuevo
-  produce el mismo resultado sin alterar lo existente.
-- Si una operación fuera a sobrescribir o borrar datos existentes, no lo hace: avisa
-  y se detiene.
-- Sólo se sobrescribe si se fuerza explícitamente (por ejemplo, con `--force`), y
-  aun así se informa de qué se va a modificar.
+- Sobrescribir datos existentes debe ser la excepción, no la regla.
+- Siempre que sea posible, las operaciones deben ser idempotentes o incrementales, es
+  decir, no modifican nada que ya existiera, pero permite añadir el contenido de nuevo
+  material que entre. Las operaciones que funcionen así deben disponer de una opción
+  especial (por ejemplo, `--force`) que permita forzar el reinicio.
 
 
 ## [D007] Pydantic v2 para modelos de datos
@@ -176,9 +179,10 @@ De cada examen y su solucionario se extraen sus preguntas. El modelo se define e
 - El contexto de cada pregunta se asigna después con `opox add contexts` ([D005]).
 
 La extracción la realiza el código mediante `opox extract questions`, usando
-`pdfplumber`. Al terminar, muestra la lista de puntos que requieren revisión o
-completarse manualmente. Se valida con `opox check questions`, frente a
-`rules.json` y los recortes de contextos.
+`pdfplumber`, de forma incremental por examen ([D006]): los exámenes ya presentes en
+`questions.json` no se tocan. Al terminar, muestra los puntos que requieren revisión o
+completarse manualmente y los exámenes añadidos, referidos sólo a lo extraído en esa
+ejecución.
 
 
 ## [D010] Modelo de datos para la batería de preguntas

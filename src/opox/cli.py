@@ -14,31 +14,39 @@ from opox.extract.questions import extract_questions
 
 
 def _run_extract_questions(args: argparse.Namespace) -> int:
-    written, notes = extract_questions(args.data_dir, args.opposition, args.force)
-    if not written:
-        for note in notes:
-            print(f"ERROR {note}", file=sys.stderr)
-        return 1
+    added, notes = extract_questions(args.data_dir, args.opposition, args.force)
     for note in notes:
         print(f"REVIEW {note}")
-    print(f"Questions written. {len(notes)} point(s) to review.")
+    for exam in added:
+        print(f"ADDED {exam.exam_id}: {len(exam.questions)} question(s)")
+    if not added:
+        print("No new exams; questions unchanged.")
+        return 0
+    n_questions = sum(len(e.questions) for e in added)
+    print(
+        f"{len(added)} exam(s), {n_questions} question(s) added. {len(notes)} point(s) to review."
+    )
     return 0
 
 
 def _run_extract_contexts(args: argparse.Namespace) -> int:
-    written, notes = extract_contexts(args.data_dir, args.opposition, args.force)
-    if not written:
-        print(f"ERROR {notes[0]}", file=sys.stderr)
-    for note in notes[1:] if not written else notes:
+    scanned, added, notes = extract_contexts(args.data_dir, args.opposition, args.force)
+    for note in notes:
         print(f"REVIEW {note}")
-    if not written:
-        return 1
-    print(f"Contexts written. {len(notes)} point(s) to review.")
+    for c in added:
+        print(f"ADDED {c.exam_id} p{c.page}: questions {c.first}-{c.last}")
+    if not scanned:
+        print("No new exams; contexts unchanged.")
+        return 0
+    print(
+        f"{len(scanned)} exam(s) scanned, {len(added)} context(s) added. "
+        f"{len(notes)} point(s) to review."
+    )
     return 0
 
 
 def _run_add_contexts(args: argparse.Namespace) -> int:
-    ok, notes = add_contexts(args.data_dir, args.opposition, args.force)
+    ok, notes = add_contexts(args.data_dir, args.opposition)
     for note in notes:
         print(f"ERROR {note}" if not ok else note, file=sys.stderr if not ok else sys.stdout)
     return 0 if ok else 1
@@ -126,14 +134,14 @@ def _build_parser() -> argparse.ArgumentParser:
         "questions", parents=[common], help="extract exam questions and answers"
     )
     questions.add_argument("opposition", nargs="?", default="C2_AGE")
-    questions.add_argument("--force", action="store_true", help="overwrite existing output")
+    questions.add_argument("--force", action="store_true", help="extract every exam again")
     questions.set_defaults(func=_run_extract_questions)
 
     contexts = sources.add_parser(
         "contexts", parents=[common], help="detect and crop question contexts"
     )
     contexts.add_argument("opposition", nargs="?", default="C2_AGE")
-    contexts.add_argument("--force", action="store_true", help="overwrite existing output")
+    contexts.add_argument("--force", action="store_true", help="rebuild the sheet and crops")
     contexts.set_defaults(func=_run_extract_contexts)
 
     add = commands.add_parser("add", help="merge reviewed data into processed data")
@@ -143,7 +151,6 @@ def _build_parser() -> argparse.ArgumentParser:
         "contexts", parents=[common], help="assign context crops to questions"
     )
     add_c.add_argument("opposition", nargs="?", default="C2_AGE")
-    add_c.add_argument("--force", action="store_true", help="replace existing contexts")
     add_c.set_defaults(func=_run_add_contexts)
 
     check = commands.add_parser("check", help="validate data against references")

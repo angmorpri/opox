@@ -72,6 +72,6 @@ completarla manualmente: el paso termina mostrando la lista de puntos pendientes
 - **Entrada**: `interim/C2_AGE/contexts.csv`, `processed/C2_AGE/contexts/` y
   `processed/C2_AGE/questions.json`.
 - **Salida**: `processed/C2_AGE/questions.json`, con el campo `context` asignado.
-- **Ejecutor**: código, `uv run opox add contexts`. Repetir tras cada nueva extracción
-  de preguntas.
+- **Ejecución**: código, `uv run opox add contexts`. Repetir tras cada cambio en la hoja
+  o nueva extracción de preguntas.
 - **Validación**: `uv run opox check questions`.

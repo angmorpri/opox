@@ -4,9 +4,12 @@ Inputs, for a given opposition:
 - `raw/<opposition>/tests/<exam_id>T.pdf`: exams.
 - `processed/<opposition>/rules.json`: expected parts and reserve lists of each call.
 
-Outputs, never overwritten unless forced (D006):
+Outputs:
 - `processed/<opposition>/contexts/<exam_id>_p<page>.png`: one crop per context.
 - `interim/<opposition>/contexts.csv`: control sheet, `exam_id, page, first, last`.
+
+Exams with a row or a crop are already covered and left as they are; only the other exams
+are scanned and their contexts appended. Both are rebuilt from scratch only if forced (D006).
 
 A page holds a context if it has a large embedded image or a drawn table (many edges).
 The crop spans the page width, from the end of the previous question to the start of the
@@ -178,47 +181,59 @@ def read_sheet(path: Path) -> list[dict[str, str]]:
         return [{k: (v or "").strip() for k, v in row.items()} for row in csv.DictReader(f)]
 
 
-def _read_sheet(path: Path) -> set[tuple[str, int]]:
-    return {(r["exam_id"], int(r["page"])) for r in read_sheet(path)}
+def _covered_exams(sheet_path: Path, crops_dir: Path) -> set[str]:
+    """Exams with a row in the sheet or a crop."""
+    covered = {r["exam_id"] for r in read_sheet(sheet_path)} if sheet_path.exists() else set()
+    return covered | {p.stem.rsplit("_p", 1)[0] for p in crops_dir.glob("*.png")}
 
 
-def _write_sheet(path: Path, contexts: list[Context]) -> None:
+def _write_sheet(path: Path, contexts: list[Context], append: bool) -> None:
+    """Write the sheet, or append rows to an existing one."""
     path.parent.mkdir(parents=True, exist_ok=True)
-    with path.open("w", encoding="utf-8", newline="") as f:
+    append = append and path.exists()
+    if append and not path.read_bytes().endswith(b"\n"):
+        with path.open("a", encoding="utf-8", newline="") as f:
+            f.write("\r\n")
+    with path.open("a" if append else "w", encoding="utf-8", newline="") as f:
         writer = csv.writer(f)
-        writer.writerow(SHEET_COLUMNS)
+        if not append:
+            writer.writerow(SHEET_COLUMNS)
         for c in contexts:
             writer.writerow([c.exam_id, c.page, c.first, c.last])
 
 
 def extract_contexts(
     data_dir: Path, opposition: str, force: bool = False
-) -> tuple[bool, list[str]]:
-    """Detect, crop and list the contexts of all exams. Return (written, review notes)."""
+) -> tuple[list[str], list[Context], list[str]]:
+    """Detect, crop and list the contexts of the exams not yet covered.
+
+    Return (scanned exam ids, added contexts, review notes).
+    """
     sheet_path = data_dir / "interim" / opposition / "contexts.csv"
     crops_dir = data_dir / "processed" / opposition / "contexts"
     rules_path = data_dir / "processed" / opposition / "rules.json"
     tests_dir = data_dir / "raw" / opposition / "tests"
 
-    existing = sheet_path.exists() or any(crops_dir.glob("*.png"))
-    write = force or not existing
-    if not write:
-        log.info("existing contexts found; looking for candidates not covered")
+    covered = set() if force else _covered_exams(sheet_path, crops_dir)
 
     rules = CallRulesCollection.model_validate_json(rules_path.read_text(encoding="utf-8"))
     rules_by_id = {r.call_id: r for r in rules.root}
 
+    scanned: list[str] = []
     contexts: list[Context] = []
     notes: list[str] = []
     exam_pdfs = sorted(tests_dir.glob("*T.pdf"))
-    log.info("%d exam(s) found in %s", len(exam_pdfs), tests_dir)
+    log.info("%d exam(s) found in %s, %d covered", len(exam_pdfs), tests_dir, len(covered))
     for i, exam_pdf in enumerate(exam_pdfs, start=1):
         exam_id = exam_pdf.stem[:-1]
+        if exam_id in covered:
+            continue
         log.info("[%d/%d] %s", i, len(exam_pdfs), exam_id)
         call_rules = rules_by_id.get(exam_id[:5])
         if call_rules is None:
             notes.append(f"{exam_id}: call {exam_id[:5]} not found in {rules_path}")
             continue
+        scanned.append(exam_id)
         lines, cover_pages = read_exam_lines(exam_pdf)
         sections, _ = parse_exam_lines(lines, exam_id, expected_sections(call_rules))
         drafts = sorted((d for s in sections for d in s), key=lambda d: (d.page, d.top))
@@ -226,28 +241,21 @@ def extract_contexts(
             found, exam_notes = detect_contexts(pdf, exam_id, lines, cover_pages, drafts)
             notes += exam_notes
             for c in found:
-                if write:
-                    path = crops_dir / c.file_name
-                    if path.exists():
-                        notes.append(f"overwriting {path}")
-                    crops_dir.mkdir(parents=True, exist_ok=True)
-                    page = pdf.pages[c.page - 1]
-                    page.crop((0, c.top, page.width, c.bottom)).to_image(
-                        resolution=RESOLUTION
-                    ).save(path)
+                path = crops_dir / c.file_name
+                if path.exists():
+                    notes.append(f"overwriting {path}")
+                crops_dir.mkdir(parents=True, exist_ok=True)
+                page = pdf.pages[c.page - 1]
+                page.crop((0, c.top, page.width, c.bottom)).to_image(resolution=RESOLUTION).save(
+                    path
+                )
         log.info("  %d context(s)", len(found))
         contexts += found
 
-    if not write:
-        covered = _read_sheet(sheet_path) if sheet_path.exists() else set()
-        missing = [c for c in contexts if (c.exam_id, c.page) not in covered]
-        return False, [
-            f"{sheet_path} or crops already exist; use --force to overwrite them",
-            *(f"{c.exam_id} p{c.page}: candidate not in {sheet_path}" for c in missing),
-        ]
-
-    if sheet_path.exists():
+    if not scanned:
+        return [], [], notes
+    if force and sheet_path.exists():
         notes.insert(0, f"overwriting {sheet_path}")
-    _write_sheet(sheet_path, contexts)
+    _write_sheet(sheet_path, contexts, append=not force)
     log.info("%d context(s) written to %s", len(contexts), sheet_path)
-    return True, notes
+    return scanned, contexts, notes

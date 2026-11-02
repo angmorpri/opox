@@ -18,13 +18,18 @@ unambiguous prefix: `opox ext q` runs `opox extract questions`.
 Extracts the questions and answers of every exam in `raw/<opposition>/tests/`
 (`<exam_id>T.pdf` plus its answer key `<exam_id>R.pdf`) into
 `processed/<opposition>/questions.json`, following the `ExamCollection` model
-(`opox.models.questions`). Refuses to overwrite an existing output unless `--force`.
+(`opox.models.questions`).
 
 Each exam is split into the parts and reserve lists set by its call rules
 (`processed/<opposition>/rules.json`), on every numbering reset. Text shared by several
 questions (tables, "Responda las siguientes preguntas...") is skipped. At the end, it
 lists the points to review (`REVIEW`): shared preambles, section counts that do not
-match the rules, questions without four options or without an answer.
+match the rules, questions without four options or without an answer. Then it lists
+each exam added (`ADDED`) with its number of questions.
+
+Running it again keeps the exams already in `questions.json` untouched (including their
+assigned contexts) and only extracts the new ones; the review points and `ADDED` lines
+refer to those alone. `--force` extracts every exam again and rewrites the file.
 
 ### `opox extract contexts [OPPOSITION] [--force]`
 
@@ -39,19 +44,22 @@ Detects the contexts (images and tables) shared by several questions in each exa
 A page holds a context if it has an image wider than 200 pt or more than 40 drawn edges
 (a table). The crop spans the page width, between the previous question and the next
 one. `last` comes from an explicit "N a M." range; otherwise it is estimated as the last
-consecutive question on the same page, and listed for review (`REVIEW`).
+consecutive question on the same page, and listed for review (`REVIEW`). Then it lists
+each context added (`ADDED`) with its questions.
 
-If the sheet or any crop already exists, nothing is written: it only lists the detected
-contexts missing from the sheet. `--force` overwrites, reporting each file replaced.
+Running it again leaves untouched every exam already covered, that is, with a row in the
+sheet or a crop: manual fixes and removed false positives are kept. Only the other exams
+are scanned, and their contexts are cropped and appended to the sheet; the review points
+and `ADDED` lines refer to those alone. Exams without contexts are scanned again on every
+run. `--force` scans every exam again and rewrites the sheet and crops, reporting each
+file replaced.
 
-### `opox add contexts [OPPOSITION] [--force]`
+### `opox add contexts [OPPOSITION]`
 
 Sets the `context` of each question in `processed/<opposition>/questions.json` from the
 context sheet and crops (D005), after validating them as `opox check contexts` does;
-questions outside the sheet get no context. Running it again changes nothing.
-
-Adding a context is always allowed. If an existing context would be replaced or cleared,
-nothing is written and the affected questions are listed; `--force` applies the changes.
+questions outside the sheet get no context. The sheet is the source of truth: previous
+assignments are always replaced. It reports how many questions have a context.
 
 ### `opox check contexts [OPPOSITION]`
 

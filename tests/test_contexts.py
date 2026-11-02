@@ -66,7 +66,5 @@ def test_assign_contexts_adds_replaces_and_clears() -> None:
     exams = _exams(None, "contexts/old.png", "contexts/old.png", "contexts/new.png")
     new = PurePosixPath("contexts/new.png")
     assignment = {"2025L0A-1-1": new, "2025L0A-1-2": new, "2025L0A-1-4": new}
-    result, added, changed = assign_contexts(exams, assignment)
+    result = assign_contexts(exams, assignment)
     assert [q.context for q in result.root[0].questions] == [new, new, None, new]
-    assert added == ["2025L0A-1-1"]
-    assert len(changed) == 2
