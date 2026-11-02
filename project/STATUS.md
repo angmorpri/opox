@@ -1,16 +1,19 @@
 # Estado actual
 
-## 26/10/2026
+## 02/11/2026
 
-- Implementado `opox dedup extract/add/check answers|stems|contexts` y
-  `opox dedup check all` (D011), con prefijos de subcomandos en toda la CLI (D004).
-- Ejecutada la deduplicación en C2_AGE: 1493 preguntas con respuesta dan 963 únicas.
-  Distractores unidos sólo por igualdad exacta con normalización base (D011).
-- Implementado `opox extract bank` y `opox check bank`; generado `bank.json` con
-  963 entradas y 2919 distractores. Cerrado D010. Añadidos los pasos 6 a 9 al RUNBOOK.
+- Limpiados los restos de la deduplicación manual (movidos a `old/dedup-manual/`).
+  Añadido `testpaths = ["tests"]` a `pyproject.toml` para que pytest ignore `old/`.
+- `opox extract questions` y `opox extract contexts` son ahora incrementales por examen;
+  `--force` los regenera. `opox add contexts` ya no requiere `--force`: siempre reasigna
+  desde la hoja (D005, D006, D009).
+- Experimento 1 de la nueva deduplicación automática: umbrales de similitud sobre
+  (pregunta, respuesta). Resultados en NOTES.md.
 
 ## Próximo paso
 
-1. Limpiar restos del mecanismo de deduplicación previo. Mover lo que se pueda a `old/dedup-manual/`.
-2. Revisar funcionamiento de extracción de preguntas y contextos.
-3. Rehacer el mecanismo de deduplicación para que sea principalmente automático. Se requerirán algunos experimentos en el laboratorio.
+1. Inspeccionar las uniones de cada franja de similitud (95–100, 90–95…) y contar
+   cuántas tienen respuestas distintas, para fijar el umbral sin falsos positivos.
+2. Decidir el mecanismo de agrupación y el tratamiento de los contextos, y trasladarlo
+   a D011.
+3. Reimplementar la deduplicación y `opox extract bank` (D010).

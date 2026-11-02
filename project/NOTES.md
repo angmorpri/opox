@@ -36,6 +36,41 @@ puede consultar para inspiración y referencia, pero no como norma o ejemplo.
 El modelo final puede seguir siendo definido en `src/opox/models/bank.py` y la
 generación del `bank.json` puede seguir siendo mediante `opox extract bank`.
 
+### Experimento 1: umbrales sobre (pregunta, respuesta) — 02/11/2026
+
+Script: `lab/dedup_thresholds.py`. Cada pregunta con respuesta se compara como la frase
+`"{X} {y}"`, con dos normalizaciones: enunciado extendido + respuesta base (X-B) y
+ambos extendidos (X-X). Similitud de Levenshtein normalizada entre todos los pares y
+grupos por componentes conexas (enlace simple).
+
+De 1493 preguntas con respuesta, quedan (únicas / unidas a otra):
+
+| Umbral | X-B        | X-X        |
+|--------|------------|------------|
+| 100%   | 989 (504)  | 989 (504)  |
+| 95%    | 981 (512)  | 981 (512)  |
+| 90%    | 962 (531)  | 962 (531)  |
+| 85%    | 933 (560)  | 933 (560)  |
+| 80%    | 912 (581)  | 913 (580)  |
+| 75%    | 893 (600)  | 894 (599)  |
+| 70%    | 876 (617)  | 875 (618)  |
+
+Conclusiones:
+- X-B y X-X son prácticamente idénticas: normalizar la respuesta apenas influye.
+- La igualdad exacta resuelve la mayor parte (504 uniones); bajar al 90% sólo añade 27
+  y al 70%, 113.
+- El 90% da casi el mismo recuento que la deduplicación manual anterior (962 frente a
+  963), aunque no está comprobado que formen los mismos grupos.
+
+Riesgos pendientes de medir:
+- El enlace simple encadena uniones: con umbrales bajos, un grupo puede reunir
+  preguntas poco parecidas entre sí.
+- En una frase única, una respuesta corta distinta (un número, «verdadero»/«falso»)
+  apenas baja la similitud si el enunciado es largo, y puede producir falsos positivos.
+
+Siguiente experimento: inspeccionar ejemplos de cada franja (95–100, 90–95…) y contar
+cuántas uniones tienen respuestas distintas, para fijar hasta dónde se puede bajar.
+
 
 
 ## Propuesta a alto nivel para el pipeline de generación de batería de preguntas
