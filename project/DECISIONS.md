@@ -5,7 +5,7 @@
 > ACTIVO
 
 Este proyecto ya se llevó a cabo en una iteración previa, sin llegar a resolver la hipótesis.
-Todo el código y contenido que no se ha reutilizado se halla en una carpeta temporal `old/`.
+Todo el código y contenido que no se ha reutilizado se halla en una carpeta temporal `old/prev-iter/`.
 
 Este contenido debe usarse sólo de forma orientativa, nunca como ejemplo o guía. Las
 excepciones a esta regla se mencionarán explícitamente.
@@ -183,84 +183,25 @@ completarse manualmente. Se valida con `opox check questions`, frente a
 
 ## [D010] Modelo de datos para la batería de preguntas
 
-> ACTIVO
-
-La batería reúne las preguntas únicas de una oposición tras la deduplicación ([D011]).
-El modelo se define en `src/opox/models/bank.py` ([D007]), cuyo docstring incluye un
-diagrama, y se almacena en `processed/<oposición>/bank.json`.
-
-- Cada entrada procede de un grupo de `dedup_contexts.json` y referencia todas sus
-  apariciones (`sources`) y su pregunta canónica (`canonical`), de la que toma el
-  enunciado y la respuesta.
-- `bank_id` (`B0001`...) sigue el orden de `canonical` y puede cambiar al regenerar la
-  batería. Si en el futuro hace falta un enlace estable, se resolverá conservando los
-  identificadores por solapamiento de `sources`.
-- El contexto y los distractores siguen [D011]. Los distractores de la canónica van
-  primero y el resto, por antigüedad, de más reciente a más antigua; se descartan los
-  que coinciden con alguna respuesta del grupo.
-
-La genera el código mediante `opox extract bank`, que exige completar antes las tres
-etapas de deduplicación. Se valida con `opox check bank` frente a `questions.json`,
-dando por buena la agrupación.
+> RESERVADO
 
 
 ## [D011] Decisiones sobre la deduplicación de preguntas
 
-> ACTIVO
+> EN DESARROLLO
+
+Una iteración previa del proceso de deduplicación se halla en `old/dedup-manual/`, sólo
+para uso referencial e histórico.
 
 ### Normalización
 
 - **Base** o **moderada**: Estandarizando Unicode (NFKC), comillas, guiones y espacios,
   eliminando el punto final y las mayúsculas. Conserva tildes, puntuación y símbolos;
   necesario para psicotécnico verbal, fórmulas y operaciones, que, de lo contrario, se
-  perderían o mezclarían pese a ser diferentes. Usado en **respuestas**.
+  perderían o mezclarían pese a ser diferentes.
 - **Extendida** o **agresiva**: Base más eliminación de tildes y puntuación de prosa,
   con la particularidad de que `. , ; :` sólo se elimina cuando le sigue un espacio o
-  es el final del texto, para evitar romper fórmulas y operaciones. Usado en
-  **enunciados**.
-
-### Igualdad
-
-En **respuestas** y **enunciados**, dos o más son directamente **iguales** si, tras
-normalizar, coinciden al 100%. A su vez, se consideran **similares** si superan cierto
-umbral bajo la similitud de Levenshtein normalizada (`1 - ediciones / longitud mayor`).
-En este caso, se realiza una revisión manual para determinar si son verdaderamente
-iguales o no.
-
-Los **enunciados** sólo miden su igualdad entre respuestas iguales.
-
-La **revisión manual** consiste en comparar clústers de 2 o más miembros, asignándoles
-una etiqueta común de **grupo** ('1', 'a'...). Todos aquellos que compartan grupo serán
-considerados iguales. En el caso de las **respuestas**, deben juzgarse a ciegas, sin
-conocer el enunciado, para valorar el significado.
-
-Actualmente, los umbrales de similitud son los siguientes:
-
-- Para respuestas: **70%**
-- Para enunciados: **75%**
-
-### Preguntas canónicas
-
-La pregunta canónica define el texto del enunciado, la respuesta y los distractores
-principales. Su utilidad se limita a la extracción de *features*. A la hora de usar una
-pregunta como pregunta, se escogerá una al azar de entre las `sources`.
-
-Se escoge como canónica la pregunta más reciente. En caso de empate, se escoge la
-primera según `question_id`.
-
-### Contextos
-
-Dentro de cada grupo de enunciados, los recortes de contexto distintos se comparan dos a
-dos: cada par de recortes que aparece junto en algún grupo se revisa una sola vez, y la
-decisión (`y` si son el mismo contexto, `n` si no) se aplica a todos los grupos que lo
-contienen. Un par marcado `n` separa esos grupos, uno por contexto; las preguntas sin
-contexto se quedan con el contexto más reciente. Una decisión `n` contradicha por otras
-`y` es un error.
-
-El contexto de un grupo es el de su pregunta más reciente con contexto (mismo criterio
-que la canónica), aunque la canónica no lo tenga. No se distingue si es opcional: una
-pregunta tomada de `sources` conserva su propio contexto, y añadirlo a la pregunta
-genérica no resta.
+  es el final del texto, para evitar romper fórmulas y operaciones.
 
 ### Distractores
 
@@ -270,30 +211,4 @@ pregunta más reciente. Los distractores muy similares pero no iguales se mantie
 separados: se acepta que una pregunta generada tenga opciones casi idénticas antes que
 arriesgarse a unir opciones distintas.
 
-Al no requerir revisión manual, no tienen etapa propia: se calculan al generar
-`bank.json`.
-
-### Flujo
-
-La deduplicación se hace en tres etapas encadenadas: `answers`; `stems`, que parte de
-`dedup_answers.json`; y `contexts`, que parte de `dedup_stems.json`. Para cada etapa
-`<s>`, en `interim/<oposición>/`:
-
-- `dedup_<s>.json`: grupos (`DedupCollection`, `src/opox/models/dedup.py`), derivados
-  de las preguntas y de la hoja. Cada pregunta con respuesta está en exactamente un grupo.
-- `dedup_<s>_review.csv`: hoja de revisión, única fuente de verdad de las decisiones
-  manuales.
-- `dedup_<s>_review.md`: guía de revisión, sin trabajo manual.
-
-En `answers` y `stems`, la hoja tiene una fila por miembro (preguntas de igual clave
-normalizada); los miembros enlazados por similitud, directa o encadenada, forman un caso.
-Las etiquetas de `group` son globales a la hoja, pero no pueden abarcar varios casos.
-Los miembros sin etiqueta se consideran pendientes y quedan separados.
-
-En `contexts`, la hoja tiene una fila por par de recortes (`context_a;context_b;same;
-groups`). Los pares sin decisión se consideran pendientes y no separan nada.
-
-Comandos: `opox dedup extract | add | check <s>`, según [D006]. `check` falla si hay
-decisiones pendientes, si la hoja no está al día o si el JSON no coincide con lo que
-produciría `add`. `opox dedup check all` comprueba las tres etapas en orden. El
-detalle está en `README.md`.
+Se validan garantizando que existen, al menos, 3 distractores por pregunta.

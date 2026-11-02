@@ -15,7 +15,7 @@ modifiques sin consultármelo previamente o sin habértelo indicado yo específi
 - `GENESIS.md` describe la motivación, objetivos, alcance y dirección general del proyecto.
 - `STATUS.md` describe el estado actual y el siguiente paso.
 - `DECISIONS.md` contiene decisiones ya adoptadas.
-- `NOTES.md` contiene cuestiones abiertas, ideas y diseños no comprometidos.
+- `NOTES.md` contiene cuestiones abiertas, ideas y diseños no comprometidos. Se ordenan de más recientes a más antiguas.
 - `RUNBOOK.md` describe, en orden, los pasos para reconstruir los datos desde cero.
 
 Cuando una idea o cuestión abierta en `NOTES.md` se convierte en decisión, se traslada

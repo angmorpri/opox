@@ -1,8 +1,41 @@
 # Notas
 
-Relación desestructurada de casos abiertos, ideas y otras notas.
+## Nueva deduplicación automática
 
-Se ordenan de más recientes a más antiguas.
+> 🟢 ABIERTO
+
+La iteración anterior del proceso de deduplicación de preguntas requería demasiado
+trabajo manual. El método era bastante ineficiente para el beneficio obtenido. Se deben
+explorar alternativas mucho más automáticas, tratando de centrar el esfuerzo manual
+sólo en la diferenciación de contextos.
+
+Propuesta actual:
+- Actuar directamente sobre pares (pregunta, respuesta) probando diversas normalizaciones.
+- Reexplorar cuántas preguntas están duplicadas al 100% y ver cuántas más se añadirían
+  en porcentajes más bajos.
+- Analizar qué % podemos admitir antes de que empiecen a aparecer falsos positivos.
+
+En cuanto a los contextos, probablemente mantenga el mecanismo actual, pero estará
+sujeto a los descubrimientos del reanálisis. Estos eran:
+
+> Dentro de cada grupo de enunciados, los recortes de contexto distintos se comparan dos a
+> dos: cada par de recortes que aparece junto en algún grupo se revisa una sola vez, y la
+> decisión (`y` si son el mismo contexto, `n` si no) se aplica a todos los grupos que lo
+> contienen. Un par marcado `n` separa esos grupos, uno por contexto; las preguntas sin
+> contexto se quedan con el contexto más reciente. Una decisión `n` contradicha por otras
+> `y` es un error.
+>
+> El contexto de un grupo es el de su pregunta más reciente con contexto (mismo criterio
+> que la canónica), aunque la canónica no lo tenga. No se distingue si es opcional: una
+> pregunta tomada de `sources` conserva su propio contexto, y añadirlo a la pregunta
+> genérica no resta.
+
+El contenido y código de la iteración anterior se ha movido a `old/dedup-manual/`. Se
+puede consultar para inspiración y referencia, pero no como norma o ejemplo.
+
+El modelo final puede seguir siendo definido en `src/opox/models/bank.py` y la
+generación del `bank.json` puede seguir siendo mediante `opox extract bank`.
+
 
 
 ## Propuesta a alto nivel para el pipeline de generación de batería de preguntas
@@ -121,7 +154,6 @@ oficial. Representaría el tercer nivel de clasificación.
 > 🟡 EN CURSO
 > "Bases de convocatoria" -> [D008]
 > "Preguntas por examen" -> [D009]
-> "Batería de preguntas" -> [D010]
 
 Se propone una extracción en dos fases:
 
@@ -167,8 +199,19 @@ convocatorias: [
 
 ### Batería de preguntas
 
-> 🔴 CERRADO -> [D010]
+> 🟡 EN CURSO -> [D010]
 
+Resultado de la eliminación de preguntas sin respuesta, la deduplicación y la
+agrupación de distractores.
+
+```
+id_bank: str 				# ID de la pregunta más reciente, que será la canónica
+sources: list[str]			# IDs de las preguntas originales
+text: str 					# Texto de la pregunta canónica
+answer: str 				# Respuesta de la pregunta canónica
+context: path?				# Ruta al contexto de la pregunta más reciente que lo posea
+distractors: list[str]		# Lista de todos los distractores, usando como canónica el de la pregunta más reciente que lo tenga
+```
 
 ## Nombre del proyecto
 

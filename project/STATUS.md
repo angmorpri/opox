@@ -11,7 +11,6 @@
 
 ## Próximo paso
 
-1. Diseñar el modelo de categorías ("Modelo de datos para C2_AGE" en NOTES): extraerlas
-   de los bloques de `rules.json` y organizar los temarios de cada convocatoria.
-2. Asignar las categorías a la batería, como primera *feature* (NOTES, "Extracción de
-   *features* de preguntas").
+1. Limpiar restos del mecanismo de deduplicación previo. Mover lo que se pueda a `old/dedup-manual/`.
+2. Revisar funcionamiento de extracción de preguntas y contextos.
+3. Rehacer el mecanismo de deduplicación para que sea principalmente automático. Se requerirán algunos experimentos en el laboratorio.
