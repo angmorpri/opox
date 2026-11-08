@@ -11,6 +11,7 @@ from opox.checks.contexts import check_contexts
 from opox.checks.duplicates import check_duplicates
 from opox.checks.questions import check_questions
 from opox.checks.rules import check_rules
+from opox.extract.categories import extract_categories
 from opox.extract.contexts import extract_contexts
 from opox.extract.duplicates import ANSWER_THRESHOLD, THRESHOLD, extract_duplicates
 from opox.extract.questions import extract_questions
@@ -22,6 +23,10 @@ def _print_notes(ok: bool, notes: list[str]) -> int:
     for note in notes:
         print(f"ERROR {note}" if not ok else note, file=sys.stderr if not ok else sys.stdout)
     return 0 if ok else 1
+
+
+def _run_extract_categories(args: argparse.Namespace) -> int:
+    return _print_notes(*extract_categories(args.data_dir, args.opposition, args.force))
 
 
 def _run_extract_duplicates(args: argparse.Namespace) -> int:
@@ -185,6 +190,13 @@ def _build_parser() -> argparse.ArgumentParser:
     contexts.add_argument("opposition", nargs="?", default="C2_AGE")
     contexts.add_argument("--force", action="store_true", help="rebuild the sheet and crops")
     contexts.set_defaults(func=_run_extract_contexts)
+
+    categories = sources.add_parser(
+        "categories", parents=[common], help="extract categories and their topics per call"
+    )
+    categories.add_argument("opposition", nargs="?", default="C2_AGE")
+    categories.add_argument("--force", action="store_true", help="rebuild the file")
+    categories.set_defaults(func=_run_extract_categories)
 
     duplicates = sources.add_parser(
         "duplicates", parents=[common], help="identify duplicate questions and review sheets"

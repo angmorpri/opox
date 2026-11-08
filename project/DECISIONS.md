@@ -270,7 +270,7 @@ que la canónica), aunque la canónica no lo tenga.
 Los archivos se alojan en `interim/<oposición>/`. Las decisiones manuales se identifican
 por IDs (de pregunta o de recorte), nunca por posición, de modo que sobreviven a
 cualquier recálculo. Los CSV son la fuente de verdad; los Markdown son vistas generadas
-para la revisión y se regeneran en cada `extract`, `add` y `check`.
+para la revisión y se regeneran en cada `extract` y `add`.
 
 - `duplicates.json`: grupos de más de una pregunta, cada uno con sus `members`
   (`question_id`) y su `origin` (`exact` o `manual`). La pregunta canónica no se guarda.
@@ -295,3 +295,41 @@ para la revisión y se regeneran en cada `extract`, `add` y `check`.
    `duplicates.json` y `dup_contexts.csv`. Falla si quedan contextos sin decidir o si
    las validaciones de `check duplicates` o de distractores no se cumplen; sólo avisa
    si quedan casos pendientes en `dup_check.csv`.
+
+
+## [D012] Categorías y temas por convocatoria
+
+> ACTIVO
+
+Las **categorías** son el primer nivel de clasificación de las preguntas: oficiales,
+fijas y comunes a todas las convocatorias. Los **temas**, segundo nivel, son los del
+programa de cada convocatoria ([D008]); los del psicotécnico son sus aptitudes.
+
+| `category_id` | Categoría |
+|---|---|
+| 1 | Organización pública |
+| 2 | Actividad administrativa |
+| 3 | Ofimática |
+| 4 | Psicotécnico |
+
+Se almacenan en `processed/<oposición>/categories.json`, modelo `CategoryCollection`
+(`src/opox/models/categories.py`). Cada categoría lista, por convocatoria, sus temas,
+cada uno con su referencia en `rules.json` (`block_id`, `number`) y su texto. Cada tema
+pertenece a una sola categoría; una convocatoria sin temas en una categoría no aparece
+en ella.
+
+`opox extract categories` asigna automáticamente cada bloque del programa:
+
+- `PSICO`, a Psicotécnico.
+- Un bloque cuyo nombre coincide con el de una categoría (con normalización extendida,
+  [D011]), entero a ella.
+- Cualquier otro bloque, con nombre ("Actividad administrativa y ofimática") o sin él
+  (`U`), se divide por su primer tema que contiene la palabra "informática": los
+  anteriores son Actividad administrativa; ése y los siguientes, Ofimática. Un bloque
+  sin esa palabra es un error.
+
+La división por palabra clave es frágil, pero suficiente: en C2_AGE, el primer tema de
+ofimática es siempre "Informática básica". Debe revisarse en nuevas oposiciones.
+
+Es incremental por convocatoria ([D006]): las ya presentes no se tocan y sólo se añaden
+las nuevas. `--force` lo reconstruye.

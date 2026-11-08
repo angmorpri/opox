@@ -119,3 +119,15 @@ completarla manualmente: el paso termina mostrando la lista de puntos pendientes
 - **Ejecución**: código, `uv run opox make bank`. Se regenera siempre desde cero.
 - **Validación**: el propio comando, que valida los duplicados como `opox check
   duplicates` y exige al menos 3 distractores por pregunta.
+
+### 10. Extracción de categorías ([D012])
+
+> 👨🏻‍💻 PROGRAMA
+
+- **Entrada**: `processed/C2_AGE/rules.json`.
+- **Salida**: `processed/C2_AGE/categories.json`, modelo `CategoryCollection`.
+- **Ejecución**: código, `uv run opox extract categories`. Sólo depende de las bases,
+  así que puede ejecutarse en cualquier momento tras el paso 2. Es incremental por
+  convocatoria; `--force` lo reconstruye.
+- **Validación**: el propio comando, que falla si algún bloque no puede asignarse a una
+  categoría.

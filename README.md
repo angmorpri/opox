@@ -168,3 +168,24 @@ The `distractors` are the wrong options of every source, joined when equal after
 base normalization, keeping the most recent text; each entry needs at least three.
 
 The bank holds no manual work, so it is always rebuilt from scratch.
+
+### `opox extract categories [OPPOSITION] [--force]`
+
+Extracts the four official categories and their topics per call from
+`processed/<opposition>/rules.json` into `processed/<opposition>/categories.json`,
+following the `CategoryCollection` model (`opox.models.categories`). Each topic keeps its
+reference to the rules (`block_id`, `number`) and its text, and belongs to one category:
+
+| `category_id` | Name | Blocks |
+|---|---|---|
+| 1 | Organización pública | named "Organización pública" |
+| 2 | Actividad administrativa | named "Actividad administrativa"; topics of other blocks before the split |
+| 3 | Ofimática | named "Ofimática"; topics of other blocks from the split on |
+| 4 | Psicotécnico | `PSICO`; its topics are the aptitudes |
+
+Names are compared after the extended normalization. Any other block, named (such as
+"Actividad administrativa y ofimática") or not (`U`), is split at its first topic with
+the word "informática". It fails, writing nothing, if a block has no such topic.
+
+Running it again keeps the calls already in the file and only adds the new ones, listed
+as `ADDED` with their topics per category. `--force` rebuilds the file from scratch.

@@ -97,6 +97,8 @@ Actualmente, con la C2_AGE en mente, se identifican las siguientes *features*.
 
 ### Categorías
 
+> Definición y temas por convocatoria -> [D012]. Pendiente su asignación a la batería.
+
 Son **oficiales**, según se exponen en las bases de la convocatoria. Son comunes a lo
 largo de los años. Representan el primer nivel de clasificación.
 
@@ -136,10 +138,7 @@ oficial. Representaría el tercer nivel de clasificación.
 
 ## Modelo de datos para C2_AGE
 
-> 🟡 EN CURSO
-> "Bases de convocatoria" -> [D008]
-> "Preguntas por examen" -> [D009]
-> "Batería de preguntas" -> [D010]
+> 🔴 CERRADO -> [D008], [D009], [D010] y [D012]
 
 Se propone una extracción en dos fases:
 
@@ -165,27 +164,12 @@ Los modelos a bajo nivel propuestos se detallan a continuación.
 
 ### Categorías
 
-Las **categorías** son transversales a todas las convocatorias. Se mantienen estables. Se extraen a partir de los bloques y los temas, con cambios mínimos.
-Los **temas** pueden ser similares, pero cada convocatoria puede tener sus matices.
-
-```
-id_categoría: int
-nombre: str
-convocatorias: [
-	{
-		id_convocatoria: str	# -> Bases de convocatoria
-		temario: list[str]
-	}
-]
-```
-
-*Retos conocidos*
-- Algunas convocatorias fusionan "ofimática" y "actividad administrativa". Se pueden dividir teniendo en cuenta los temas.
-- Algunas convocatorias no denominan explícitamente su bloque. Se puede inferir de aquéllas en las que sí.
+> 🔴 CERRADO -> [D012]
 
 ### Batería de preguntas
 
 > 🔴 CERRADO -> [D010]
+
 
 ## Nombre del proyecto
 
