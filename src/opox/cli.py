@@ -6,11 +6,53 @@ import sys
 from pathlib import Path
 
 from opox.add.contexts import add_contexts
+from opox.add.duplicates import add_duplicates
 from opox.checks.contexts import check_contexts
+from opox.checks.duplicates import check_duplicates
 from opox.checks.questions import check_questions
 from opox.checks.rules import check_rules
 from opox.extract.contexts import extract_contexts
+from opox.extract.duplicates import ANSWER_THRESHOLD, THRESHOLD, extract_duplicates
 from opox.extract.questions import extract_questions
+from opox.make.bank import make_bank
+
+
+def _print_notes(ok: bool, notes: list[str]) -> int:
+    """Print notes, as errors on failure; return the exit code."""
+    for note in notes:
+        print(f"ERROR {note}" if not ok else note, file=sys.stderr if not ok else sys.stdout)
+    return 0 if ok else 1
+
+
+def _run_extract_duplicates(args: argparse.Namespace) -> int:
+    return _print_notes(
+        *extract_duplicates(
+            args.data_dir, args.opposition, args.force, args.threshold, args.answer_threshold
+        )
+    )
+
+
+def _run_add_duplicates(args: argparse.Namespace) -> int:
+    return _print_notes(*add_duplicates(args.data_dir, args.opposition))
+
+
+def _run_check_duplicates(args: argparse.Namespace) -> int:
+    errors, warnings, notes = check_duplicates(args.data_dir, args.opposition)
+    for error in errors:
+        print(f"ERROR {error}", file=sys.stderr)
+    for warning in warnings:
+        print(f"WARNING {warning}")
+    for note in notes:
+        print(note)
+    if errors:
+        print(f"{len(errors)} problem(s) found.", file=sys.stderr)
+        return 1
+    print("Duplicates are consistent with questions and sheets.")
+    return 0
+
+
+def _run_make_bank(args: argparse.Namespace) -> int:
+    return _print_notes(*make_bank(args.data_dir, args.opposition))
 
 
 def _run_extract_questions(args: argparse.Namespace) -> int:
@@ -144,6 +186,25 @@ def _build_parser() -> argparse.ArgumentParser:
     contexts.add_argument("--force", action="store_true", help="rebuild the sheet and crops")
     contexts.set_defaults(func=_run_extract_contexts)
 
+    duplicates = sources.add_parser(
+        "duplicates", parents=[common], help="identify duplicate questions and review sheets"
+    )
+    duplicates.add_argument("opposition", nargs="?", default="C2_AGE")
+    duplicates.add_argument(
+        "--force", action="store_true", help="rebuild, discarding manual groups and decisions"
+    )
+    duplicates.add_argument(
+        "--threshold",
+        type=float,
+        help=f"min key similarity for review, 0-100 (default: stored, else {THRESHOLD:g})",
+    )
+    duplicates.add_argument(
+        "--answer-threshold",
+        type=float,
+        help=f"min answer similarity for review, 0-100 (default: stored, else {ANSWER_THRESHOLD:g})",
+    )
+    duplicates.set_defaults(func=_run_extract_duplicates)
+
     add = commands.add_parser("add", help="merge reviewed data into processed data")
     add_targets = _subcommands(add, "target")
 
@@ -152,6 +213,12 @@ def _build_parser() -> argparse.ArgumentParser:
     )
     add_c.add_argument("opposition", nargs="?", default="C2_AGE")
     add_c.set_defaults(func=_run_add_contexts)
+
+    add_d = add_targets.add_parser(
+        "duplicates", parents=[common], help="join the reviewed possible duplicates"
+    )
+    add_d.add_argument("opposition", nargs="?", default="C2_AGE")
+    add_d.set_defaults(func=_run_add_duplicates)
 
     check = commands.add_parser("check", help="validate data against references")
     targets = _subcommands(check, "target")
@@ -171,6 +238,19 @@ def _build_parser() -> argparse.ArgumentParser:
     )
     check_c.add_argument("opposition", nargs="?", default="C2_AGE")
     check_c.set_defaults(func=_run_check_contexts)
+
+    check_d = targets.add_parser(
+        "duplicates", parents=[common], help="check duplicate groups and review sheets"
+    )
+    check_d.add_argument("opposition", nargs="?", default="C2_AGE")
+    check_d.set_defaults(func=_run_check_duplicates)
+
+    make = commands.add_parser("make", help="build final data from reviewed data")
+    make_targets = _subcommands(make, "target")
+
+    bank = make_targets.add_parser("bank", parents=[common], help="build the question bank")
+    bank.add_argument("opposition", nargs="?", default="C2_AGE")
+    bank.set_defaults(func=_run_make_bank)
 
     return parser
 

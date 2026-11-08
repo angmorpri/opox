@@ -75,3 +75,47 @@ completarla manualmente: el paso termina mostrando la lista de puntos pendientes
 - **Ejecución**: código, `uv run opox add contexts`. Repetir tras cada cambio en la hoja
   o nueva extracción de preguntas.
 - **Validación**: `uv run opox check questions`.
+
+### 6. Identificación de duplicados ([D011])
+
+> 👨🏻‍💻 PROGRAMA
+
+- **Entrada**: `processed/C2_AGE/questions.json`, con los contextos asignados.
+- **Salida**: `interim/C2_AGE/duplicates.json`, `dup_contexts.csv` y `dup_check.csv`,
+  con sus guías `.md`.
+- **Ejecución**: código, `uv run opox extract duplicates`. Repetir tras cada nueva
+  extracción de preguntas o asignación de contextos: conserva las decisiones tomadas.
+- **Validación**: `uv run opox check duplicates`. Fallará mientras queden contextos por
+  revisar (siguiente paso).
+
+### 7. Revisión de contextos de duplicados
+
+> ✍️ MANUAL
+
+- **Entrada**: `interim/C2_AGE/dup_contexts.csv` y su guía `dup_contexts.md`.
+- **Salida**: `interim/C2_AGE/dup_contexts.csv`, con `same` completo.
+- **Ejecución**: Para cada par de recortes, `y` si son el mismo contexto, `n` si no.
+  Obligatorio.
+- **Validación**: `uv run opox check duplicates`.
+
+### 8. Revisión de posibles duplicados [OPCIONAL]
+
+> ✍️ MANUAL + 👨🏻‍💻 PROGRAMA
+
+- **Entrada**: `interim/C2_AGE/dup_check.csv` y su guía `dup_check.md`.
+- **Salida**: `interim/C2_AGE/duplicates.json`, con los grupos `manual`.
+- **Ejecución**: Para cada par, `y` si es la misma pregunta, `n` si no; las filas en
+  blanco se ignoran. Después, código, `uv run opox add duplicates`. Si surgen nuevos
+  pares de contextos, volver al paso 7.
+- **Validación**: `uv run opox check duplicates`.
+
+### 9. Generación del banco de preguntas ([D010])
+
+> 👨🏻‍💻 PROGRAMA
+
+- **Entrada**: `processed/C2_AGE/questions.json` e `interim/C2_AGE/duplicates.json`,
+  `dup_contexts.csv` y `dup_check.csv`.
+- **Salida**: `processed/C2_AGE/bank.json`, modelo `QuestionBank`.
+- **Ejecución**: código, `uv run opox make bank`. Se regenera siempre desde cero.
+- **Validación**: el propio comando, que valida los duplicados como `opox check
+  duplicates` y exige al menos 3 distractores por pregunta.

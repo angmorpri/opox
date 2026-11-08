@@ -1,76 +1,26 @@
 # Notas
 
-## Nueva deduplicación automática
+## Preguntas iguales con respuesta contextual
 
 > 🟢 ABIERTO
+> En C2_AGE no existe ningún caso así
 
-La iteración anterior del proceso de deduplicación de preguntas requería demasiado
-trabajo manual. El método era bastante ineficiente para el beneficio obtenido. Se deben
-explorar alternativas mucho más automáticas, tratando de centrar el esfuerzo manual
-sólo en la diferenciación de contextos.
+En preguntas cuya respuesta sea "a y b son correctas" o "las dos primeras son correctas"
+o similar, existen varios problemas que resolver:
 
-Propuesta actual:
-- Actuar directamente sobre pares (pregunta, respuesta) probando diversas normalizaciones.
-- Reexplorar cuántas preguntas están duplicadas al 100% y ver cuántas más se añadirían
-  en porcentajes más bajos.
-- Analizar qué % podemos admitir antes de que empiecen a aparecer falsos positivos.
+- La forma actual de almacenamiento pierde las letras, así que hay que seguir
+  garantizando que el orden en el que se guarda es el correcto.
+- A la hora de deduplicar preguntas y normalizar distractores, puede darse que dos
+  preguntas sean iguales, pero los distractores sean diferentes, entonces, al agruparlos
+  y perderse el orden original, se impida resolverlo adecuadamente.
 
-En cuanto a los contextos, probablemente mantenga el mecanismo actual, pero estará
-sujeto a los descubrimientos del reanálisis. Estos eran:
+Con "Ninguna de las anteriores" o "Todas las anteriores" no aplica, ya que cualquier
+combinación de distractores será válida.
 
-> Dentro de cada grupo de enunciados, los recortes de contexto distintos se comparan dos a
-> dos: cada par de recortes que aparece junto en algún grupo se revisa una sola vez, y la
-> decisión (`y` si son el mismo contexto, `n` si no) se aplica a todos los grupos que lo
-> contienen. Un par marcado `n` separa esos grupos, uno por contexto; las preguntas sin
-> contexto se quedan con el contexto más reciente. Una decisión `n` contradicha por otras
-> `y` es un error.
->
-> El contexto de un grupo es el de su pregunta más reciente con contexto (mismo criterio
-> que la canónica), aunque la canónica no lo tenga. No se distingue si es opcional: una
-> pregunta tomada de `sources` conserva su propio contexto, y añadirlo a la pregunta
-> genérica no resta.
 
-El contenido y código de la iteración anterior se ha movido a `old/dedup-manual/`. Se
-puede consultar para inspiración y referencia, pero no como norma o ejemplo.
+## Nueva deduplicación automática
 
-El modelo final puede seguir siendo definido en `src/opox/models/bank.py` y la
-generación del `bank.json` puede seguir siendo mediante `opox extract bank`.
-
-### Experimento 1: umbrales sobre (pregunta, respuesta) — 02/11/2026
-
-Script: `lab/dedup_thresholds.py`. Cada pregunta con respuesta se compara como la frase
-`"{X} {y}"`, con dos normalizaciones: enunciado extendido + respuesta base (X-B) y
-ambos extendidos (X-X). Similitud de Levenshtein normalizada entre todos los pares y
-grupos por componentes conexas (enlace simple).
-
-De 1493 preguntas con respuesta, quedan (únicas / unidas a otra):
-
-| Umbral | X-B        | X-X        |
-|--------|------------|------------|
-| 100%   | 989 (504)  | 989 (504)  |
-| 95%    | 981 (512)  | 981 (512)  |
-| 90%    | 962 (531)  | 962 (531)  |
-| 85%    | 933 (560)  | 933 (560)  |
-| 80%    | 912 (581)  | 913 (580)  |
-| 75%    | 893 (600)  | 894 (599)  |
-| 70%    | 876 (617)  | 875 (618)  |
-
-Conclusiones:
-- X-B y X-X son prácticamente idénticas: normalizar la respuesta apenas influye.
-- La igualdad exacta resuelve la mayor parte (504 uniones); bajar al 90% sólo añade 27
-  y al 70%, 113.
-- El 90% da casi el mismo recuento que la deduplicación manual anterior (962 frente a
-  963), aunque no está comprobado que formen los mismos grupos.
-
-Riesgos pendientes de medir:
-- El enlace simple encadena uniones: con umbrales bajos, un grupo puede reunir
-  preguntas poco parecidas entre sí.
-- En una frase única, una respuesta corta distinta (un número, «verdadero»/«falso»)
-  apenas baja la similitud si el enunciado es largo, y puede producir falsos positivos.
-
-Siguiente experimento: inspeccionar ejemplos de cada franja (95–100, 90–95…) y contar
-cuántas uniones tienen respuestas distintas, para fijar hasta dónde se puede bajar.
-
+> 🔴 CERRADO -> [D011]
 
 
 ## Propuesta a alto nivel para el pipeline de generación de batería de preguntas
@@ -189,6 +139,7 @@ oficial. Representaría el tercer nivel de clasificación.
 > 🟡 EN CURSO
 > "Bases de convocatoria" -> [D008]
 > "Preguntas por examen" -> [D009]
+> "Batería de preguntas" -> [D010]
 
 Se propone una extracción en dos fases:
 
@@ -234,19 +185,7 @@ convocatorias: [
 
 ### Batería de preguntas
 
-> 🟡 EN CURSO -> [D010]
-
-Resultado de la eliminación de preguntas sin respuesta, la deduplicación y la
-agrupación de distractores.
-
-```
-id_bank: str 				# ID de la pregunta más reciente, que será la canónica
-sources: list[str]			# IDs de las preguntas originales
-text: str 					# Texto de la pregunta canónica
-answer: str 				# Respuesta de la pregunta canónica
-context: path?				# Ruta al contexto de la pregunta más reciente que lo posea
-distractors: list[str]		# Lista de todos los distractores, usando como canónica el de la pregunta más reciente que lo tenga
-```
+> 🔴 CERRADO -> [D010]
 
 ## Nombre del proyecto
 

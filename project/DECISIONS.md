@@ -187,12 +187,29 @@ ejecución.
 
 ## [D010] Modelo de datos para la batería de preguntas
 
-> RESERVADO
+> ACTIVO
+
+Resultado de descartar las preguntas sin respuesta, deduplicar ([D011]) y agrupar los
+distractores. Se almacena en `processed/<oposición>/bank.json`, modelo `QuestionBank`
+(`src/opox/models/bank.py`), y lo genera `opox make bank`, siempre desde cero.
+
+```
+bank_id: str                # ID de la pregunta más reciente, que será la canónica
+sources: list[str]          # IDs de las preguntas originales
+text: str                   # Texto de la pregunta canónica
+answer: str                 # Respuesta de la pregunta canónica
+context: path?              # Ruta al contexto de la pregunta más reciente que lo posea
+distractors: list[str]      # Todos los distractores, con el texto del más reciente que lo tenga
+```
+
+La pregunta más reciente es la del año más reciente, con empates resueltos por
+`question_id`. Las preguntas sin duplicados forman su propia entrada, con una única
+`source`.
 
 
 ## [D011] Decisiones sobre la deduplicación de preguntas
 
-> EN DESARROLLO
+> ACTIVO
 
 Una iteración previa del proceso de deduplicación se halla en `old/dedup-manual/`, sólo
 para uso referencial e histórico.
@@ -216,3 +233,65 @@ separados: se acepta que una pregunta generada tenga opciones casi idénticas an
 arriesgarse a unir opciones distintas.
 
 Se validan garantizando que existen, al menos, 3 distractores por pregunta.
+
+### Agrupación
+
+Sólo se consideran las preguntas con respuesta. Cada una se representa con la clave
+`"{enunciado extendido} {respuesta base}"`.
+
+- **Exacta**: las preguntas con la misma clave forman un grupo automáticamente.
+- **Por similitud**: los pares de grupos con similitud de Levenshtein normalizada
+  de la clave ≥ 75% y de la respuesta base ≥ 95% (ambos umbrales configurables) se
+  proponen para revisión manual, que es opcional.
+
+Por debajo del 100%, los falsos positivos se concentran en preguntas de plantilla
+(antónimos, ecuaciones, secuencias, consultas a tablas), donde lo que varía es corto.
+La similitud de la respuesta las separa casi por completo de los duplicados reales,
+cuyo enunciado sólo cambia en matices (título completo de la norma, versión de software,
+reformulaciones). El beneficio de la revisión es pequeño (≈2% del corpus), por lo que
+es opcional.
+
+Las uniones son transitivas: si A~B y B~C, A, B y C forman un mismo grupo.
+
+### Contextos
+
+Dentro de cada grupo, los recortes de contexto distintos se comparan dos a dos: cada
+par de recortes que aparece junto en algún grupo se revisa una sola vez, y la decisión
+(`y` si son el mismo contexto, `n` si no) se aplica a todos los grupos que lo
+contienen. Un par marcado `n` separa esos grupos, uno por contexto; las preguntas sin
+contexto se quedan con el contexto más reciente. Una decisión `n` contradicha por otras
+`y` es un error.
+
+El contexto de un grupo es el de su pregunta más reciente con contexto (mismo criterio
+que la canónica), aunque la canónica no lo tenga.
+
+### Flujo
+
+Los archivos se alojan en `interim/<oposición>/`. Las decisiones manuales se identifican
+por IDs (de pregunta o de recorte), nunca por posición, de modo que sobreviven a
+cualquier recálculo. Los CSV son la fuente de verdad; los Markdown son vistas generadas
+para la revisión y se regeneran en cada `extract`, `add` y `check`.
+
+- `duplicates.json`: grupos de más de una pregunta, cada uno con sus `members`
+  (`question_id`) y su `origin` (`exact` o `manual`). La pregunta canónica no se guarda.
+- `dup_contexts.csv` (+ `.md`): un par de recortes por fila (`context_a, context_b,
+  same`), sólo para grupos con dos o más recortes distintos. `same` vacío por defecto;
+  su revisión es obligatoria.
+- `dup_check.csv` (+ `.md`): un par de grupos por fila, identificado por un
+  `question_id` de cada uno (`question_a, question_b, score, answer_score, same`),
+  ordenado por similitud descendente. `same` vacío por defecto; su revisión es opcional.
+
+1. `opox extract duplicates` recalcula los grupos exactos, conserva los manuales de
+   `duplicates.json` y añade a los CSV sólo los pares nuevos, sin tocar los ya
+   existentes ([D006]). `--force` lo reconstruye todo.
+2. Manualmente, se completa `dup_contexts.csv` y, si se quiere, `dup_check.csv`.
+3. `opox check duplicates` informa de los contextos y casos pendientes, y valida IDs
+   inexistentes en `questions.json`, valores de decisión inválidos y contradicciones.
+4. `opox add duplicates` (opcional) une en `duplicates.json` los pares marcados `y`
+   como grupos `manual`, añade a `dup_contexts.csv` los pares de recortes que surjan y
+   regenera `dup_check.csv` sin los pares ya unidos. Las decisiones `n` se conservan
+   para no volver a proponerlas.
+5. `opox make bank` genera desde cero el banco a partir de `questions.json`,
+   `duplicates.json` y `dup_contexts.csv`. Falla si quedan contextos sin decidir o si
+   las validaciones de `check duplicates` o de distractores no se cumplen; sólo avisa
+   si quedan casos pendientes en `dup_check.csv`.

@@ -54,12 +54,60 @@ and `ADDED` lines refer to those alone. Exams without contexts are scanned again
 run. `--force` scans every exam again and rewrites the sheet and crops, reporting each
 file replaced.
 
+### `opox extract duplicates [OPPOSITION] [--force] [--threshold T] [--answer-threshold A]`
+
+Identifies the duplicate questions of `processed/<opposition>/questions.json` (D011) and
+writes, in `interim/<opposition>/`:
+
+- `duplicates.json`: groups of two or more duplicate questions, following the
+  `DuplicateCollection` model (`opox.models.duplicates`). Each group lists its `members`
+  and its `origin`: `exact` or `manual` (joined by `opox add duplicates`).
+- `dup_contexts.csv`, columns `context_a, context_b, same, groups`: one pair of different
+  context crops found together in a group per row. **Mandatory review**: fill in `same`
+  with `y` (same context) or `n` (different; the groups are split, one per context).
+- `dup_check.csv`, columns `question_a, question_b, score, answer_score, same`: one pair
+  of similar groups per row, identified by their canonical questions, most similar
+  first. **Optional review**: fill in `same` with `y` or `n`; blank rows are ignored.
+- `dup_contexts.md` and `dup_check.md`: read-only guides for both sheets, with the crops,
+  the questions and their word differences. The CSV files are the source of truth.
+
+Only answered questions count, keyed as `"{extended stem} {base answer}"`; questions
+with equal key form an `exact` group. Pairs of groups whose keys reach `T` (default 75)
+and whose answers reach `A` (default 95) of normalized Levenshtein similarity go to
+`dup_check.csv`. Both thresholds are stored in `duplicates.json` and reused afterwards.
+
+Running it again recomputes the exact groups and keeps the `manual` ones and every
+decided row of both sheets, adding only the new pairs; decisions whose questions or
+crops no longer exist are dropped and reported. `--force` rebuilds everything from
+scratch, discarding manual groups and decisions.
+
 ### `opox add contexts [OPPOSITION]`
 
 Sets the `context` of each question in `processed/<opposition>/questions.json` from the
 context sheet and crops (D005), after validating them as `opox check contexts` does;
 questions outside the sheet get no context. The sheet is the source of truth: previous
 assignments are always replaced. It reports how many questions have a context.
+
+### `opox add duplicates [OPPOSITION]`
+
+Joins into a `manual` group of `interim/<opposition>/duplicates.json` the two groups of
+every pair marked `y` in `dup_check.csv`. Then it updates the outputs as
+`opox extract duplicates` does with the stored thresholds: new context pairs are added
+to `dup_contexts.csv`, and `dup_check.csv` is regenerated without the pairs already
+joined, keeping the `n` decisions. Optional step.
+
+### `opox check duplicates [OPPOSITION]`
+
+Validates `interim/<opposition>/duplicates.json`, `dup_contexts.csv` and `dup_check.csv`
+against `processed/<opposition>/questions.json`. Read-only. It fails if:
+
+- The groups are out of date with the questions (rerun `opox extract duplicates`).
+- A sheet has wrong columns, invalid or repeated rows, or unknown questions or crops.
+- A context pair is pending, missing, or marked `n` while other pairs join both crops.
+- A pair of `dup_check.csv` is marked `n` but both questions are in the same group.
+
+It warns (`WARNING`) about pairs marked `y` not added yet, and reports how many pairs of
+`dup_check.csv` are not reviewed (optional) and how many bank entries would result.
 
 ### `opox check contexts [OPPOSITION]`
 
@@ -103,3 +151,20 @@ n_topics_block_2, ...`. Columns follow the order of the syllabus blocks, ignorin
 psychotechnical block; `-` means the call has no such block.
 
 Exits with code 1 and lists every problem found if any check fails.
+
+### `opox make bank [OPPOSITION]`
+
+Builds the question bank `processed/<opposition>/bank.json`, following the
+`QuestionBank` model (`opox.models.bank`, D010), from `questions.json` and the reviewed
+duplicates. It first validates them as `opox check duplicates` does, and fails on any
+error, such as pending context pairs; pairs of `dup_check.csv` marked `y` but not added
+are only warned about.
+
+There is one entry per group, after splitting the groups whose crops are marked as
+different, plus one per unique answered question. The canonical question is the most
+recent one (latest year, ties by `question_id`): it gives the entry its `bank_id`,
+`text` and `answer`. The `context` is that of the most recent question with context.
+The `distractors` are the wrong options of every source, joined when equal after the
+base normalization, keeping the most recent text; each entry needs at least three.
+
+The bank holds no manual work, so it is always rebuilt from scratch.
