@@ -340,3 +340,34 @@ ofimática es siempre "Informática básica". Debe revisarse en nuevas oposicion
 
 Es incremental por convocatoria ([D006]): las ya presentes no se tocan y sólo se añaden
 las nuevas. `--force` lo reconstruye.
+
+
+## [D013] Categorización y tema canónico
+
+> ACTIVO
+
+Categoría y **tema canónico** (tema de la convocatoria de la pregunta canónica) se
+obtienen juntos, en una sola consulta a un agente LLM por entrada del banco. La
+tematización posterior transforma el tema canónico en el **tema objetivo**,
+normalmente el de la convocatoria más reciente.
+
+La categoría se rige estrictamente por la convocatoria donde se examinó la pregunta, no
+por su contenido, aunque las bases contengan errores. Nada se resuelve por heurística.
+
+**Acotación determinista.** Cada fuente de una entrada recibe sus categorías candidatas
+de `rules.json` y `categories.json`: una pregunta ordinaria, las del bloque de su
+sección (las secciones van en orden de examen); una reserva, las de todos los bloques
+de su parte. Las candidatas de la entrada son la intersección de las de sus fuentes;
+vacía es un error.
+
+**Consulta al agente**, para todas las entradas:
+
+- Entrada: sólo la pregunta canónica, con enunciado, respuesta y, si lo tiene, contexto
+  (el modelo debe tener visión). Los distractores, opcionales.
+- Opciones: las categorías candidatas y todos sus temas en la convocatoria de la
+  pregunta canónica.
+- Salida: lista de tamaño variable de (categoría, tema, confianza), de mayor a menor
+  confianza, con categoría y tema compatibles. Se almacenan varios temas por pregunta.
+
+**Revisión manual**: los resultados de menor confianza, por categoría, tema o ambos.
+Por categoría, sólo cuando dos categorías distintas tienen confianza alta.

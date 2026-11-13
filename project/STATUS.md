@@ -1,14 +1,15 @@
 # Estado actual
 
-## 08/11/2026
+## 13/11/2026
 
-- Deduplicación automática mediante `opox extract | check | add duplicates` y
-  `opox make bank` (D010 y D011). La única tarea manual obligatoria es la revisión
-  de contextos. La revisión manual de duplicados no 100% se vuelve opcional.
-- Organización de categorías y temas en `categories.json` mediante `opox extract categories` (D012).
+- Nuevo CLI `opox <paso> extract|add|check|make [<target>]` (D004): `extract` siempre
+  incremental, `--force` con confirmación (D006), `rules extract` muestra las
+  instrucciones del agente (D008) y nuevo `categories check`.
+- Diseñado el proceso de categorización (D013): acotación determinista por
+  intersección y una consulta única al agente que devuelve categoría y tema canónico.
 
 ## Próximo paso
 
-1. Decidir el orden de extracción de las *features* y su modelo de almacenamiento.
-2. Asignar categorías a la batería: de forma determinista por sección, bloque y tema;
-   propagando por duplicados; y clasificando el resto (bloque II de las L y reservas).
+1. Definir el criterio de confianza y la calibración (muestra manual de temas).
+2. Elegir el modelo gratuito con visión e implementar `opox features extract categories`:
+   adaptador por proveedor y caché de respuestas en `interim/`.
