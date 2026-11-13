@@ -29,7 +29,7 @@ Al no ser regenerables en general, ambas carpetas se mantienen en el control de 
 
 Como criterio general, el código se encarga del trabajo masivo y repetible, y los agentes
 o la intervención manual del trabajo puntual, ambiguo o de corrección. Cuando un paso no
-lo realiza el código, se acompaña, si es posible, de un comando `opox check` que valide
+lo realiza el código, se acompaña, si es posible, de un comando `check` que valide
 su resultado frente a datos fiables.
 
 El orden de los pasos para reconstruir los datos desde cero se documenta en `RUNBOOK.md`.
@@ -66,8 +66,11 @@ mediante `uv` y `pyproject.toml`. Su carpeta raíz estará en `src/opox/`.
 `opox` deberá disponer de una interfaz por línea de comando desde la que ejecutar cada
 una de las funcionalidades principales que se desarrollen.
 
-Los subcomandos de `opox` deben admitir cualquier prefijo que no sea ambiguo
-(`opox dedup check ans`, `opox ext cont`).
+Los comandos siguen el patrón `opox <paso> extract|add|check|make [<target>]
+[<opciones>]`, con los pasos del flujo de datos (`rules`, `tests`, `bank`, `categories`,
+`features`). El `target` es obligatorio salvo en pasos sin él y en `make`; `extract` y
+`check` admiten `all` cuando hay varios (`extract` se detiene al primer fallo, `check`
+continúa). Los subcomandos admiten cualquier prefijo no ambiguo (`opox t e q`).
 
 `README.md` se usará exclusivamente para describir el código y se redactará en inglés.
 
@@ -94,8 +97,8 @@ se cumplen en todos los exámenes de C2_AGE y deben revisarse en nuevas oposicio
 
 El flujo es el siguiente:
 
-1. `opox extract contexts` detecta los contextos de cada examen (imágenes incrustadas y
-   tablas dibujadas), guarda los recortes y genera la hoja de control. Cuando el rango
+1. `opox tests extract contexts` detecta los contextos de cada examen (imágenes
+   incrustadas y tablas dibujadas), guarda los recortes y genera la hoja de control. Cuando el rango
    de preguntas no es explícito ("N a M."), lo estima limitado a la página del contexto
    y lo marca para revisión. Es incremental por examen ([D006]): los exámenes con alguna
    fila en la hoja o algún recorte se dan por cubiertos y no se tocan, de modo que se
@@ -104,16 +107,17 @@ El flujo es el siguiente:
    contextos se vuelven a escanear en cada ejecución. `--force` lo reconstruye todo.
 2. Manualmente, se revisa la hoja y los recortes: se corrigen los erróneos, se añaden los
    que falten y se eliminan los falsos positivos.
-3. `opox check contexts` valida la hoja frente a los recortes y las preguntas extraídas.
-4. `opox add contexts` asigna a cada pregunta la ruta de su recorte. Sobrescribe
+3. `opox tests check contexts` valida la hoja frente a los recortes y las preguntas
+   extraídas.
+4. `opox tests add contexts` asigna a cada pregunta la ruta de su recorte. Sobrescribe
    siempre cualquier ejecución previa.
-5. `opox check questions` verifica que los recortes asignados existen e informa si la
-   asignación de contextos está pendiente. Mantener la asignación al día con la hoja es
+5. `opox tests check questions` verifica que los recortes asignados existen e informa si
+   la asignación de contextos está pendiente. Mantener la asignación al día con la hoja es
    responsabilidad de quien la edita: tras cada cambio en la hoja, repetir
-   `opox add contexts`.
+   `opox tests add contexts`.
 
 La hoja y los recortes son la única fuente de verdad. Si se vuelven a extraer las
-preguntas, basta con repetir `opox add contexts`.
+preguntas, basta con repetir `opox tests add contexts`.
 
 
 ## [D006] Escritura de datos por código
@@ -128,6 +132,8 @@ debe proteger ese trabajo:
   decir, no modifican nada que ya existiera, pero permite añadir el contenido de nuevo
   material que entre. Las operaciones que funcionen así deben disponer de una opción
   especial (por ejemplo, `--force`) que permita forzar el reinicio.
+- `extract` es siempre incremental, y `extract --force` lo regenera desde cero,
+  descartando el trabajo manual tras mostrar qué se pierde y pedir confirmación.
 
 
 ## [D007] Pydantic v2 para modelos de datos
@@ -158,8 +164,9 @@ Sobre los bloques del programa:
   tildes si tiene nombre pero no numeral.
 
 La extracción la realiza un agente directamente a `processed/<oposición>/rules.json`,
-un único archivo con todas las convocatorias, y se valida con
-`opox check rules` frente a un recuento manual de bloques y temas por convocatoria.
+un único archivo con todas las convocatorias, con las instrucciones que muestra
+`opox rules extract` (sólo las convocatorias nuevas; todas con `--force`), y se valida con
+`opox rules check` frente a un recuento manual de bloques y temas por convocatoria.
 
 
 ## [D009] Modelo de datos para preguntas por examen
@@ -176,9 +183,9 @@ De cada examen y su solucionario se extraen sus preguntas. El modelo se define e
 - Las preguntas no repiten datos deducibles del examen o la convocatoria (año, tipo,
   fuente).
 - Las preguntas anuladas no tienen respuesta (`answer = None`).
-- El contexto de cada pregunta se asigna después con `opox add contexts` ([D005]).
+- El contexto de cada pregunta se asigna después con `opox tests add contexts` ([D005]).
 
-La extracción la realiza el código mediante `opox extract questions`, usando
+La extracción la realiza el código mediante `opox tests extract questions`, usando
 `pdfplumber`, de forma incremental por examen ([D006]): los exámenes ya presentes en
 `questions.json` no se tocan. Al terminar, muestra los puntos que requieren revisión o
 completarse manualmente y los exámenes añadidos, referidos sólo a lo extraído en esa
@@ -191,7 +198,7 @@ ejecución.
 
 Resultado de descartar las preguntas sin respuesta, deduplicar ([D011]) y agrupar los
 distractores. Se almacena en `processed/<oposición>/bank.json`, modelo `QuestionBank`
-(`src/opox/models/bank.py`), y lo genera `opox make bank`, siempre desde cero.
+(`src/opox/models/bank.py`), y lo genera `opox bank make`, siempre desde cero.
 
 ```
 bank_id: str                # ID de la pregunta más reciente, que será la canónica
@@ -281,19 +288,19 @@ para la revisión y se regeneran en cada `extract` y `add`.
   `question_id` de cada uno (`question_a, question_b, score, answer_score, same`),
   ordenado por similitud descendente. `same` vacío por defecto; su revisión es opcional.
 
-1. `opox extract duplicates` recalcula los grupos exactos, conserva los manuales de
+1. `opox bank extract duplicates` recalcula los grupos exactos, conserva los manuales de
    `duplicates.json` y añade a los CSV sólo los pares nuevos, sin tocar los ya
    existentes ([D006]). `--force` lo reconstruye todo.
 2. Manualmente, se completa `dup_contexts.csv` y, si se quiere, `dup_check.csv`.
-3. `opox check duplicates` informa de los contextos y casos pendientes, y valida IDs
-   inexistentes en `questions.json`, valores de decisión inválidos y contradicciones.
-4. `opox add duplicates` (opcional) une en `duplicates.json` los pares marcados `y`
+3. `opox bank check duplicates` informa de los contextos y casos pendientes, y valida
+   IDs inexistentes en `questions.json`, valores de decisión inválidos y contradicciones.
+4. `opox bank add duplicates` (opcional) une en `duplicates.json` los pares marcados `y`
    como grupos `manual`, añade a `dup_contexts.csv` los pares de recortes que surjan y
    regenera `dup_check.csv` sin los pares ya unidos. Las decisiones `n` se conservan
    para no volver a proponerlas.
-5. `opox make bank` genera desde cero el banco a partir de `questions.json`,
+5. `opox bank make` genera desde cero el banco a partir de `questions.json`,
    `duplicates.json` y `dup_contexts.csv`. Falla si quedan contextos sin decidir o si
-   las validaciones de `check duplicates` o de distractores no se cumplen; sólo avisa
+   las validaciones de `bank check duplicates` o de distractores no se cumplen; sólo avisa
    si quedan casos pendientes en `dup_check.csv`.
 
 
@@ -318,7 +325,7 @@ cada uno con su referencia en `rules.json` (`block_id`, `number`) y su texto. Ca
 pertenece a una sola categoría; una convocatoria sin temas en una categoría no aparece
 en ella.
 
-`opox extract categories` asigna automáticamente cada bloque del programa:
+`opox categories extract` asigna automáticamente cada bloque del programa:
 
 - `PSICO`, a Psicotécnico.
 - Un bloque cuyo nombre coincide con el de una categoría (con normalización extendida,

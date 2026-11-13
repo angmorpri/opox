@@ -43,7 +43,7 @@ Notes:
   "2025L0A-1R-3"); numbering restarts in each part and each reserve list.
 - `options` keeps the exam order (a, b, c, d); `answer` is the 0-based index of the
   correct option, or None if the question was annulled.
-- `context` is set by `opox add contexts` (D005), relative to
+- `context` is set by `opox tests add contexts` (D005), relative to
   `data/processed/<opposition>/`.
 """
 

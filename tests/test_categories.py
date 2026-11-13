@@ -1,6 +1,7 @@
 from fractions import Fraction
 from pathlib import Path, PurePosixPath
 
+from opox.checks.categories import check_categories
 from opox.extract.categories import (
     ADMINISTRATIVE_ACTIVITY,
     OFFICE_SOFTWARE,
@@ -104,3 +105,18 @@ def test_unassignable_block_fails(tmp_path: Path) -> None:
     ok, _ = extract_categories(tmp_path, "X")
     assert not ok
     assert not (tmp_path / "processed" / "X" / "categories.json").exists()
+
+
+def test_check_categories(tmp_path: Path) -> None:
+    _write(tmp_path, [_rules("2025L", [MIXED])])
+    assert extract_categories(tmp_path, "X")[0]
+    assert check_categories(tmp_path, "X") == []
+
+    extra = Block(block_id="U", topics=["Informática básica."])
+    _write(tmp_path, [_rules("2025L", [MIXED]), _rules("2025I", [extra])])
+    assert check_categories(tmp_path, "X") == ["2025I U.1: topic not in any category"]
+
+    _write(tmp_path, [_rules("2025L", [MIXED.model_copy(update={"topics": MIXED.topics[:3]})])])
+    assert check_categories(tmp_path, "X") == [
+        "2025L II.4: in categories.json but not in rules.json"
+    ]

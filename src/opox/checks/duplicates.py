@@ -3,7 +3,7 @@
 Inputs, for a given opposition: `processed/<opposition>/questions.json` and, in
 `interim/<opposition>/`, `duplicates.json`, `dup_contexts.csv` and `dup_check.csv`.
 
-This check is read-only. Errors block `opox make bank`: groups out of date with the
+This check is read-only. Errors block `opox bank make`: groups out of date with the
 questions, invalid or contradictory decisions, and context pairs pending review.
 Warnings are reviewed pairs of `dup_check.csv` not added yet. Pending rows of
 `dup_check.csv` are optional and only reported.
@@ -33,7 +33,7 @@ from opox.models.questions import Question
 
 log = logging.getLogger(__name__)
 
-EXTRACT_HINT = "run `opox extract duplicates`"
+EXTRACT_HINT = "run `opox bank extract duplicates`"
 
 
 @dataclass
@@ -150,7 +150,7 @@ def resolve_duplicates(data_dir: Path, opposition: str) -> Resolution:
     if not_added:
         res.warnings.append(
             f"{not_added} reviewed pair(s) of {paths.check_sheet} not added; "
-            "run `opox add duplicates`"
+            "run `opox bank add duplicates`"
         )
     unreviewed = sum(not r.same for r in check_rows)
     if unreviewed:

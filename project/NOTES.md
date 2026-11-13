@@ -1,5 +1,104 @@
 # Notas
 
+## Proceso de categorización
+
+> 🟢 ABIERTO
+
+### Principio
+
+La categoría se rige estrictamente por lo que dice la convocatoria (lugar donde se
+examinó la pregunta), no por su contenido, incluso si las bases contienen algún error.
+Nada se resuelve por heurística: lo que las reglas no fijan pasa a revisión.
+
+### Asignación determinista
+
+Para cada fuente de una entrada del banco se obtienen sus **categorías candidatas**
+cotejando `rules.json` y `categories.json`:
+
+- **Ordinaria**: su número la sitúa en una sección de su parte (las secciones están
+  listadas en el orden del examen); la sección da el bloque, y el bloque, las
+  categorías con temas suyos en esa convocatoria.
+- **Reserva**: no está ligada a ninguna sección, así que recibe la unión de las
+  categorías de todos los bloques de su parte.
+
+La categoría de la entrada sale de la **intersección** de las candidatas de todas sus
+fuentes:
+
+- Vacía: ERROR.
+- Un elemento: OK, categoría asignada.
+- Dos o más: REVISIÓN.
+
+Así, una reserva o pregunta ambigua que se resuelve por un duplicado ordinario no va a
+revisión.
+
+Pendiente: documentar en el modelo de `rules.json` que el orden de las secciones es el
+del examen (comprobado en los límites de 2022E y 2025L).
+
+### Experimento en C2_AGE
+
+Sobre 989 entradas: 703 OK, 286 a REVISIÓN, 0 ERROR.
+
+| Candidatas | Entradas | Origen |
+|---|---|---|
+| {Actividad administrativa, Ofimática} | 254 | 233 del bloque II de las L, 21 reservas de esa parte |
+| {Organización pública, Psicotécnico} | 30 | reservas de la parte 1 de las L |
+| {Organización pública, Ofimática, Psicotécnico} | 2 | reservas de 2022E |
+
+Ninguna tiene contexto. Actividad administrativa no recibe ninguna asignación
+determinista: depende por completo de la revisión.
+
+Las preguntas del bloque II siguen aproximadamente el orden del temario, pero el corte
+varía por examen y hay excepciones (2019L0A-2-50, sede electrónica, al final), así que
+no sirve como regla.
+
+### Revisión por agente
+
+Por cada entrada del banco en REVISIÓN (no por fuente), se llama a un modelo por API con
+la pregunta, sus opciones y las categorías candidatas, y se le pide la categoría y un
+nivel de confianza. A revisión manual sólo pasan las de confianza muy baja.
+
+Se empezará con un modelo gratuito (Gemini, OpenRouter `:free`, Groq u Ollama local),
+dejando abierta la posibilidad de usar otros, como Haiku (~300 llamadas de ~1,5k
+tokens: céntimos). Implica una interfaz común con un adaptador por proveedor.
+
+Lecciones de la iteración previa (`old/prev-iter/llm_categorize*.py`):
+
+- La confianza pedida como número no sirve: el modelo respondía 0,95 en el 83 % de los
+  casos, incluidos errores. Mejor una escala cualitativa (alta, media, baja) con
+  criterios explícitos.
+- Preguntar "¿X o Y?" fuerza a diferenciar aunque no haya diferencia; la alternativa
+  fue puntuar a ciegas cada candidata por separado.
+- El psicotécnico es un tipo de pregunta, no una materia: requiere su propio criterio
+  (si se resuelve sólo con la información del enunciado).
+- Cada categoría se describe con su temario de esa convocatoria, no sólo con su nombre.
+
+Ideas por decidir:
+
+- **Señal de confianza adicional**, independiente de lo que el modelo diga de sí mismo:
+  repetir la llamada N veces y medir el acuerdo, o contrastar con un segundo modelo.
+- **Calibración**: las 703 entradas OK sirven para medir el acierto y fijar el umbral
+  de "confianza muy baja", salvo para Actividad administrativa, que no tiene ninguna;
+  para ella haría falta una pequeña muestra etiquetada a mano.
+- **Temario de referencia**: el de la convocatoria de la fuente canónica (`bank_id`).
+- **Salida estructurada**: JSON con la categoría restringida a las candidatas de la
+  entrada y una justificación breve previa a la respuesta.
+- **Almacenamiento**: `category` en `features.json` con `category_id`, método
+  (`rules`, `llm`, `manual`), candidatas y, si aplica, confianza y modelo. Respuestas
+  del modelo cacheadas en `interim/`, registrando modelo y versión del prompt. La
+  revisión manual, como en duplicados: CSV/MD en `interim/` y `opox features add categories`.
+- **Tematización conjunta**: si el modelo eligiera el tema, la categoría se derivaría
+  de él, adelantando la tematización.
+
+
+## Resultado de la extracción de *features*
+
+> 🟢 ABIERTO
+
+El resultado de la extracción de *features* será un archivo `features.json` que usa
+`bank_id` como identificador. Contendrá 4 objetos para cada proceso: `category`,
+`topic`, `tags`, `format`.
+
+
 ## Preguntas iguales con respuesta contextual
 
 > 🟢 ABIERTO

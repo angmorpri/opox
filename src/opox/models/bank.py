@@ -1,6 +1,6 @@
 """Model for the question bank (batería de preguntas), D010.
 
-Root of `processed/<opposition>/bank.json`, written by `opox make bank`.
+Root of `processed/<opposition>/bank.json`, written by `opox bank make`.
 
 Notes:
 - One entry per group of duplicate questions (D011), unique questions included; only

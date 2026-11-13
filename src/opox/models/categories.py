@@ -1,6 +1,6 @@
 """Models for the official categories and their topics per call, D012.
 
-Root of `processed/<opposition>/categories.json`, written by `opox extract categories`.
+Root of `processed/<opposition>/categories.json`, written by `opox categories extract`.
 
 Diagram (Mermaid class diagram):
 

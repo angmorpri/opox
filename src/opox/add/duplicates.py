@@ -1,10 +1,10 @@
 """Join the reviewed possible duplicates into the duplicate groups (D011).
 
 Inputs, for a given opposition: `processed/<opposition>/questions.json` and the outputs
-of `opox extract duplicates`.
+of `opox bank extract duplicates`.
 
 Every pair marked `y` in `dup_check.csv` joins its two groups into a `manual` one. Then,
-as a rerun of `opox extract duplicates` with the stored thresholds, it rewrites
+as a rerun of `opox bank extract duplicates` with the stored thresholds, it rewrites
 `duplicates.json`, adds the new context pairs to `dup_contexts.csv`, keeping every
 decision, and regenerates `dup_check.csv` without the pairs already joined.
 """
@@ -25,7 +25,7 @@ def add_duplicates(data_dir: Path, opposition: str) -> tuple[bool, list[str]]:
         return False, errors
     for path in (paths.duplicates, paths.check_sheet):
         if not path.is_file():
-            return False, [f"file not found: {path}", "run `opox extract duplicates` first"]
+            return False, [f"file not found: {path}", "run `opox bank extract duplicates` first"]
     state, errors = read_state(paths)
     if errors or state is None or state.thresholds is None:
         return False, [*errors, "fix the problems above and retry"]

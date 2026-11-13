@@ -1,7 +1,7 @@
 """Assign context crops to the extracted questions (D005).
 
 Inputs, for a given opposition: the control sheet and crops, validated as in
-`opox check contexts`, and `processed/<opposition>/questions.json`.
+`opox tests check contexts`, and `processed/<opposition>/questions.json`.
 
 Output: `questions.json`, with `context` set from the sheet and cleared elsewhere. The
 sheet is the source of truth, so previous assignments are always replaced.
@@ -37,7 +37,7 @@ def add_contexts(data_dir: Path, opposition: str) -> tuple[bool, list[str]]:
     """Assign contexts to questions. Return (success, notes)."""
     errors, assignment = resolve_contexts(data_dir, opposition)
     if errors:
-        return False, [*errors, "fix the problems above (`opox check contexts`) and retry"]
+        return False, [*errors, "fix the problems above (`opox tests check contexts`) and retry"]
 
     questions_path = data_dir / "processed" / opposition / "questions.json"
     exams = ExamCollection.model_validate_json(questions_path.read_text(encoding="utf-8"))

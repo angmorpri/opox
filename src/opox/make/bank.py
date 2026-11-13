@@ -2,7 +2,7 @@
 
 Inputs, for a given opposition: `processed/<opposition>/questions.json` and, in
 `interim/<opposition>/`, `duplicates.json`, `dup_contexts.csv` and `dup_check.csv`,
-validated as in `opox check duplicates`.
+validated as in `opox bank check duplicates`.
 
 Output: `processed/<opposition>/bank.json` (`QuestionBank`), rebuilt from scratch on
 every run: it holds no manual work.
@@ -54,7 +54,10 @@ def make_bank(data_dir: Path, opposition: str) -> tuple[bool, list[str]]:
     """Write the question bank. Return (success, notes)."""
     res = resolve_duplicates(data_dir, opposition)
     if res.errors or res.groups is None:
-        return False, [*res.errors, "fix the problems above (`opox check duplicates`) and retry"]
+        return False, [
+            *res.errors,
+            "fix the problems above (`opox bank check duplicates`) and retry",
+        ]
 
     entries, errors = [], []
     for ids in res.groups:

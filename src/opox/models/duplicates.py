@@ -1,7 +1,7 @@
 """Model for the duplicate groups of an opposition, D011.
 
-Root of `interim/<opposition>/duplicates.json`, written by `opox extract duplicates`
-and `opox add duplicates`.
+Root of `interim/<opposition>/duplicates.json`, written by `opox bank extract duplicates`
+and `opox bank add duplicates`.
 
 Notes:
 - Only groups of two or more answered questions are listed; any other answered question
@@ -9,7 +9,7 @@ Notes:
 - `origin` is `exact` for questions with equal key, and `manual` for groups that join
   several of them through reviewed pairs of `dup_check.csv`.
 - `threshold` and `answer_threshold` (0-100) are those used to propose `dup_check.csv`;
-  `opox add duplicates` reuses them.
+  `opox bank add duplicates` reuses them.
 - The canonical question is not stored: it is the most recent one, computed when needed.
 """
 

@@ -54,6 +54,7 @@ Notes:
 - `source` is relative to `data/raw/<opposition>/`, always with POSIX separators.
 - `penalty` is the fraction of a correct answer subtracted per wrong answer ("1/3").
 - `Part.number` is consecutive from 1; `Part.n_questions` equals the sum of its sections.
+- `Part.sections` are listed in exam order; reserve questions belong to no section.
 - `Section.block_id` must reference a `Block` in the syllabus.
 - `Block.block_id` follows D008 ("I", "II", "PSICO", "U"...).
 - Topic number is its index in `Block.topics` + 1.

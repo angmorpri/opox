@@ -75,5 +75,5 @@ def check_questions(data_dir: Path, opposition: str) -> tuple[list[str], list[st
     if not sheet_path.is_file():
         warnings.append(f"contexts pending: {sheet_path} not found (D005)")
     elif not has_contexts:
-        warnings.append("contexts pending: run `opox add contexts`")
+        warnings.append("contexts pending: run `opox tests add contexts`")
     return errors, warnings
